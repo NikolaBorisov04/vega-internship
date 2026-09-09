@@ -39,9 +39,12 @@ public class Event : AuditableEntity
 
     public ICollection<TicketType> TicketTypes {get; set;} = new List<TicketType>();
 
-    public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
-
     public ICollection<EventSponsorship> Sponsorships { get; set; } = new List<EventSponsorship>();
-    
+
     public ICollection<string> EventPhotosURL { get; set; } = new List<string>();
+
+    public Guid OrganizerId { get; set; }
+
+    [ForeignKey(nameof(OrganizerId))]
+    public Organizer? Organizer { get; set; }
 }

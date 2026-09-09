@@ -17,6 +17,6 @@ public class Organizer : Customer
 
     [Required]
     public bool Validated {get; set;} = false;
-    
+
     public ICollection<Event> OrganizedEvents { get; set; } = new List<Event>();
 }
