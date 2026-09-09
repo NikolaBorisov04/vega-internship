@@ -7,7 +7,6 @@ namespace Events.Api.Entities;
 [Table("Tickets")]
 public class Ticket : AuditableEntity
 {
-    [Required]
     [MaxLength(64)]
     public string TicketCode {get; set;} = Guid.NewGuid().ToString("N");
 
@@ -26,7 +25,7 @@ public class Ticket : AuditableEntity
     public TicketType? TicketType {get; set;}
 
     public Guid CustomerId {get; set;}
-    
+
     [ForeignKey(nameof(CustomerId))]
     public Customer? Customer {get; set;}
 }

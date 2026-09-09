@@ -1,29 +1,18 @@
-using Microsoft.EntityFrameworkCore;
-using DotNetEnv;
-using Events.Api.Data;
-using Events.Api.Services;
-using Events.Api.Security;
-
-Env.Load();
+using Events.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
-
-if (string.IsNullOrEmpty(connectionString))
-{
-    throw new InvalidOperationException("POSTGRES_CONNECTION_STRING nije pronadjen u .env fajlu!");
-}
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-
-builder.Services.AddControllers();
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
+
+app.SeedDatabase();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

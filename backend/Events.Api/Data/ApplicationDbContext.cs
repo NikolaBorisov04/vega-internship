@@ -21,5 +21,7 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<User>().UseTptMappingStrategy();
+        modelBuilder.Entity<EventSponsorship>()
+        .HasKey(x => new { x.EventId, x.SponsorId });
     }
 }

@@ -3,6 +3,7 @@ using Events.Api.Data;
 using Events.Api.DTOs;
 using Events.Api.Entities;
 using Events.Api.Security;
+using Events.Api.Extensions;
 
 namespace Events.Api.Services;
 public class UserService : IUserService
@@ -19,15 +20,14 @@ public class UserService : IUserService
     {
         return await _context.Users
             .Where(u => u.Id == id)
-            .Select(u => new UserResponseDTO(
-                u.Id,
-                u.Name,
-                u.Email,
-                u.Role,
-                u is Organizer ? ((Organizer)u).CompanyName : null,
-                u is Organizer ? ((Organizer)u).Validated : (bool?)null
-            ))
+            .ToUserResponseDTO()
             .FirstOrDefaultAsync();
+    }
+    public async Task<IEnumerable<UserResponseDTO>> GetAllAsync()
+    {
+        return await _context.Users
+            .ToUserResponseDTO()
+            .ToListAsync();
     }
     public async Task<UserResponseDTO> RegisterCustomerAsync(RegisterCustomerDTO dto, CancellationToken ct = default)
     {
