@@ -11,16 +11,19 @@ public class TicketType : AuditableEntity
     public string Name { get; set; } = string.Empty;
 
     [MaxLength(500)]
-    public string? Description { get; set; }
+    public string Description { get; set; }
 
     [Column(TypeName = "numeric(18,2)")]
+    [Required]
     public decimal Price { get; set; }
 
-    public int? QuantityAvailable { get; set; }
+    [Required]
+    public int QuantityAvailable { get; set; }
 
     [MaxLength(1000)]
     public string? TicketBackgroundImageUrl { get; set; }
     
+    [Required]
     public Guid EventId { get; set; }
 
     [ForeignKey(nameof(EventId))]

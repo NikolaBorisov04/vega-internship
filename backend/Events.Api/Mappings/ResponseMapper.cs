@@ -58,4 +58,19 @@ public class ResponseMapper
             sponsor.WebsiteUrl
         );
     }
+
+    public TicketTypeResponseDTO MapToResponse(TicketType ticketType)
+    {
+        return new TicketTypeResponseDTO(
+            ticketType.Id,
+            ticketType.Name,
+            ticketType.Price,
+            ticketType.EventId,
+            ticketType.CreatedAt,
+            ticketType.ModifiedAt,
+            ticketType.Description,
+            ticketType.QuantityAvailable,
+            ticketType.TicketBackgroundImageUrl
+        );
+    }
 }
