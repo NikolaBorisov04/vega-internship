@@ -11,7 +11,7 @@ public class Ticket : AuditableEntity
     public string TicketCode {get; set;} = Guid.NewGuid().ToString("N");
 
     [MaxLength(1000)]
-    public string QRCodeURL {get; set;}
+    public string? QRCodeURL {get; set;}
 
     public int? SeatNumber {get; set;}
 

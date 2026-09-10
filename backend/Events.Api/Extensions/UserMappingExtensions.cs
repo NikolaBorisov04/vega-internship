@@ -12,6 +12,12 @@ public static class UserMappingExtensions
             u.Name,
             u.Email,
             u.Role,
+            u.CreatedAt,
+            u.ModifiedAt,
+            u is Customer ? ((Customer)u).Country : null,
+            u is Customer ? ((Customer)u).City : null,
+            u is Customer ? ((Customer)u).Address : null,
+            u is Customer ? ((Customer)u).PhoneNumber : null,
             u is Organizer ? ((Organizer)u).CompanyName : null,
             u is Organizer ? ((Organizer)u).Validated : (bool?)null
         ));

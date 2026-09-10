@@ -4,17 +4,20 @@ using Events.Api.DTOs;
 using Events.Api.Entities;
 using Events.Api.Security;
 using Events.Api.Extensions;
+using Events.Api.Mappings;
 
 namespace Events.Api.Services;
 public class UserService : IUserService
 {
     private readonly ApplicationDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly ResponseMapper _responseMapper;
 
-    public UserService(ApplicationDbContext context, IPasswordHasher passwordHasher)
+    public UserService(ApplicationDbContext context, IPasswordHasher passwordHasher, ResponseMapper responseMapper)
     {
         _context = context;
         _passwordHasher = passwordHasher;
+        _responseMapper = responseMapper;
     }
     public async Task<UserResponseDTO?> GetByIdAsync(Guid id)
     {
@@ -48,7 +51,7 @@ public class UserService : IUserService
         _context.Customers.Add(customer);
         await _context.SaveChangesAsync(ct);
 
-        return MapToResponse(customer);
+        return _responseMapper.MapToResponse(customer);
     }
     public async Task<UserResponseDTO> RegisterOrganizerAsync(RegisterOrganizerDTO dto, CancellationToken ct = default)
     {
@@ -71,7 +74,7 @@ public class UserService : IUserService
         _context.Organizers.Add(organizer);
         await _context.SaveChangesAsync(ct);
 
-        return MapToResponse(organizer);
+        return _responseMapper.MapToResponse(organizer);
     }
     public async Task<UserResponseDTO> RegisterAdminAsync(RegisterAdminDTO dto, CancellationToken ct = default)
     {
@@ -94,8 +97,21 @@ public class UserService : IUserService
         _context.Admins.Add(admin);
         await _context.SaveChangesAsync(ct);
 
-        return MapToResponse(admin);
+        return _responseMapper.MapToResponse(admin);
     }
+
+    public async Task<UserResponseDTO> ValidateUserAsync(string email, string password)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null)
+            return null;
+
+        if(_passwordHasher.VerifyPassword(password, user.PasswordHash) == false)
+            return null;
+        
+        return _responseMapper.MapToResponse(user);
+    }
+
     private async Task EnsureEmailIsUniqueAsync(string email, CancellationToken ct)
     {
         var exists = await _context.Users.AnyAsync(u => u.Email == email, ct);
@@ -103,16 +119,5 @@ public class UserService : IUserService
         {
             throw new InvalidOperationException($"Korisnik sa email adresom '{email}' već postoji.");
         }
-    }
-
-    private static UserResponseDTO MapToResponse(User user)
-    {
-        return user switch
-        {
-            Admin admin => new UserResponseDTO(admin.Id, admin.Name, admin.Email, admin.Role, admin.CompanyName, admin.Validated),
-            Organizer organizer => new UserResponseDTO(organizer.Id, organizer.Name, organizer.Email, organizer.Role, organizer.CompanyName, organizer.Validated),
-            Customer customer => new UserResponseDTO(customer.Id, customer.Name, customer.Email, customer.Role),
-            _ => new UserResponseDTO(user.Id, user.Name, user.Email, user.Role)
-        };
     }
 }

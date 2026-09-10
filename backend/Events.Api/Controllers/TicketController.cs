@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Events.Api.Services;
 using Events.Api.DTOs;
@@ -17,8 +17,10 @@ public class TicketController : ControllerBase
     }
 
     [HttpGet("{id:Guid}")]
+    [Authorize]
     [ProducesResponseType(typeof(TicketResponseDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetByIdAsync(Guid id)
     {
         var ticket = await _ticketService.GetByIdAsync(id);
@@ -32,8 +34,11 @@ public class TicketController : ControllerBase
     }
 
     [HttpGet("all")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(IEnumerable<TicketResponseDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetAllAsync()
     {
         var tickets = await _ticketService.GetAllAsync();
@@ -44,9 +49,11 @@ public class TicketController : ControllerBase
     }
 
     [HttpPost("create")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<TicketResponseDTO>> Create([FromBody] TicketCreateDTO dto, CancellationToken ct)
     {
         try

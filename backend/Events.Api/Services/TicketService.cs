@@ -3,15 +3,18 @@ using Events.Api.Data;
 using Events.Api.DTOs;
 using Events.Api.Entities;
 using Events.Api.Extensions;
+using Events.Api.Mappings;
 
 namespace Events.Api.Services;
 public class TicketService : ITicketService
 {
     private readonly ApplicationDbContext _context;
+    private readonly ResponseMapper _responseMapper;
 
-    public TicketService(ApplicationDbContext context)
+    public TicketService(ApplicationDbContext context, ResponseMapper responseMapper)
     {
         _context = context;
+        _responseMapper = responseMapper;
     }
 
     public async Task<TicketResponseDTO?> GetByIdAsync(Guid id)
@@ -62,19 +65,6 @@ public class TicketService : ITicketService
         _context.Tickets.Add(ticket);
         await _context.SaveChangesAsync(ct);
 
-        return MapToResponse(ticket);
-    }
-    private static TicketResponseDTO MapToResponse(Ticket ticket)
-    {
-        return new TicketResponseDTO(
-            ticket.Id,
-            ticket.TicketCode,
-            ticket.QRCodeURL,
-            ticket.SeatNumber,
-            ticket.IsUsed,
-            ticket.UsedAt,
-            ticket.TicketTypeId,
-            ticket.CustomerId
-        );
+        return _responseMapper.MapToResponse(ticket);
     }
 }

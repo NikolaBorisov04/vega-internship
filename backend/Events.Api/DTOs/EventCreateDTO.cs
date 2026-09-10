@@ -1,6 +1,6 @@
 namespace Events.Api.DTOs;
 
-public record EventCreateDTO(
+public sealed record EventCreateDTO(
     string Title,
     string Description,
     string Country,

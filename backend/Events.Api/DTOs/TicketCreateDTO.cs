@@ -1,6 +1,6 @@
 namespace Events.Api.DTOs;
 
-public record TicketCreateDTO(
+public sealed record TicketCreateDTO(
     string QRCodeURL,
     int? SeatNumber,
     bool IsUsed,

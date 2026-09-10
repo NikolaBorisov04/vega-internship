@@ -31,6 +31,7 @@ public class Sponsor : AuditableEntity
     [MaxLength(100)]
     public string TaxId { get; set; }
 
+    [Required]
     public bool IsActive { get; set; } = true;
     
     public ICollection<EventSponsorship> SponsoredEvents { get; set; } = new List<EventSponsorship>();

@@ -204,7 +204,7 @@ public static class TestDataSeeder
             ModifiedAt = createdAt
         };
 
-        context.Sponsor.AddRange(
+        context.Sponsors.AddRange(
             sponsor1,
             sponsor2,
             sponsor3);

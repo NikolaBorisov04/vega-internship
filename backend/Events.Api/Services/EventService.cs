@@ -3,15 +3,18 @@ using Events.Api.Data;
 using Events.Api.DTOs;
 using Events.Api.Entities;
 using Events.Api.Extensions;
+using Events.Api.Mappings;
 
 namespace Events.Api.Services;
 public class EventService : IEventService
 {
     private readonly ApplicationDbContext _context;
+    private readonly ResponseMapper _responseMapper;
 
-    public EventService(ApplicationDbContext context)
+    public EventService(ApplicationDbContext context, ResponseMapper responseMapper)
     {
         _context = context;
+        _responseMapper = responseMapper;
     }
     public async Task<EventResponseDTO?> GetByIdAsync(Guid id)
     {
@@ -54,22 +57,6 @@ public class EventService : IEventService
         _context.Events.Add(_event);
         await _context.SaveChangesAsync(ct);
 
-        return MapToResponse(_event);
-    }
-    private static EventResponseDTO MapToResponse(Event _event)
-    {
-        return new EventResponseDTO(
-            _event.Id,
-            _event.Title,
-            _event.Description,
-            _event.Country,
-            _event.City,
-            _event.Address,
-            _event.MainImageURL,
-            _event.VenueName,
-            _event.DateAndTimeOfEvent,
-            _event.OrganizerId,
-            _event.EventPhotosURL
-        );
+        return _responseMapper.MapToResponse(_event);
     }
 }
