@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Events.Api.Entities;
 [Table("EventSponsorships")]
-public class EventSponsorship
+public class EventSponsorship : AuditableEntity
 {
     [Column(TypeName = "numeric(18,2)")]
     public decimal ContributionAmount { get; set; }

@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Events.Api.Entities;
+using Events.Api.Repositories;
 
 namespace Events.Api.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IUnitOfWork
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
@@ -22,6 +23,7 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<User>().UseTptMappingStrategy();
         modelBuilder.Entity<EventSponsorship>()
-        .HasKey(x => new { x.EventId, x.SponsorId });
+        .HasIndex(x => new { x.EventId, x.SponsorId }).IsUnique();
+        // promenjeno sa Key na Index da bi mogao i EventSponsorhsip entity da nasledi AuditableEntity, bolje je tako za repo pattern a nista se ne gubi
     }
 }

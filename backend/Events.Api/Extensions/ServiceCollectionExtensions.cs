@@ -4,6 +4,7 @@ using Events.Api.Data;
 using Events.Api.Services;
 using Events.Api.Mappings;
 using Events.Api.Middleware;
+using Events.Api.Repositories;
 
 namespace Events.Api.Extensions;
 
@@ -20,6 +21,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<ITicketService, TicketService>();
         services.AddScoped<ISponsorService, SponsorService>();
+
+        services.AddScoped<IUnitOfWork>(
+            sp => sp.GetRequiredService<ApplicationDbContext>());
+
+        services.AddScoped<IEventRepository, EventRepository>();
+        services.AddScoped<ISponsorRepository, SponsorRepository>();
+        services.AddScoped<ITicketRepository, TicketRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddControllers(options =>
         {
