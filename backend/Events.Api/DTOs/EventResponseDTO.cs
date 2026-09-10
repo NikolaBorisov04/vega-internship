@@ -1,6 +1,6 @@
 namespace Events.Api.DTOs;
 
-public record EventResponseDTO(
+public sealed record EventResponseDTO(
     Guid Id,
     string Title,
     string Description,

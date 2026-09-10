@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Events.Api.Services;
 using Events.Api.DTOs;
@@ -17,6 +17,7 @@ public class EventController : ControllerBase
     }
 
     [HttpGet("{id:Guid}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(EventResponseDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByIdAsync(Guid id)
@@ -32,6 +33,7 @@ public class EventController : ControllerBase
     }
 
     [HttpGet("all")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<EventResponseDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllAsync()
@@ -44,7 +46,7 @@ public class EventController : ControllerBase
     }
     
     [HttpPost("create")]
-    // [Authorize(Roles = "Organizer")]
+    [Authorize(Roles = "Organizer")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -9,5 +9,6 @@ namespace Events.Api.Services
         Task<UserResponseDTO> RegisterCustomerAsync(RegisterCustomerDTO dto, CancellationToken ct = default);
         Task<UserResponseDTO> RegisterOrganizerAsync(RegisterOrganizerDTO dto, CancellationToken ct = default);
         Task<UserResponseDTO> RegisterAdminAsync(RegisterAdminDTO dto, CancellationToken ct = default);
+        Task<UserResponseDTO> ValidateUserAsync(string email, string password);
     }
 }

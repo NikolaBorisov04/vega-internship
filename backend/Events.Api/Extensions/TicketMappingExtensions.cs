@@ -9,7 +9,7 @@ public static class TicketMappingExtensions
         return query.Select(t => new TicketResponseDTO(
             t.Id,
             t.TicketCode,
-            t.QRCodeURL,
+            t.QRCodeURL!,
             t.SeatNumber,
             t.IsUsed,
             t.UsedAt,

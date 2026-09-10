@@ -1,6 +1,6 @@
 namespace Events.Api.DTOs;
 
-public record TicketResponseDTO(
+public sealed record TicketResponseDTO(
     Guid Id,
     string TicketCode,
     string QRCodeURL,
