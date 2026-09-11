@@ -5,13 +5,20 @@ using Events.Api.Entities;
 
 namespace Events.Api.Services;
 
-public class TicketTypeServices : ITicketTypeService
+public class TicketTypeService : ITicketTypeService
 {
     private readonly ITicketTypeRepository _ticketTypeRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ResponseMapper _responseMapper;
 
-    public async Task<TicketTypeResponseDTO?> GetByIdAsync(Guid id)
+    public TicketTypeService(ITicketTypeRepository ticketTypeRepository, IUnitOfWork unitOfWork, ResponseMapper responseMapper)
+    {
+        _ticketTypeRepository = ticketTypeRepository;
+        _unitOfWork = unitOfWork;
+        _responseMapper = responseMapper;
+    }
+
+    public async Task<TicketTypeResponseDTO> GetByIdAsync(Guid id)
     {
         var ticketType = await _ticketTypeRepository.GetByIdAsync(id);
 

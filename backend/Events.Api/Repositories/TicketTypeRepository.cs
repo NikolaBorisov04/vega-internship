@@ -10,6 +10,6 @@ public class TicketTypeRepository : Repository<TicketType>, ITicketTypeRepositor
 
     public Task<bool> EventExistsAsync(Guid eventId, CancellationToken ct = default)
     {
-        return _context.TicketTypes.AnyAsync(t => t.Id == eventId, ct);
+        return _context.Events.AnyAsync(e => e.Id == eventId, ct);
     }
 }

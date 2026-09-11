@@ -11,9 +11,9 @@ public class TicketTypeController : ControllerBase
 {
     private readonly ITicketTypeService _ticketTypeService;
 
-    public TicketTypeController(ITicketTypeService tickettypeService)
+    public TicketTypeController(ITicketTypeService ticketTypeService)
     {
-        _ticketTypeService = tickettypeService;
+        _ticketTypeService = ticketTypeService;
     }
 
     [HttpGet("{id:Guid}")]
@@ -46,7 +46,7 @@ public class TicketTypeController : ControllerBase
     }
 
     [HttpPost("create")]
-    [Authorize(Roles = "Organizer")]
+    [Authorize(Roles = "Organizer, Admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
