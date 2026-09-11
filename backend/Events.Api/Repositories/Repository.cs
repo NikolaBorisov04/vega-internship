@@ -35,16 +35,19 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditabl
 
     public virtual bool Add(TEntity entity)
     {
-        _dbSet.Add(entity);
+        var entry = _dbSet.Add(entity);
+        return entry.State == EntityState.Added;
     }
 
     public virtual bool Update(TEntity entity)
     {
-        _dbSet.Update(entity);
+        var entry = _dbSet.Update(entity);
+        return entry.State == EntityState.Modified;
     }
 
     public virtual bool Delete(TEntity entity)
     {
-        _dbSet.Remove(entity);
+        var entry = _dbSet.Remove(entity);
+        return entry.State == EntityState.Deleted;
     }
 }
