@@ -1,38 +1,44 @@
-using Microsoft.EntityFrameworkCore;
-using Events.Api.Data;
 using Events.Api.DTOs;
 using Events.Api.Entities;
-using Events.Api.Extensions;
 using Events.Api.Mappings;
+using Events.Api.Repositories;
 
 namespace Events.Api.Services;
+
 public class SponsorService : ISponsorService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ISponsorRepository _sponsorRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ResponseMapper _responseMapper;
 
-    public SponsorService(ApplicationDbContext context, ResponseMapper responseMapper)
+    public SponsorService(ISponsorRepository sponsorRepository, IUnitOfWork unitOfWork, ResponseMapper responseMapper)
     {
-        _context = context;
+        _sponsorRepository = sponsorRepository;
+        _unitOfWork = unitOfWork;
         _responseMapper = responseMapper;
     }
 
     public async Task<SponsorResponseDTO?> GetByIdAsync(Guid id)
     {
-        return await _context.Sponsors
-            .Where(s => s.Id == id)
-            .ToSponsorResponseDTO()
-            .FirstOrDefaultAsync();
+        var sponsor = await _sponsorRepository.GetByIdAsync(id);
+
+        if(sponsor == null)
+        {
+            return null;
+        }
+
+        return _responseMapper.MapToResponse(sponsor);
     }
 
     public async Task<IEnumerable<SponsorResponseDTO>> GetAllAsync()
     {
-        return await _context.Sponsors
-            .ToSponsorResponseDTO()
-            .ToListAsync();
+        var sponsors =
+            await _sponsorRepository.GetAllAsync();
+
+        return sponsors.Select(_responseMapper.MapToResponse).ToList();
     }
 
-    public async Task<SponsorResponseDTO> CreateAsync(SponsorCreateDTO dto, CancellationToken ct)
+    public async Task<SponsorResponseDTO> CreateAsync(SponsorCreateDTO dto, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(dto.Name))
         {
@@ -64,8 +70,9 @@ public class SponsorService : ISponsorService
             WebsiteUrl = dto.WebsiteUrl
         };
 
-        _context.Sponsors.Add(sponsor);
-        await _context.SaveChangesAsync(ct);
+        _sponsorRepository.Add(sponsor);
+
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return _responseMapper.MapToResponse(sponsor);
     }

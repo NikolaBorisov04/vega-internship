@@ -1,39 +1,42 @@
 using Microsoft.EntityFrameworkCore;
-using Events.Api.Data;
 using Events.Api.DTOs;
 using Events.Api.Entities;
 using Events.Api.Extensions;
 using Events.Api.Mappings;
+using Events.Api.Repositories;
 
 namespace Events.Api.Services;
 public class EventService : IEventService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IEventRepository _eventRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ResponseMapper _responseMapper;
 
-    public EventService(ApplicationDbContext context, ResponseMapper responseMapper)
+    public EventService(IEventRepository eventRepository, IUnitOfWork unitOfWork, ResponseMapper responseMapper)
     {
-        _context = context;
+        _eventRepository = eventRepository;
+        _unitOfWork = unitOfWork;
         _responseMapper = responseMapper;
     }
     public async Task<EventResponseDTO?> GetByIdAsync(Guid id)
     {
-        return await _context.Events
-                .Where(e => e.Id == id)
-                //extension here
-                .ToEventResponseDTO()
-                .FirstOrDefaultAsync();
+        var _event = await _eventRepository.GetByIdAsync(id);
+
+        if (_event == null)
+        {
+            return null;
+        }
+
+        return _responseMapper.MapToResponse(_event);
     }
     public async Task<IEnumerable<EventResponseDTO>> GetAllAsync()
     {
-        return await _context.Events
-            .ToEventResponseDTO()
-            .ToListAsync();
+        var _events = await _eventRepository.GetAllAsync();
+        return _events.Select(_responseMapper.MapToResponse).ToList();
     }
     public async Task<EventResponseDTO> CreateAsync(EventCreateDTO dto, CancellationToken ct = default)
     {
-        var organizerExists = await _context.Organizers
-            .AnyAsync(o => o.Id == dto.OrganizerId, ct);
+        var organizerExists = await _eventRepository.OrganizerExistsAsync(dto.OrganizerId, ct);
 
         if (!organizerExists)
         {
@@ -54,9 +57,8 @@ public class EventService : IEventService
             OrganizerId = dto.OrganizerId
         };
 
-        _context.Events.Add(_event);
-        await _context.SaveChangesAsync(ct);
-
+        _eventRepository.Add(_event);
+        await _unitOfWork.SaveChangesAsync(ct);
         return _responseMapper.MapToResponse(_event);
     }
 }

@@ -1,6 +1,7 @@
 namespace Events.Api.DTOs;
 
-public record RegisterAdminDTO(
+public record RegisterAdminDTO
+(
     string Name,
     string Email,
     string Password,
