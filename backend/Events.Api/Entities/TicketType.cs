@@ -11,7 +11,7 @@ public class TicketType : AuditableEntity
     public string Name { get; set; } = string.Empty;
 
     [MaxLength(500)]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     [Column(TypeName = "numeric(18,2)")]
     [Required]
