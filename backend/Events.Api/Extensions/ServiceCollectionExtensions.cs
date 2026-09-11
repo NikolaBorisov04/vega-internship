@@ -10,10 +10,16 @@ namespace Events.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is not defined.");
+        
+        /*services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseInMemoryDatabase("TestDatabase"));*/
+        
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseInMemoryDatabase("TestDatabase"));
+            options.UseNpgsql(connectionString));
 
         services.AddSingleton<ResponseMapper>();
 
@@ -65,14 +71,5 @@ public static class ServiceCollectionExtensions
         services.AddProblemDetails();
 
         return services;
-    }
-
-    public static WebApplication SeedDatabase(this WebApplication app)
-    {
-        using var scope = app.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TestDataSeeder.Seed(context);
-
-        return app;
     }
 }

@@ -17,6 +17,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<Ticket> Tickets => Set<Ticket>();
     public DbSet<Sponsor> Sponsors => Set<Sponsor>();
     public DbSet<EventSponsorship> EventSponsorships => Set<EventSponsorship>();
+    public DbSet<EventPhoto> EventPhotos => Set<EventPhoto>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

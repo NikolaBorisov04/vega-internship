@@ -6,13 +6,11 @@ Env.TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddSecurityServices();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
-
-app.SeedDatabase();
 
 app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())

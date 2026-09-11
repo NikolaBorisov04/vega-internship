@@ -1,4 +1,17 @@
-bin
-obj
+# Build
+bin/
+obj/
+
+# Visual Studio
+.vs/
+
+# Secrets
 .env
-Migrations
+*.env
+
+# IDE/user files
+*.user
+*.suo
+
+# Local tooling
+*.DotSettings.user
