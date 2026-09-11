@@ -15,9 +15,10 @@ public static class EventMappingExtensions
             e.Address,
             e.MainImageURL,
             e.VenueName,
-            e.DateAndTimeOfEvent,
-            e.OrganizerId,
-            e.EventPhotosURL
+            e.Priority,
+            e.StartOfEvent,
+            e.EndOfEvent,
+            e.OrganizerId
         ));
     }
 }

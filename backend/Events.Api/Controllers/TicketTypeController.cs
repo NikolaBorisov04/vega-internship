@@ -39,7 +39,7 @@ public class TicketTypeController : ControllerBase
     public async Task<IActionResult> GetAllAsync()
     {
         var ticketTypes = await _ticketTypeService.GetAllAsync();
-        if (ticketTypes == null)
+        if (!ticketTypes.Any())
             return NotFound(new { message = "Nema tipova tiketa u bazi." });
 
         return Ok(ticketTypes);

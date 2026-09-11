@@ -6,7 +6,7 @@ namespace Events.Api.Data;
 public static class TestDataSeeder
 {
     public static void Seed(ApplicationDbContext context)
-    {
+    {/*
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
@@ -679,6 +679,6 @@ public static class TestDataSeeder
             sponsorship4,
             sponsorship5);
 
-        context.SaveChanges();
+        context.SaveChanges();*/
     }
 }

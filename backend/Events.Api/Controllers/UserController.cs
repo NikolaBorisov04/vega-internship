@@ -43,7 +43,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetAllAsync()
     {
         var users = await _userService.GetAllAsync();
-        if (users == null)
+        if (!users.Any())
             return NotFound(new { message = "Nema korisnika u bazi." });
 
         return Ok(users);
