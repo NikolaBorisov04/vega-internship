@@ -70,7 +70,8 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register/admin")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")] ovo sam ostavio ovako jer je lakse za testiranje
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

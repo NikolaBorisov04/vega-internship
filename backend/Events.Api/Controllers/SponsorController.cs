@@ -33,7 +33,7 @@ public class SponsorController : ControllerBase
     }
 
     [HttpGet("all")]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(IEnumerable<SponsorResponseDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllAsync()

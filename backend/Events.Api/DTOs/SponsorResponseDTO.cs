@@ -1,6 +1,7 @@
 namespace Events.Api.DTOs;
 
-public sealed record SponsorResponseDTO(
+public sealed record SponsorResponseDTO
+(
     Guid Id,
     string Name,
     string ContactEmail,

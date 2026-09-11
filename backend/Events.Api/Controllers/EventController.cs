@@ -46,7 +46,7 @@ public class EventController : ControllerBase
     }
     
     [HttpPost("create")]
-    [Authorize(Roles = "Organizer")]
+    [Authorize(Roles = "Organizer, Admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

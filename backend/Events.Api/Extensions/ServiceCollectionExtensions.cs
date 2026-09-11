@@ -4,6 +4,7 @@ using Events.Api.Data;
 using Events.Api.Services;
 using Events.Api.Mappings;
 using Events.Api.Middleware;
+using Events.Api.Repositories;
 
 namespace Events.Api.Extensions;
 
@@ -20,6 +21,16 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<ITicketService, TicketService>();
         services.AddScoped<ISponsorService, SponsorService>();
+        services.AddScoped<ITicketTypeService, TicketTypeService>();
+
+        services.AddScoped<IUnitOfWork>(
+            sp => sp.GetRequiredService<ApplicationDbContext>());
+
+        services.AddScoped<IEventRepository, EventRepository>();
+        services.AddScoped<ISponsorRepository, SponsorRepository>();
+        services.AddScoped<ITicketRepository, TicketRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITicketTypeRepository, TicketTypeRepository>();
 
         services.AddControllers(options =>
         {
@@ -38,7 +49,7 @@ public static class ServiceCollectionExtensions
                 Scheme = "bearer",
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
-                Description = "Unesite vaš JWT token."
+                Description = "Unesite vas JWT token."
             });
 
             options.AddSecurityRequirement(x => new OpenApiSecurityRequirement

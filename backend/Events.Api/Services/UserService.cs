@@ -1,41 +1,54 @@
-using Microsoft.EntityFrameworkCore;
-using Events.Api.Data;
 using Events.Api.DTOs;
 using Events.Api.Entities;
-using Events.Api.Security;
-using Events.Api.Extensions;
 using Events.Api.Mappings;
+using Events.Api.Repositories;
+using Events.Api.Security;
 
 namespace Events.Api.Services;
+
 public class UserService : IUserService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IUserRepository _userRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ResponseMapper _responseMapper;
 
-    public UserService(ApplicationDbContext context, IPasswordHasher passwordHasher, ResponseMapper responseMapper)
+    public UserService(
+        IUserRepository userRepository,
+        IUnitOfWork unitOfWork,
+        IPasswordHasher passwordHasher,
+        ResponseMapper responseMapper)
     {
-        _context = context;
+        _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
         _responseMapper = responseMapper;
     }
+
     public async Task<UserResponseDTO?> GetByIdAsync(Guid id)
     {
-        return await _context.Users
-            .Where(u => u.Id == id)
-            .ToUserResponseDTO()
-            .FirstOrDefaultAsync();
+        var user = await _userRepository.GetByIdAsync(id);
+
+        if(user == null)
+        {
+            return null;
+        }
+
+        return _responseMapper.MapToResponse(user);
     }
+
     public async Task<IEnumerable<UserResponseDTO>> GetAllAsync()
     {
-        return await _context.Users
-            .ToUserResponseDTO()
-            .ToListAsync();
+        var users = await _userRepository.GetAllAsync();
+
+        return users.Select(_responseMapper.MapToResponse).ToList();
     }
+
     public async Task<UserResponseDTO> RegisterCustomerAsync(RegisterCustomerDTO dto, CancellationToken ct = default)
     {
         await EnsureEmailIsUniqueAsync(dto.Email, ct);
 
+        //Ovo nekad trebam da promenim da ga extraktujem i da imam posle samo organizer.ToCustomer() illi nesto slicno
         var customer = new Customer
         {
             Name = dto.Name,
@@ -48,15 +61,20 @@ public class UserService : IUserService
             PhoneNumber = dto.PhoneNumber
         };
 
-        _context.Customers.Add(customer);
-        await _context.SaveChangesAsync(ct);
+        _userRepository.Add(customer);
+
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return _responseMapper.MapToResponse(customer);
     }
-    public async Task<UserResponseDTO> RegisterOrganizerAsync(RegisterOrganizerDTO dto, CancellationToken ct = default)
+
+    public async Task<UserResponseDTO> RegisterOrganizerAsync(
+        RegisterOrganizerDTO dto,
+        CancellationToken ct = default)
     {
         await EnsureEmailIsUniqueAsync(dto.Email, ct);
 
+        //I ovde isto
         var organizer = new Organizer
         {
             Name = dto.Name,
@@ -68,18 +86,21 @@ public class UserService : IUserService
             Address = dto.Address,
             PhoneNumber = dto.PhoneNumber,
             CompanyName = dto.CompanyName,
-            Validated = false // Zahteva odobrenje admina
+            Validated = false
         };
 
-        _context.Organizers.Add(organizer);
-        await _context.SaveChangesAsync(ct);
+        _userRepository.Add(organizer);
+
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return _responseMapper.MapToResponse(organizer);
     }
+
     public async Task<UserResponseDTO> RegisterAdminAsync(RegisterAdminDTO dto, CancellationToken ct = default)
     {
         await EnsureEmailIsUniqueAsync(dto.Email, ct);
 
+        //I ovde isto
         var admin = new Admin
         {
             Name = dto.Name,
@@ -91,30 +112,37 @@ public class UserService : IUserService
             Address = dto.Address,
             PhoneNumber = dto.PhoneNumber,
             CompanyName = dto.CompanyName,
-            Validated = true // Admin je po defaultu moze da organizuje evente
+            Validated = true
         };
 
-        _context.Admins.Add(admin);
-        await _context.SaveChangesAsync(ct);
+        _userRepository.Add(admin);
+
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return _responseMapper.MapToResponse(admin);
     }
 
     public async Task<UserResponseDTO> ValidateUserAsync(string email, string password)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-        if (user == null)
-            return null;
+        var user = await _userRepository.GetByEmailAsync(email);
 
-        if(_passwordHasher.VerifyPassword(password, user.PasswordHash) == false)
+        if (user == null)
+        {
             return null;
-        
+        }
+
+        if (!_passwordHasher.VerifyPassword(password, user.PasswordHash))
+        {
+            return null;
+        }
+
         return _responseMapper.MapToResponse(user);
     }
 
     private async Task EnsureEmailIsUniqueAsync(string email, CancellationToken ct)
     {
-        var exists = await _context.Users.AnyAsync(u => u.Email == email, ct);
+        var exists = await _userRepository.EmailExistsAsync(email, ct);
+
         if (exists)
         {
             throw new InvalidOperationException($"Korisnik sa email adresom '{email}' već postoji.");
