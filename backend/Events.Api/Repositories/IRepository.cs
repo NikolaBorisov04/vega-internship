@@ -10,9 +10,9 @@ public interface IRepository<TEntity> where TEntity : AuditableEntity
 
     Task<bool> ExistsAsync(Guid id, CancellationToken ct = default);
 
-    void Add(TEntity entity);
+    bool Add(TEntity entity);
 
-    void Update(TEntity entity);
+    bool Update(TEntity entity);
 
-    void Delete(TEntity entity);
+    bool Delete(TEntity entity);
 }

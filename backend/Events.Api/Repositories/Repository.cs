@@ -33,17 +33,17 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditabl
             .AnyAsync(x => x.Id == id, ct);
     }
 
-    public virtual void Add(TEntity entity)
+    public virtual bool Add(TEntity entity)
     {
         _dbSet.Add(entity);
     }
 
-    public virtual void Update(TEntity entity)
+    public virtual bool Update(TEntity entity)
     {
         _dbSet.Update(entity);
     }
 
-    public virtual void Delete(TEntity entity)
+    public virtual bool Delete(TEntity entity)
     {
         _dbSet.Remove(entity);
     }
