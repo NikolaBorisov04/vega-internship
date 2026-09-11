@@ -41,9 +41,10 @@ public class ResponseMapper
             _event.Address,
             _event.MainImageURL,
             _event.VenueName,
-            _event.DateAndTimeOfEvent,
-            _event.OrganizerId,
-            _event.EventPhotosURL
+            _event.Priority,
+            _event.StartOfEvent,
+            _event.EndOfEvent,
+            _event.OrganizerId
         );
     }
 

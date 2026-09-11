@@ -1,3 +1,5 @@
+using Events.Api.Entities;
+
 namespace Events.Api.DTOs;
 
 public sealed record UserResponseDTO(

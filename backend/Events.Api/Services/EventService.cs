@@ -53,7 +53,8 @@ public class EventService : IEventService
             Address = dto.Address,
             MainImageURL = dto.MainImageURL,
             VenueName = dto.VenueName,
-            DateAndTimeOfEvent = dto.DateAndTimeOfEvent,
+            StartOfEvent = dto.StartOfEvent,
+            EndOfEvent = dto.EndOfEvent,
             OrganizerId = dto.OrganizerId
         };
 

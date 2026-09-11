@@ -10,7 +10,8 @@ public sealed record EventResponseDTO
     string Address,
     string MainImageURL,
     string? VenueName,
-    DateTimeOffset DateAndTimeOfEvent,
-    Guid OrganizerId,
-    IEnumerable<string> EventPhotosURL
+    EventPriority Priority,
+    DateTimeOffset StartOfEvent,
+    DateTimeOffset EndOfEvent,
+    Guid OrganizerId
 );
