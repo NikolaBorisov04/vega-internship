@@ -5,6 +5,7 @@ using Events.Api.Services;
 using Events.Api.Mappings;
 using Events.Api.Middleware;
 using Events.Api.Repositories;
+using Events.Api.IRepositories;
 
 namespace Events.Api.Extensions;
 

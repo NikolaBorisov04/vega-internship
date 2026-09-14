@@ -1,7 +1,7 @@
 using Events.Api.DTOs;
 using Events.Api.Entities;
 using Events.Api.Mappings;
-using Events.Api.Repositories;
+using Events.Api.IRepositories;
 
 namespace Events.Api.Services;
 

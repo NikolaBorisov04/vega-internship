@@ -1,6 +1,6 @@
 using Events.Api.Entities;
 
-namespace Events.Api.Repositories;
+namespace Events.Api.IRepositories;
 
 public interface ISponsorRepository : IRepository<Sponsor>
 {

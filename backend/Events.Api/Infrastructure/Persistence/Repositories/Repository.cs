@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Events.Api.Data;
 using Events.Api.Entities;
+using Events.Api.IRepositories;
 
 namespace Events.Api.Repositories;
 
