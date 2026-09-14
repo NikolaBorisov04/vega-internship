@@ -45,6 +45,25 @@ public class TicketTypeController : ControllerBase
         return Ok(ticketTypes);
     }
 
+    [HttpGet("event/{eventId:Guid}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(IEnumerable<TicketTypeResponseDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetByEventIdAsync(Guid eventId, CancellationToken ct)
+    {
+        var ticketTypes = await _ticketTypeService.GetByEventIdAsync(eventId, ct);
+
+        if (!ticketTypes.Any())
+        {
+            return NotFound(new
+            {
+                message = $"Dogadjaj sa ID-jem {eventId} nema tipove tiketa."
+            });
+        }
+
+        return Ok(ticketTypes);
+    }
+
     [HttpPost("create")]
     [Authorize(Roles = "Organizer, Admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]

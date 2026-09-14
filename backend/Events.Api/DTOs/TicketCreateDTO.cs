@@ -6,6 +6,5 @@ public sealed record TicketCreateDTO
     int? SeatNumber,
     bool IsUsed,
     DateTimeOffset? UsedAt,
-    Guid TicketTypeId,
-    Guid CustomerId
+    Guid TicketTypeId
 );

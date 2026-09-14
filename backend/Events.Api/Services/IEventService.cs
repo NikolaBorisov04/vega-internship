@@ -6,6 +6,6 @@ namespace Events.Api.Services
     {
         Task<EventResponseDTO?> GetByIdAsync(Guid id);
         Task<IEnumerable<EventResponseDTO>> GetAllAsync();
-        Task<EventResponseDTO> CreateAsync(EventCreateDTO eventCreateDto, CancellationToken ct = default);
+        Task<EventResponseDTO> CreateAsync(EventCreateDTO eventCreateDto, Guid organizerId, CancellationToken ct = default);
     }
 }

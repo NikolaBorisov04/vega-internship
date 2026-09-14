@@ -37,6 +37,23 @@ public class TicketTypeService : ITicketTypeService
         return ticketTypes.Select(_responseMapper.MapToResponse).ToList();
     }
 
+    public async Task<IEnumerable<TicketTypeResponseDTO>> GetByEventIdAsync(Guid eventId, CancellationToken ct = default)
+    {
+
+        var eventExists = await _ticketTypeRepository.EventExistsAsync(eventId, ct);
+
+        if (!eventExists)
+        {
+            throw new KeyNotFoundException($"Dogadjaj sa ID-jem '{eventId}' ne postoji.");
+        }
+
+        var ticketTypes = await _ticketTypeRepository.GetByEventIdAsync(eventId, ct);
+
+        return ticketTypes
+            .Select(_responseMapper.MapToResponse)
+            .ToList();
+    }
+
     public async Task<TicketTypeResponseDTO> CreateAsync(TicketTypeCreateDTO dto, CancellationToken ct = default)
     {
 

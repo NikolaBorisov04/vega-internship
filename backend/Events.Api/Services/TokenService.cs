@@ -10,7 +10,6 @@ public class TokenService : ITokenService
 {
     public string GenerateJwtToken(UserResponseDTO user)
     {
-        //.NET user secrets
         var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
 
         var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");

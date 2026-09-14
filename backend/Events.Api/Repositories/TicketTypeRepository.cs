@@ -12,4 +12,12 @@ public class TicketTypeRepository : Repository<TicketType>, ITicketTypeRepositor
     {
         return _context.Events.AnyAsync(e => e.Id == eventId, ct);
     }
+
+    public async Task<IReadOnlyList<TicketType>> GetByEventIdAsync(Guid eventId, CancellationToken ct = default)
+    {
+        return await _dbSet
+            .AsNoTracking()
+            .Where(tt => tt.EventId == eventId)
+            .ToListAsync(ct);
+    }
 }

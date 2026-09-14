@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Events.Api.Services;
 using Events.Api.DTOs;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Events.Api.Controllers;
 
@@ -10,10 +12,12 @@ namespace Events.Api.Controllers;
 public class EventController : ControllerBase
 {
     private readonly IEventService _eventService;
+    private readonly ICurrentUserService _currentUserService;
 
-    public EventController(IEventService eventService)
+    public EventController(IEventService eventService, ICurrentUserService currentUserService)
     {
         _eventService = eventService;
+        _currentUserService = currentUserService;
     }
 
     [HttpGet("{id:Guid}")]
@@ -56,8 +60,10 @@ public class EventController : ControllerBase
     {
         try
         {
-            var result = await _eventService.CreateAsync(dto, ct);
-            
+            var organizerId = _currentUserService.UserId;
+
+            var result = await _eventService.CreateAsync(dto, organizerId, ct);
+
             return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
         }
         catch (KeyNotFoundException ex)

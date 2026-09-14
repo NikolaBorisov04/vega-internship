@@ -21,6 +21,8 @@ public static class IdentityServicesExtensions
         })
         .AddJwtBearer(options =>
         {
+            // ovo mora da se doda da se token ne bi sam mapirao, ako ostane true uvek controller vraca JWT token does not contain UserID
+            options.MapInboundClaims = false;
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidIssuer = jwtIssuer,

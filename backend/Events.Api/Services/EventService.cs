@@ -34,14 +34,14 @@ public class EventService : IEventService
         var _events = await _eventRepository.GetAllAsync();
         return _events.Select(_responseMapper.MapToResponse).ToList();
     }
-    public async Task<EventResponseDTO> CreateAsync(EventCreateDTO dto, CancellationToken ct = default)
+    public async Task<EventResponseDTO> CreateAsync(EventCreateDTO dto, Guid organizerId, CancellationToken ct = default)
     {
-        var organizerExists = await _eventRepository.OrganizerExistsAsync(dto.OrganizerId, ct);
+        var organizerExists = await _eventRepository.OrganizerExistsAsync(organizerId, ct);
 
         if (!organizerExists)
         {
             throw new KeyNotFoundException(
-                $"Organizer sa ID-jem '{dto.OrganizerId}' ne postoji.");
+                $"Organizer sa ID-jem '{organizerId}' ne postoji.");
         }
 
         var _event = new Event
@@ -55,7 +55,7 @@ public class EventService : IEventService
             VenueName = dto.VenueName,
             StartOfEvent = dto.StartOfEvent,
             EndOfEvent = dto.EndOfEvent,
-            OrganizerId = dto.OrganizerId
+            OrganizerId = organizerId
         };
 
         _eventRepository.Add(_event);

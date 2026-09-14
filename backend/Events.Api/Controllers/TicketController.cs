@@ -10,10 +10,12 @@ namespace Events.Api.Controllers;
 public class TicketController : ControllerBase
 {
     private readonly ITicketService _ticketService;
+    private readonly ICurrentUserService _currentUserService;
 
-    public TicketController(ITicketService ticketService)
+    public TicketController(ITicketService ticketService, ICurrentUserService currentUserService)
     {
         _ticketService = ticketService;
+        _currentUserService = currentUserService;
     }
 
     [HttpGet("{id:Guid}")]
@@ -58,7 +60,9 @@ public class TicketController : ControllerBase
     {
         try
         {
-            var result = await _ticketService.CreateAsync(dto, ct);
+            var customerId = _currentUserService.UserId;
+
+            var result = await _ticketService.CreateAsync(dto, customerId, ct);
             
             return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
         }

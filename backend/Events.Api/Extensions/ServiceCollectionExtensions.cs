@@ -15,9 +15,6 @@ public static class ServiceCollectionExtensions
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is not defined.");
         
-        /*services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseInMemoryDatabase("TestDatabase"));*/
-        
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
 

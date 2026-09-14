@@ -6,6 +6,6 @@ namespace Events.Api.Services
     {
         Task<TicketResponseDTO?> GetByIdAsync(Guid id);
         Task<IEnumerable<TicketResponseDTO>> GetAllAsync();
-        Task<TicketResponseDTO> CreateAsync(TicketCreateDTO ticketCreateDto, CancellationToken ct = default);
+        Task<TicketResponseDTO> CreateAsync(TicketCreateDTO ticketCreateDto, Guid customerId, CancellationToken ct = default);
     }
 }

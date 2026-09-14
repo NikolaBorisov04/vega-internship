@@ -10,6 +10,5 @@ public sealed record EventCreateDTO
     string MainImageURL,
     string? VenueName,
     DateTimeOffset StartOfEvent,
-    DateTimeOffset EndOfEvent,
-    Guid OrganizerId
+    DateTimeOffset EndOfEvent
 );

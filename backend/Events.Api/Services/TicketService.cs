@@ -37,7 +37,7 @@ public class TicketService : ITicketService
         return tickets.Select(_responseMapper.MapToResponse).ToList();
     }
 
-    public async Task<TicketResponseDTO> CreateAsync(TicketCreateDTO dto, CancellationToken ct = default)
+    public async Task<TicketResponseDTO> CreateAsync(TicketCreateDTO dto, Guid customerId, CancellationToken ct = default)
     {
         var ticketTypeExists = await _ticketRepository.TicketTypeExistsAsync(dto.TicketTypeId, ct);
 
@@ -46,11 +46,11 @@ public class TicketService : ITicketService
             throw new KeyNotFoundException($"Tip tiketa sa ID-jem '{dto.TicketTypeId}' ne postoji.");
         }
 
-        var customerExists = await _ticketRepository.CustomerExistsAsync(dto.CustomerId, ct);
+        var customerExists = await _ticketRepository.CustomerExistsAsync(customerId, ct);
 
         if (!customerExists)
         {
-            throw new KeyNotFoundException($"Kupac sa ID-jem '{dto.CustomerId}' ne postoji.");
+            throw new KeyNotFoundException($"Kupac sa ID-jem '{customerId}' ne postoji.");
         }
 
         var ticket = new Ticket
@@ -60,7 +60,7 @@ public class TicketService : ITicketService
             IsUsed = dto.IsUsed,
             UsedAt = dto.UsedAt,
             TicketTypeId = dto.TicketTypeId,
-            CustomerId = dto.CustomerId
+            CustomerId = customerId
         };
 
         _ticketRepository.Add(ticket);
