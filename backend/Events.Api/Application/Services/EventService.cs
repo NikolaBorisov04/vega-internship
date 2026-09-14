@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Events.Api.DTOs;
 using Events.Api.Entities;
-using Events.Api.Extensions;
 using Events.Api.Mappings;
 using Events.Api.IRepositories;
 

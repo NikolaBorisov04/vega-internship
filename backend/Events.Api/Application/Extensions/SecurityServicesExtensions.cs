@@ -1,7 +1,7 @@
 using Events.Api.Security;
 using Events.Api.Services;
 
-namespace Events.Api.Extensions;
+namespace Events.Api.ApplicationExtensions;
 
 public static class SecurityServicesExtensions
 {

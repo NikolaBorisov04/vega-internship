@@ -7,7 +7,7 @@ using Events.Api.Middleware;
 using Events.Api.Repositories;
 using Events.Api.IRepositories;
 
-namespace Events.Api.Extensions;
+namespace Events.Api.InfrastructureExtensions;
 
 public static class ServiceCollectionExtensions
 {

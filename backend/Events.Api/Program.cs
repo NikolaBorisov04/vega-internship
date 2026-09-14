@@ -1,5 +1,7 @@
 using DotNetEnv;
-using Events.Api.Extensions;
+using Events.Api.DomainExtensions;
+using Events.Api.ApplicationExtensions;
+using Events.Api.InfrastructureExtensions;
 using Events.Api.Middleware;
 
 Env.TraversePath().Load();
