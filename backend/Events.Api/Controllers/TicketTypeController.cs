@@ -25,9 +25,7 @@ public class TicketTypeController : ControllerBase
         var ticketType = await _ticketTypeService.GetByIdAsync(id);
 
         if (ticketType == null)
-        {
-            return NotFound(new { message = $"Tip tiketa sa ID-jem {id} nije pronadjen." });
-        }
+            throw new NotFoundException($"Tip tiketa sa ID-jem {id} nije pronadjen.");
 
         return Ok(ticketType);
     }
@@ -40,7 +38,7 @@ public class TicketTypeController : ControllerBase
     {
         var ticketTypes = await _ticketTypeService.GetAllAsync();
         if (!ticketTypes.Any())
-            return NotFound(new { message = "Nema tipova tiketa u bazi." });
+            throw new NotFoundException($"Nijedan tip tiketa nije pronadjen u bazi podataka.");
 
         return Ok(ticketTypes);
     }
@@ -54,12 +52,7 @@ public class TicketTypeController : ControllerBase
         var ticketTypes = await _ticketTypeService.GetByEventIdAsync(eventId, ct);
 
         if (!ticketTypes.Any())
-        {
-            return NotFound(new
-            {
-                message = $"Dogadjaj sa ID-jem {eventId} nema tipove tiketa."
-            });
-        }
+            throw new NotFoundException($"Dogadjaj sa ID-jem {eventId} nema tipove tiketa.");
 
         return Ok(ticketTypes);
     }
