@@ -26,6 +26,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITicketService, TicketService>();
         services.AddScoped<ISponsorService, SponsorService>();
         services.AddScoped<ITicketTypeService, TicketTypeService>();
+        services.AddScoped<IEventSponsorshipService, EventSponsorshipService>();
 
         services.AddScoped<IUnitOfWork>(
             sp => sp.GetRequiredService<ApplicationDbContext>());
@@ -35,6 +36,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITicketRepository, TicketRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITicketTypeRepository, TicketTypeRepository>();
+        services.AddScoped<IEventSponsorshipRepository, EventSponsorshipRepository>();
 
         services.AddControllers(options =>
         {

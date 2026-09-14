@@ -74,4 +74,17 @@ public class ResponseMapper
             ticketType.TicketBackgroundImageUrl
         );
     }
+
+    public EventSponsorshipResponseDTO MapToResponse(EventSponsorship eventSponsorship)
+    {
+        return new EventSponsorshipResponseDTO(
+            eventSponsorship.Id,
+            eventSponsorship.ContributionAmount,
+            eventSponsorship.PaymentStatus,
+            eventSponsorship.EventId,
+            eventSponsorship.SponsorId,
+            eventSponsorship.CreatedAt,
+            eventSponsorship.ModifiedAt
+        );
+    }
 }
