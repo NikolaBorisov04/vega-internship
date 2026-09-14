@@ -5,7 +5,7 @@ public sealed record TicketCreateDTO
     string QRCodeURL,
     int? SeatNumber,
     bool IsUsed,
-    DateTime? UsedAt,
+    DateTimeOffset? UsedAt,
     Guid TicketTypeId,
     Guid CustomerId
 );

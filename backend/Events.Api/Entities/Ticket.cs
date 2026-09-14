@@ -17,7 +17,7 @@ public class Ticket : AuditableEntity
 
     public bool IsUsed { get; set; } = false;
 
-    public DateTime? UsedAt { get; set; }
+    public DateTimeOffset? UsedAt { get; set; }
 
     public Guid TicketTypeId {get; set; }
 

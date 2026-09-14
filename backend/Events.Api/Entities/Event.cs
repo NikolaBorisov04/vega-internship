@@ -35,13 +35,19 @@ public class Event : AuditableEntity
     public string VenueName { get; set; }
 
     [Required]
-    public DateTimeOffset DateAndTimeOfEvent { get; set; }
+    public EventPriority Priority {get; set;} = EventPriority.Standard;
+
+    [Required]
+    public DateTimeOffset StartOfEvent { get; set; }
+
+    [Required]
+    public DateTimeOffset EndOfEvent { get; set; }
 
     public ICollection<TicketType> TicketTypes {get; set;} = new List<TicketType>();
 
     public ICollection<EventSponsorship> Sponsorships { get; set; } = new List<EventSponsorship>();
 
-    public ICollection<string> EventPhotosURL { get; set; } = new List<string>();
+    public ICollection<EventPhoto> EventPhotos { get; set; } = new List<EventPhoto>();
 
     public Guid OrganizerId { get; set; }
 

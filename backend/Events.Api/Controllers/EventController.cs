@@ -39,7 +39,7 @@ public class EventController : ControllerBase
     public async Task<IActionResult> GetAllAsync()
     {
         var events = await _eventService.GetAllAsync();
-        if (events == null)
+        if (!events.Any())
             return NotFound(new { message = "Nema dogadjaja u bazi." });
 
         return Ok(events);

@@ -39,7 +39,7 @@ public class SponsorController : ControllerBase
     public async Task<IActionResult> GetAllAsync()
     {
         var sponsors = await _sponsorService.GetAllAsync();
-        if (sponsors == null)
+        if (!sponsors.Any())
             return NotFound(new { message = "Nema sponzora u bazi." });
 
         return Ok(sponsors);

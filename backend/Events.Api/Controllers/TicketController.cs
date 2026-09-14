@@ -42,7 +42,7 @@ public class TicketController : ControllerBase
     public async Task<IActionResult> GetAllAsync()
     {
         var tickets = await _ticketService.GetAllAsync();
-        if (tickets == null)
+        if (!tickets.Any())
             return NotFound(new { message = "Nema karata u bazi." });
 
         return Ok(tickets);
