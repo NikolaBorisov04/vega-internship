@@ -10,12 +10,14 @@ public class TicketTypeService : ITicketTypeService
     private readonly ITicketTypeRepository _ticketTypeRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ResponseMapper _responseMapper;
+    private readonly ICurrentUserService _currentUserService;
 
-    public TicketTypeService(ITicketTypeRepository ticketTypeRepository, IUnitOfWork unitOfWork, ResponseMapper responseMapper)
+    public TicketTypeService(ITicketTypeRepository ticketTypeRepository, IUnitOfWork unitOfWork, ResponseMapper responseMapper, ICurrentUserService currentUserService)
     {
         _ticketTypeRepository = ticketTypeRepository;
         _unitOfWork = unitOfWork;
         _responseMapper = responseMapper;
+        _currentUserService = currentUserService;
     }
 
     public async Task<TicketTypeResponseDTO> GetByIdAsync(Guid id)
@@ -56,12 +58,19 @@ public class TicketTypeService : ITicketTypeService
 
     public async Task<TicketTypeResponseDTO> CreateAsync(TicketTypeCreateDTO dto, CancellationToken ct = default)
     {
+        var eventOrganizerId =
+            await _ticketTypeRepository.GetEventOrganizerIdAsync(dto.EventId, ct);
 
-        var eventExists = await _ticketTypeRepository.EventExistsAsync(dto.EventId, ct);
-
-        if (!eventExists)
+        if (eventOrganizerId == null)
         {
-            throw new KeyNotFoundException($"Dogadjaj sa ID-jem '{dto.EventId}' ne postoji.");
+            throw new KeyNotFoundException(
+                $"Dogadjaj sa ID-jem '{dto.EventId}' ne postoji.");
+        }
+
+        if (!_currentUserService.IsAdmin && eventOrganizerId != _currentUserService.UserId)
+        {
+            throw new UnauthorizedAccessException(
+                "Nemate dozvolu da kreirate tip tiketa za ovaj dogadjaj.");
         }
 
         var ticketType = new TicketType

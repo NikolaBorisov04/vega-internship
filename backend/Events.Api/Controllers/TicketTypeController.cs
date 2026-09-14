@@ -11,7 +11,7 @@ public class TicketTypeController : ControllerBase
 {
     private readonly ITicketTypeService _ticketTypeService;
 
-    public TicketTypeController(ITicketTypeService ticketTypeService)
+    public TicketTypeController(ITicketTypeService ticketTypeService, ICurrentUserService currentUserService)
     {
         _ticketTypeService = ticketTypeService;
     }
@@ -66,14 +66,18 @@ public class TicketTypeController : ControllerBase
 
     [HttpPost("create")]
     [Authorize(Roles = "Organizer, Admin")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(TicketTypeResponseDTO), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TicketTypeResponseDTO>> Create([FromBody] TicketTypeCreateDTO dto, CancellationToken ct)
     {
         var result = await _ticketTypeService.CreateAsync(dto, ct);
-            
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
+
+        return CreatedAtAction(
+            nameof(GetByIdAsync),
+            new { id = result.Id },
+            result);
     }
 }

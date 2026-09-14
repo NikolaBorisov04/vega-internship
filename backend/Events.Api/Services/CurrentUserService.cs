@@ -40,4 +40,13 @@ public class CurrentUserService : ICurrentUserService
             return userId;
         }
     }
+    public bool IsAdmin
+    {
+        get
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            return user?.IsInRole("Admin") == true;
+        }
+    }
 }
