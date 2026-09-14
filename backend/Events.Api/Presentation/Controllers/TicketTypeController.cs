@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Events.Api.Services;
 using Events.Api.DTOs;
+using Events.Api.Exceptions;
 
 namespace Events.Api.Controllers;
 
@@ -25,7 +26,7 @@ public class TicketTypeController : ControllerBase
         var ticketType = await _ticketTypeService.GetByIdAsync(id);
 
         if (ticketType == null)
-            throw new NotFoundException($"Tip tiketa sa ID-jem {id} nije pronadjen.");
+            throw new TicketTypeNotFoundException(id);
 
         return Ok(ticketType);
     }
@@ -38,7 +39,7 @@ public class TicketTypeController : ControllerBase
     {
         var ticketTypes = await _ticketTypeService.GetAllAsync();
         if (!ticketTypes.Any())
-            throw new NotFoundException($"Nijedan tip tiketa nije pronadjen u bazi podataka.");
+            return NotFound(new { message = "Nema tipova tiketa u bazi." });
 
         return Ok(ticketTypes);
     }
@@ -52,7 +53,7 @@ public class TicketTypeController : ControllerBase
         var ticketTypes = await _ticketTypeService.GetByEventIdAsync(eventId, ct);
 
         if (!ticketTypes.Any())
-            throw new NotFoundException($"Dogadjaj sa ID-jem {eventId} nema tipove tiketa.");
+            return NotFound(new { message = $"Dogadjaj sa ID-jem {eventId} nema tipove tiketa."});
 
         return Ok(ticketTypes);
     }

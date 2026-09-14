@@ -4,6 +4,7 @@ using Events.Api.Services;
 using Events.Api.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Events.Api.Exceptions;
 
 namespace Events.Api.Controllers;
 
@@ -29,9 +30,7 @@ public class EventController : ControllerBase
         var eventItem = await _eventService.GetByIdAsync(id);
 
         if (eventItem == null)
-        {
-            return NotFound(new { message = $"Dogadjaj sa ID-jem {id} nije pronadjen." });
-        }
+            throw new EventNotFoundException(id);
 
         return Ok(eventItem);
     }
