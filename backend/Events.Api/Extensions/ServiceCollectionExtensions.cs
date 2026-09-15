@@ -1,10 +1,11 @@
 using Microsoft.OpenApi;
 using Microsoft.EntityFrameworkCore;
-using Events.Api.Data;
-using Events.Api.Services;
-using Events.Api.Mappings;
+using Events.Infrastructure.Persistence.Data;
+using Events.Application.Services;
+using Events.Application.Mappers;
 using Events.Api.Middleware;
-using Events.Api.Repositories;
+using Events.Infrastructure.Persistence.Repositories;
+using Events.Application.Repositories;
 
 namespace Events.Api.Extensions;
 
@@ -14,9 +15,6 @@ public static class ServiceCollectionExtensions
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is not defined.");
-        
-        /*services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseInMemoryDatabase("TestDatabase"));*/
         
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
@@ -28,6 +26,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITicketService, TicketService>();
         services.AddScoped<ISponsorService, SponsorService>();
         services.AddScoped<ITicketTypeService, TicketTypeService>();
+        services.AddScoped<IEventSponsorshipService, EventSponsorshipService>();
+        services.AddScoped<IEventPhotoService, EventPhotoService>();
 
         services.AddScoped<IUnitOfWork>(
             sp => sp.GetRequiredService<ApplicationDbContext>());
@@ -37,6 +37,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITicketRepository, TicketRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITicketTypeRepository, TicketTypeRepository>();
+        services.AddScoped<IEventSponsorshipRepository, EventSponsorshipRepository>();
+        services.AddScoped<IEventPhotoRepository, EventPhotoRepository>();
 
         services.AddControllers(options =>
         {

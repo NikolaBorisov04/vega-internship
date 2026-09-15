@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Api.Services;
-using Events.Api.DTOs;
+using Events.Application.Services;
+using Events.Application.DTOs;
 
 namespace Events.Api.Controllers;
 
@@ -26,7 +26,7 @@ public class SponsorController : ControllerBase
 
         if (sponsor == null)
         {
-            return NotFound(new { message = $"Sponzor sa ID-jem {id} nije pronadjena." });
+            return NotFound(new { message = $"Sponzor sa ID-jem {id} nije pronadjen." });
         }
 
         return Ok(sponsor);
