@@ -53,7 +53,7 @@ public class TicketTypeController : ControllerBase
         var ticketTypes = await _ticketTypeService.GetByEventIdAsync(eventId, ct);
 
         if (!ticketTypes.Any())
-            return NotFound(new { message = $"Dogadjaj sa ID-jem {eventId} nema tipove tiketa."});
+            throw new NoTicketTypesForEventIdException(eventId);
 
         return Ok(ticketTypes);
     }
