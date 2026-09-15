@@ -1,4 +1,4 @@
-namespace Events.Api.Middleware;
+namespace Events.Api.Presentation.Middleware;
 
 public class LoggingMiddleware
 {

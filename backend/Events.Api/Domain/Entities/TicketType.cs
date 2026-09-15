@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Events.Api.Entities;
+namespace Events.Api.Domain.Entities;
 
 [Table("TicketTypes")]
 public class TicketType : AuditableEntity

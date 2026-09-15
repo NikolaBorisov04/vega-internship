@@ -1,4 +1,4 @@
-namespace Events.Api.Services;
+namespace Events.Api.Application.Services;
 
 public interface ICurrentUserService
 {

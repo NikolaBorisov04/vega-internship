@@ -1,13 +1,13 @@
 using Microsoft.OpenApi;
 using Microsoft.EntityFrameworkCore;
-using Events.Api.Data;
-using Events.Api.Services;
-using Events.Api.Mappings;
-using Events.Api.Middleware;
-using Events.Api.Repositories;
-using Events.Api.IRepositories;
+using Events.Api.Infrastructure.Persistence.Data;
+using Events.Api.Application.Services;
+using Events.Api.Application.Mappers;
+using Events.Api.Presentation.Middleware;
+using Events.Api.Infrastructure.Persistence.Repositories;
+using Events.Api.Application.Repositories;
 
-namespace Events.Api.InfrastructureExtensions;
+namespace Events.Api.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {

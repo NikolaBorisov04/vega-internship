@@ -1,6 +1,6 @@
-using Events.Api.Entities;
+using Events.Api.Domain.Entities;
 
-namespace Events.Api.IRepositories;
+namespace Events.Api.Application.Repositories;
 
 public interface ITicketTypeRepository : IRepository<TicketType>
 {

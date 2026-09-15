@@ -2,9 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using Events.Api.DTOs;
+using Events.Api.Application.DTOs;
 
-namespace Events.Api.Services;
+namespace Events.Api.Application.Services;
 
 public class TokenService : ITokenService
 {

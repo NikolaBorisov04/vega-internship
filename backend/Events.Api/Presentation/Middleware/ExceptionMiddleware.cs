@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Events.Api.Middleware;
+namespace Events.Api.Presentation.Middleware;
 
 public class ExceptionMiddleware : IExceptionHandler
 {

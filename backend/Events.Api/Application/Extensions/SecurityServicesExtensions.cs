@@ -1,7 +1,7 @@
-using Events.Api.Security;
-using Events.Api.Services;
+using Events.Api.Domain.Security;
+using Events.Api.Application.Services;
 
-namespace Events.Api.ApplicationExtensions;
+namespace Events.Api.Application.Extensions;
 
 public static class SecurityServicesExtensions
 {

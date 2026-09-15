@@ -1,4 +1,4 @@
-namespace Events.Api.Exceptions;
+namespace Events.Api.Domain.Exceptions;
 
 public class EventNotFoundException : KeyNotFoundException
 {

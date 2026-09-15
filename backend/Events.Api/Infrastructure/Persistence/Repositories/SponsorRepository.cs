@@ -1,8 +1,8 @@
-using Events.Api.Data;
-using Events.Api.Entities;
-using Events.Api.IRepositories;
+using Events.Api.Infrastructure.Persistence.Data;
+using Events.Api.Domain.Entities;
+using Events.Api.Application.Repositories;
 
-namespace Events.Api.Repositories;
+namespace Events.Api.Infrastructure.Persistence.Repositories;
 
 public class SponsorRepository : Repository<Sponsor>, ISponsorRepository
 {

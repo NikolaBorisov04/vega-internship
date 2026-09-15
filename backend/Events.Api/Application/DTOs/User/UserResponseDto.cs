@@ -1,6 +1,4 @@
-using Events.Api.Entities;
-
-namespace Events.Api.DTOs;
+namespace Events.Api.Application.DTOs;
 
 public sealed record UserResponseDTO(
     Guid Id,

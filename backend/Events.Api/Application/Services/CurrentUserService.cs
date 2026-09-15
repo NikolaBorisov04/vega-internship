@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
-namespace Events.Api.Services;
+namespace Events.Api.Application.Services;
 
 public class CurrentUserService : ICurrentUserService
 {

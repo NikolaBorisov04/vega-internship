@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Events.Api.Entities;
-using Events.Api.IRepositories;
+using Events.Api.Domain.Entities;
+using Events.Api.Application.Repositories;
 
-namespace Events.Api.Data;
+namespace Events.Api.Infrastructure.Persistence.Data;
 
 public class ApplicationDbContext : DbContext, IUnitOfWork
 {

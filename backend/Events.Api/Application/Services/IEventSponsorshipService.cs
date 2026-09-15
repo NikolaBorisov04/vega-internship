@@ -1,6 +1,6 @@
-using Events.Api.DTOs;
+using Events.Api.Application.DTOs;
 
-namespace Events.Api.Services
+namespace Events.Api.Application.Services
 {
     public interface IEventSponsorshipService
     {

@@ -1,9 +1,9 @@
-using Events.Api.DTOs;
-using Events.Api.Entities;
-using Events.Api.Mappings;
-using Events.Api.IRepositories;
+using Events.Api.Application.DTOs;
+using Events.Api.Domain.Entities;
+using Events.Api.Application.Mappers;
+using Events.Api.Application.Repositories;
 
-namespace Events.Api.Services;
+namespace Events.Api.Application.Services;
 
 public class SponsorService : ISponsorService
 {

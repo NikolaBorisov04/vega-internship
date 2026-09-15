@@ -1,4 +1,4 @@
-namespace Events.Api.IRepositories;
+namespace Events.Api.Application.Repositories;
 
 public interface IUnitOfWork
 {

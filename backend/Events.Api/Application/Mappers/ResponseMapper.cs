@@ -1,7 +1,7 @@
-using Events.Api.DTOs;
-using Events.Api.Entities;
+using Events.Api.Application.DTOs;
+using Events.Api.Domain.Entities;
 
-namespace Events.Api.Mappings;
+namespace Events.Api.Application.Mappers;
 
 public class ResponseMapper
 {

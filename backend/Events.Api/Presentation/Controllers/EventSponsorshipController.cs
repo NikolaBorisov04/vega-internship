@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Api.Services;
-using Events.Api.DTOs;
+using Events.Api.Application.Services;
+using Events.Api.Application.DTOs;
 
-namespace Events.Api.Controllers;
+namespace Events.Api.Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

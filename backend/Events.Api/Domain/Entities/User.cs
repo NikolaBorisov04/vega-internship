@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Events.Api.Entities;
+namespace Events.Api.Domain.Entities;
 
 [Table("Users")]
 [Index(nameof(Email), IsUnique = true)]

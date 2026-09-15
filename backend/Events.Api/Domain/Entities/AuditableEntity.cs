@@ -1,4 +1,4 @@
-namespace Events.Api.Entities;
+namespace Events.Api.Domain.Entities;
 
 public abstract class AuditableEntity
 {

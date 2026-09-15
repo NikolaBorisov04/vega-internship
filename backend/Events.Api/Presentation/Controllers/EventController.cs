@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Api.Services;
-using Events.Api.DTOs;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Events.Api.Exceptions;
+using Events.Api.Application.Services;
+using Events.Api.Application.DTOs;
+using Events.Api.Domain.Exceptions;
 
-namespace Events.Api.Controllers;
+namespace Events.Api.Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

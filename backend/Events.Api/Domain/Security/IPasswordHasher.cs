@@ -1,4 +1,4 @@
-namespace Events.Api.Security;
+namespace Events.Api.Domain.Security;
 
 public interface IPasswordHasher
 {

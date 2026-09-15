@@ -1,4 +1,4 @@
-namespace Events.Api.DTOs;
+namespace Events.Api.Application.DTOs;
 
 public sealed record TicketTypeResponseDTO
 (
