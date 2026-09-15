@@ -7,8 +7,8 @@ Env.TraversePath().Load();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddSecurityServices();
 builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddSecurityServices();
 
 var app = builder.Build();
 

@@ -1,5 +1,7 @@
+using Events.Application.Security;
 using Events.Api.Security;
-using Events.Api.Services;
+using Events.Application.Services;
+using Events.Infrastructure.Services;
 
 namespace Events.Api.Extensions;
 
@@ -7,6 +9,8 @@ public static class SecurityServicesExtensions
 {
     public static IServiceCollection AddSecurityServices(this IServiceCollection services)
     {
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ITokenService, TokenService>();
 

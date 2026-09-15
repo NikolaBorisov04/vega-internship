@@ -1,3 +1,5 @@
+using Events.Application.Security;
+
 namespace Events.Api.Security;
 
 public class PasswordHasher : IPasswordHasher

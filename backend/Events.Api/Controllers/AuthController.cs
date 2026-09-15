@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Api.Services;
-using Events.Api.DTOs;
+using Events.Application.Services;
+using Events.Application.DTOs;
 
 namespace Events.Api.Controllers;
 

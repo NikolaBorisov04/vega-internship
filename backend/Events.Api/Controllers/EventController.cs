@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Api.Services;
-using Events.Api.DTOs;
+using Events.Application.Services;
+using Events.Application.DTOs;
+using Events.Domain.Exceptions;
 
 namespace Events.Api.Controllers;
 
@@ -10,10 +11,12 @@ namespace Events.Api.Controllers;
 public class EventController : ControllerBase
 {
     private readonly IEventService _eventService;
+    private readonly ICurrentUserService _currentUserService;
 
-    public EventController(IEventService eventService)
+    public EventController(IEventService eventService, ICurrentUserService currentUserService)
     {
         _eventService = eventService;
+        _currentUserService = currentUserService;
     }
 
     [HttpGet("{id:Guid}")]
@@ -25,9 +28,7 @@ public class EventController : ControllerBase
         var eventItem = await _eventService.GetByIdAsync(id);
 
         if (eventItem == null)
-        {
-            return NotFound(new { message = $"Dogadjaj sa ID-jem {id} nije pronadjen." });
-        }
+            throw new EventNotFoundException(id);
 
         return Ok(eventItem);
     }
@@ -56,8 +57,10 @@ public class EventController : ControllerBase
     {
         try
         {
-            var result = await _eventService.CreateAsync(dto, ct);
-            
+            var organizerId = _currentUserService.UserId;
+
+            var result = await _eventService.CreateAsync(dto, organizerId, ct);
+
             return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
         }
         catch (KeyNotFoundException ex)
