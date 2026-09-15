@@ -1,6 +1,7 @@
 using Events.Application.Security;
 using Events.Api.Security;
 using Events.Application.Services;
+using Events.Infrastructure.Services;
 
 namespace Events.Api.Extensions;
 

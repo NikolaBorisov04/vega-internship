@@ -1,7 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Http;
+using Events.Application.Services;
 
-namespace Events.Application.Services;
+namespace Events.Infrastructure.Services;
 
 public class CurrentUserService : ICurrentUserService
 {

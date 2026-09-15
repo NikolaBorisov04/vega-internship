@@ -3,8 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Events.Application.DTOs;
+using Events.Application.Services;
 
-namespace Events.Application.Services;
+namespace Events.Infrastructure.Services;
 
 public class TokenService : ITokenService
 {
