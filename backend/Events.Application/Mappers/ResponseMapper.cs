@@ -88,4 +88,16 @@ public class ResponseMapper
             eventSponsorship.ModifiedAt
         );
     }
+
+    public EventPhotoResponseDTO MapToResponse(EventPhoto eventPhoto)
+    {
+        return new EventPhotoResponseDTO(
+            eventPhoto.Id,
+            eventPhoto.Url,
+            eventPhoto.Caption,
+            eventPhoto.EventId,
+            eventPhoto.CreatedAt,
+            eventPhoto.ModifiedAt
+        );
+    }
 }

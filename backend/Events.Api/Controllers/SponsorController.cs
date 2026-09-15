@@ -26,7 +26,7 @@ public class SponsorController : ControllerBase
 
         if (sponsor == null)
         {
-            return NotFound(new { message = $"Sponzor sa ID-jem {id} nije pronadjena." });
+            return NotFound(new { message = $"Sponzor sa ID-jem {id} nije pronadjen." });
         }
 
         return Ok(sponsor);
