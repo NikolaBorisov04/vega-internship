@@ -7,6 +7,10 @@ using Events.Api.Middleware;
 using Events.Infrastructure.Persistence.Repositories;
 using Events.Application.Repositories;
 using Events.Application;
+using FluentValidation;
+using MediatR;
+using Events.Application.Behaviors;
+using Events.Application.Validators;
 
 namespace Events.Api.Extensions;
 
@@ -43,6 +47,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEventPhotoRepository, EventPhotoRepository>();
 
         services.AddApplication();
+
+        services.AddValidatorsFromAssembly(typeof(CreateEventCommandValidator).Assembly);
+
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         services.AddControllers(options =>
         {
