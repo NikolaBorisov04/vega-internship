@@ -6,6 +6,7 @@ using Events.Application.Mappers;
 using Events.Api.Middleware;
 using Events.Infrastructure.Persistence.Repositories;
 using Events.Application.Repositories;
+using Events.Application;
 
 namespace Events.Api.Extensions;
 
@@ -20,6 +21,7 @@ public static class ServiceCollectionExtensions
             options.UseNpgsql(connectionString));
 
         services.AddSingleton<ResponseMapper>();
+        services.AddSingleton<CommandMapper>();
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEventService, EventService>();
@@ -39,6 +41,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITicketTypeRepository, TicketTypeRepository>();
         services.AddScoped<IEventSponsorshipRepository, EventSponsorshipRepository>();
         services.AddScoped<IEventPhotoRepository, EventPhotoRepository>();
+
+        services.AddApplication();
 
         services.AddControllers(options =>
         {

@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Application.Services;
 using Events.Application.DTOs;
-using Events.Domain.Exceptions;
+using Events.Application.Queries;
+using Events.Application.Mappers;
+using MediatR;
 
 namespace Events.Api.Controllers;
 
@@ -10,40 +11,40 @@ namespace Events.Api.Controllers;
 [Route("api/[controller]")]
 public class EventController : ControllerBase
 {
-    private readonly IEventService _eventService;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly ISender _sender;
+    private readonly CommandMapper _commandMapper;
 
-    public EventController(IEventService eventService, ICurrentUserService currentUserService)
+    public EventController(
+        ISender sender,
+        CommandMapper commandMapper)
     {
-        _eventService = eventService;
-        _currentUserService = currentUserService;
+        _sender = sender;
+        _commandMapper = commandMapper;
     }
 
     [HttpGet("{id:Guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(EventResponseDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetByIdAsync(Guid id)
+    public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken ct)
     {
-        var eventItem = await _eventService.GetByIdAsync(id);
+        var query = new GetEventByIdQuery(id);
+        var result = await _sender.Send(query, ct);
 
-        if (eventItem == null)
-            throw new EventNotFoundException(id);
-
-        return Ok(eventItem);
+        return Ok(result);
     }
 
     [HttpGet("all")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<EventResponseDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync(CancellationToken ct = default)
     {
-        var events = await _eventService.GetAllAsync();
-        if (!events.Any())
-            return NotFound(new { message = "Nema dogadjaja u bazi." });
+        var query = new GetEventsQuery();
 
-        return Ok(events);
+        var result = await _sender.Send(query, ct);
+
+        return Ok(result);
     }
     
     [HttpPost("create")]
@@ -55,20 +56,11 @@ public class EventController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<EventResponseDTO>> Create([FromBody] EventCreateDTO dto, CancellationToken ct)
     {
-        try
-        {
-            var organizerId = _currentUserService.UserId;
+        var command = _commandMapper.MapToCommand(dto);
+        var result = await _sender.Send(command, ct);
+        if(result is null)
+            throw new ArgumentException("Zahtev za kreiranje dogadjaja nije uspesan.");
 
-            var result = await _eventService.CreateAsync(dto, organizerId, ct);
-
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(new
-            {
-                message = ex.Message
-            });
-        }
+        return Ok(result);
     }
 }
