@@ -6,10 +6,7 @@ using Events.Application.Mappers;
 using Events.Api.Middleware;
 using Events.Infrastructure.Persistence.Repositories;
 using Events.Application.Repositories;
-using Events.Application.Messaging;
-using Events.Application.Commands;
-using Events.Application.Queries;
-using Events.Application.DTOs;
+using Events.Application;
 
 namespace Events.Api.Extensions;
 
@@ -45,13 +42,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEventSponsorshipRepository, EventSponsorshipRepository>();
         services.AddScoped<IEventPhotoRepository, EventPhotoRepository>();
 
-        services.AddScoped<ICommandDispatcher, CommandDispatcher>();
-        services.AddScoped<IQueryDispatcher, QueryDispatcher>();
-
-        services.AddScoped<ICommandHandler<CreateEventCommand, EventResponseDTO>, CreateEventCommandHandler>();
-
-        services.AddScoped<IQueryHandler<GetEventByIdQuery, EventResponseDTO>, GetEventByIdQueryHandler>();
-        services.AddScoped<IQueryHandler<GetEventsQuery, List<EventResponseDTO>>, GetEventsQueryHandler>();
+        services.AddApplication();
 
         services.AddControllers(options =>
         {

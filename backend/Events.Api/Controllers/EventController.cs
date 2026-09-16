@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Application.Services;
 using Events.Application.DTOs;
-using Events.Domain.Exceptions;
-using Events.Application.Messaging;
-using Events.Application.Commands;
 using Events.Application.Queries;
 using Events.Application.Mappers;
+using MediatR;
 
 namespace Events.Api.Controllers;
 
@@ -14,17 +11,14 @@ namespace Events.Api.Controllers;
 [Route("api/[controller]")]
 public class EventController : ControllerBase
 {
-    private readonly ICommandDispatcher _commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher;
+    private readonly IMediator _mediator;
     private readonly CQMapper _cqMapper;
 
     public EventController(
-        ICommandDispatcher commandDispatcher,
-        IQueryDispatcher queryDispatcher,
+        IMediator mediator,
         CQMapper cqMapper)
     {
-        _commandDispatcher = commandDispatcher;
-        _queryDispatcher = queryDispatcher;
+        _mediator = mediator;
         _cqMapper = cqMapper;
     }
 
@@ -35,12 +29,9 @@ public class EventController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken ct)
     {
         var query = new GetEventByIdQuery(id);
-        var result = await _queryDispatcher.Send<GetEventByIdQuery, EventResponseDTO>(query, ct);
+        var result = await _mediator.Send(query, ct);
 
-        if(!result.IsSuccess)
-            throw new EventNotFoundException(id);
-
-        return Ok(result.Value);
+        return Ok(result);
     }
 
     [HttpGet("all")]
@@ -51,12 +42,9 @@ public class EventController : ControllerBase
     {
         var query = new GetEventsQuery();
 
-        var result = await _queryDispatcher.Send<GetEventsQuery, List<EventResponseDTO>>(query, ct);
+        var result = await _mediator.Send(query, ct);
 
-        if(!result.IsSuccess)
-            throw new EventsNotFoundException();
-
-        return Ok(result.Value);
+        return Ok(result);
     }
     
     [HttpPost("create")]
@@ -69,10 +57,10 @@ public class EventController : ControllerBase
     public async Task<ActionResult<EventResponseDTO>> Create([FromBody] EventCreateDTO dto, CancellationToken ct)
     {
         var command = _cqMapper.MapToCommand(dto);
-        var result = await _commandDispatcher.Send<CreateEventCommand, EventResponseDTO>(command, ct);
-        if(!result.IsSuccess)
-            return BadRequest(result.Error);
+        var result = await _mediator.Send(command, ct);
+        if(result is null)
+            throw new ArgumentException("Zahtev za kreiranje dogadjaja nije uspesan.");
 
-        return Ok(result.Value);
+        return Ok(result);
     }
 }

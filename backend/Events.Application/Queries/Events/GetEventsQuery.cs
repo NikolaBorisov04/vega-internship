@@ -1,6 +1,6 @@
 using Events.Application.DTOs;
-using Events.Application.Messaging;
+using MediatR;
 
 namespace Events.Application.Queries;
 
-public record GetEventsQuery : IQuery<List<EventResponseDTO>>;
+public record GetEventsQuery : IRequest<List<EventResponseDTO>>;

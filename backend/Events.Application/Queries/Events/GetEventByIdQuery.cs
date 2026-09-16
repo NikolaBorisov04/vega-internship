@@ -1,6 +1,6 @@
 using Events.Application.DTOs;
-using Events.Application.Messaging;
+using MediatR;
 
 namespace Events.Application.Queries;
 
-public sealed record GetEventByIdQuery(Guid EventId) : IQuery<EventResponseDTO>;
+public sealed record GetEventByIdQuery(Guid Id) : IRequest<EventResponseDTO>;

@@ -1,5 +1,5 @@
 using Events.Application.DTOs;
-using Events.Application.Messaging;
+using MediatR;
 
 namespace Events.Application.Commands;
 
@@ -13,4 +13,4 @@ public sealed record CreateEventCommand(
     string? VenueName,
     DateTimeOffset StartOfEvent,
     DateTimeOffset EndOfEvent
-) : ICommand<EventResponseDTO>;
+) : IRequest<EventResponseDTO>;

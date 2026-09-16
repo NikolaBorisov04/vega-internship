@@ -1,10 +1,11 @@
 using Events.Application.DTOs;
 using Events.Application.Repositories;
-using Events.Application.Messaging;
 using Events.Application.Mappers;
+using MediatR;
+using Events.Domain.Exceptions;
 
 namespace Events.Application.Queries;
-public sealed class GetEventByIdQueryHandler : IQueryHandler<GetEventByIdQuery, EventResponseDTO>
+public sealed class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery, EventResponseDTO>
 {
     private readonly IEventRepository _eventRepository;
     private readonly ResponseMapper _responseMapper;
@@ -15,23 +16,20 @@ public sealed class GetEventByIdQueryHandler : IQueryHandler<GetEventByIdQuery, 
         _responseMapper = responseMapper;
     }
 
-    public async Task<Result<EventResponseDTO>> Handle(
+    public async Task<EventResponseDTO> Handle(
         GetEventByIdQuery query,
         CancellationToken ct)
     {
         var eventEntity =
             await _eventRepository.GetByIdAsync(
-                query.EventId,
+                query.Id,
                 ct);
 
         if (eventEntity is null)
         {
-            return Result<EventResponseDTO>.Failure(
-                "Event not found.");
+            throw new EventNotFoundException(query.Id);
         }
 
-        var response = _responseMapper.MapToResponse(eventEntity);
-
-        return Result<EventResponseDTO>.Success(response);
+        return _responseMapper.MapToResponse(eventEntity);
     }
 }
