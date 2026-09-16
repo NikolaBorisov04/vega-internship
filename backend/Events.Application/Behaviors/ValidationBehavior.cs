@@ -7,8 +7,7 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-    public ValidationBehavior(
-        IEnumerable<IValidator<TRequest>> validators)
+    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
     {
         _validators = validators;
     }
@@ -20,7 +19,7 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
     {
         if (!_validators.Any())
         {
-            return await next();
+            return await next(ct);
         }
 
         var context = new ValidationContext<TRequest>(request);

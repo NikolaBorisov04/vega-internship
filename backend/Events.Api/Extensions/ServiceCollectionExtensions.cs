@@ -10,7 +10,6 @@ using Events.Application;
 using FluentValidation;
 using MediatR;
 using Events.Application.Behaviors;
-using Events.Application.Validators;
 
 namespace Events.Api.Extensions;
 
@@ -48,7 +47,7 @@ public static class ServiceCollectionExtensions
 
         services.AddApplication();
 
-        services.AddValidatorsFromAssembly(typeof(CreateEventCommandValidator).Assembly);
+        services.AddValidatorsFromAssembly(typeof(ApplicationAssemblyMarker).Assembly);
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
