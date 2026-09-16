@@ -12,14 +12,14 @@ namespace Events.Api.Controllers;
 public class EventController : ControllerBase
 {
     private readonly ISender _sender;
-    private readonly CQMapper _cqMapper;
+    private readonly CommandMapper _commandMapper;
 
     public EventController(
         ISender sender,
-        CQMapper cqMapper)
+        CommandMapper commandMapper)
     {
         _sender = sender;
-        _cqMapper = cqMapper;
+        _commandMapper = commandMapper;
     }
 
     [HttpGet("{id:Guid}")]
@@ -56,7 +56,7 @@ public class EventController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<EventResponseDTO>> Create([FromBody] EventCreateDTO dto, CancellationToken ct)
     {
-        var command = _cqMapper.MapToCommand(dto);
+        var command = _commandMapper.MapToCommand(dto);
         var result = await _sender.Send(command, ct);
         if(result is null)
             throw new ArgumentException("Zahtev za kreiranje dogadjaja nije uspesan.");

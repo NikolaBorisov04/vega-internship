@@ -4,6 +4,7 @@ using Events.Application.Services;
 using Events.Application.DTOs;
 using MediatR;
 using Events.Application.Queries;
+using Events.Application.Mappers;
 
 namespace Events.Api.Controllers;
 
@@ -12,12 +13,12 @@ namespace Events.Api.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ISender _sender;
-    private readonly IUserService _userService;
+    private readonly CommandMapper _commandMapper;
 
-    public UserController(IUserService userService, ISender sender)
+    public UserController(ISender sender, CommandMapper commandMapper)
     {
-        _userService = userService;
         _sender = sender;
+        _commandMapper = commandMapper;
     }
 
     [HttpGet("{id:Guid}")]
@@ -40,11 +41,10 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync(CancellationToken ct)
     {
-        var users = await _userService.GetAllAsync();
-        if (!users.Any())
-            return NotFound(new { message = "Nema korisnika u bazi." });
+        var query = new GetUsersQuery();
+        var users = await _sender.Send(query, ct);
 
         return Ok(users);
     }
@@ -55,8 +55,10 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<UserResponseDTO>> RegisterCustomer([FromBody] RegisterCustomerDTO dto, CancellationToken ct)
     {
-        var result = await _userService.RegisterCustomerAsync(dto, ct);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
+        var command = _commandMapper.MapToCommand(dto);
+        var user = await _sender.Send(command, ct);
+
+        return Ok(user);
     }
 
     [HttpPost("register/organizer")]
@@ -65,20 +67,23 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<UserResponseDTO>> RegisterOrganizer([FromBody] RegisterOrganizerDTO dto, CancellationToken ct)
     {
-        var result = await _userService.RegisterOrganizerAsync(dto, ct);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
+        var command = _commandMapper.MapToCommand(dto);
+        var user = await _sender.Send(command, ct);
+
+        return Ok(user);
     }
 
     [HttpPost("register/admin")]
-    //[Authorize(Roles = "Admin")] ovo sam ostavio ovako jer je lakse za testiranje
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<UserResponseDTO>> RegisterAdmin([FromBody] RegisterAdminDTO dto, CancellationToken ct)
     {
-        var result = await _userService.RegisterAdminAsync(dto, ct);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
+        var command = _commandMapper.MapToCommand(dto);
+        var user = await _sender.Send(command, ct);
+
+        return Ok(user);
     }
 }

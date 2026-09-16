@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
             options.UseNpgsql(connectionString));
 
         services.AddSingleton<ResponseMapper>();
-        services.AddSingleton<CQMapper>();
+        services.AddSingleton<CommandMapper>();
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEventService, EventService>();
