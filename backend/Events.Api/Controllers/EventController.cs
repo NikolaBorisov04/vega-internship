@@ -11,14 +11,14 @@ namespace Events.Api.Controllers;
 [Route("api/[controller]")]
 public class EventController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
     private readonly CQMapper _cqMapper;
 
     public EventController(
-        IMediator mediator,
+        ISender sender,
         CQMapper cqMapper)
     {
-        _mediator = mediator;
+        _sender = sender;
         _cqMapper = cqMapper;
     }
 
@@ -29,7 +29,7 @@ public class EventController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken ct)
     {
         var query = new GetEventByIdQuery(id);
-        var result = await _mediator.Send(query, ct);
+        var result = await _sender.Send(query, ct);
 
         return Ok(result);
     }
@@ -42,7 +42,7 @@ public class EventController : ControllerBase
     {
         var query = new GetEventsQuery();
 
-        var result = await _mediator.Send(query, ct);
+        var result = await _sender.Send(query, ct);
 
         return Ok(result);
     }
@@ -57,7 +57,7 @@ public class EventController : ControllerBase
     public async Task<ActionResult<EventResponseDTO>> Create([FromBody] EventCreateDTO dto, CancellationToken ct)
     {
         var command = _cqMapper.MapToCommand(dto);
-        var result = await _mediator.Send(command, ct);
+        var result = await _sender.Send(command, ct);
         if(result is null)
             throw new ArgumentException("Zahtev za kreiranje dogadjaja nije uspesan.");
 

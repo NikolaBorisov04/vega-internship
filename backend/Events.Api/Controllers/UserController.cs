@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Events.Application.Services;
 using Events.Application.DTOs;
+using MediatR;
+using Events.Application.Queries;
 
 namespace Events.Api.Controllers;
 
@@ -9,11 +11,13 @@ namespace Events.Api.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
+    private readonly ISender _sender;
     private readonly IUserService _userService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, ISender sender)
     {
         _userService = userService;
+        _sender = sender;
     }
 
     [HttpGet("{id:Guid}")]
@@ -22,14 +26,10 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetByIdAsync(Guid id)
+    public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken ct)
     {
-        var user = await _userService.GetByIdAsync(id);
-
-        if (user == null)
-        {
-            return NotFound(new { message = $"Korisnik sa ID-jem {id} nije pronadjen." });
-        }
+        var query = new GetUserByIdQuery(id);
+        var user = await _sender.Send(query, ct);
 
         return Ok(user);
     }

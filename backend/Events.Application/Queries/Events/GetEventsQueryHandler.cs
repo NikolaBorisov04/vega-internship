@@ -6,7 +6,7 @@ using Events.Domain.Exceptions;
 
 namespace Events.Application.Queries;
 
-public class GetEventsQueryHandler : IRequestHandler<GetEventsQuery, List<EventResponseDTO>>
+public sealed class GetEventsQueryHandler : IRequestHandler<GetEventsQuery, List<EventResponseDTO>>
 {
     private readonly IEventRepository _eventRepository;
     private readonly ResponseMapper _responseMapper;
