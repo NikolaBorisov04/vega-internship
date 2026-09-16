@@ -3,14 +3,4 @@ using MediatR;
 
 namespace Events.Application.Commands;
 
-public sealed record CreateEventCommand(
-    string Title,
-    string Description,
-    string Country,
-    string City,
-    string Address,
-    string MainImageURL,
-    string? VenueName,
-    DateTimeOffset StartOfEvent,
-    DateTimeOffset EndOfEvent
-) : IRequest<EventResponseDTO>;
+public sealed record CreateEventCommand(EventCreateDTO dto) : IRequest<EventResponseDTO>;

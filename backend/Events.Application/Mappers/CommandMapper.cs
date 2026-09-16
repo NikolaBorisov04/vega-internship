@@ -8,17 +8,7 @@ public class CommandMapper
 {
     public CreateEventCommand MapToCommand(EventCreateDTO dto)
     {
-        return new CreateEventCommand(
-            dto.Title,
-            dto.Description,
-            dto.Country,
-            dto.City,
-            dto.Address,
-            dto.MainImageURL,
-            dto.VenueName,
-            dto.StartOfEvent,
-            dto.EndOfEvent
-        );
+        return new CreateEventCommand(dto);
     }
     public CreateUserCommand MapToCommand(RegisterCustomerDTO dto)
     {

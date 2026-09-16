@@ -31,15 +31,15 @@ public sealed class CreateEventCommandHandler : IRequestHandler<CreateEventComma
 
         var newEvent = new Event
         {
-            Title = command.Title,
-            Description = command.Description,
-            Country = command.Country,
-            City = command.City,
-            Address = command.Address,
-            MainImageURL = command.MainImageURL,
-            VenueName = command.VenueName,
-            StartOfEvent = command.StartOfEvent,
-            EndOfEvent = command.EndOfEvent,
+            Title = command.dto.Title,
+            Description = command.dto.Description,
+            Country = command.dto.Country,
+            City = command.dto.City,
+            Address = command.dto.Address,
+            MainImageURL = command.dto.MainImageURL,
+            VenueName = command.dto.VenueName,
+            StartOfEvent = command.dto.StartOfEvent,
+            EndOfEvent = command.dto.EndOfEvent,
             OrganizerId = organizerId
         };
 
