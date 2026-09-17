@@ -58,8 +58,6 @@ public class EventController : ControllerBase
     {
         var command = _commandMapper.MapToCommand(dto);
         var result = await _sender.Send(command, ct);
-        if(result is null)
-            throw new ArgumentException("Zahtev za kreiranje dogadjaja nije uspesan.");
 
         return Ok(result);
     }

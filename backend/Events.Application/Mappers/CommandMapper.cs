@@ -53,4 +53,9 @@ public class CommandMapper
             dto.CompanyName
         );
     }
+
+    public CreateSponsorCommand MapToCommand(SponsorCreateDTO dto)
+    {
+        return new CreateSponsorCommand(dto);
+    }
 }
