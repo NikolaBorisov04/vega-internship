@@ -22,11 +22,11 @@ public class EventController : ControllerBase
         _commandMapper = commandMapper;
     }
 
-    [HttpGet("{id:Guid}")]
+    [HttpGet("{id}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(EventResponseDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken ct)
+    public async Task<IActionResult> GetByIdAsync(string id, CancellationToken ct)
     {
         var query = new GetEventByIdQuery(id);
         var result = await _sender.Send(query, ct);

@@ -20,14 +20,15 @@ public sealed class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery
         GetEventByIdQuery query,
         CancellationToken ct)
     {
+        var eventId = Guid.Parse(query.Id);
         var eventEntity =
             await _eventRepository.GetByIdAsync(
-                query.Id,
+                eventId,
                 ct);
 
         if (eventEntity is null)
         {
-            throw new EventNotFoundException(query.Id);
+            throw new EventNotFoundException(eventId);
         }
 
         return _responseMapper.MapToResponse(eventEntity);
