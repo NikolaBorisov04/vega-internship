@@ -68,4 +68,14 @@ public class CommandMapper
     {
         return new CreateEventSponsorshipCommand(dto);
     }
+
+    public CreateTicketTypeCommand MapToCommand(TicketTypeCreateDTO dto)
+    {
+        return new CreateTicketTypeCommand(dto);
+    }
+
+    public UpdateTicketTypeCommand MapToCommand(Guid id, TicketTypeUpdateDTO dto)
+    {
+        return new UpdateTicketTypeCommand(id, dto);
+    }
 }
