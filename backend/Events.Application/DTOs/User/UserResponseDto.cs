@@ -9,7 +9,7 @@ public sealed record UserResponseDTO(
     UserRole Role,
     DateTimeOffset CreatedAt,
     DateTimeOffset ModifiedAt,
-    string? County = null,
+    string? Country = null,
     string? City = null,
     string? Address = null,
     string? PhoneNumber = null,
