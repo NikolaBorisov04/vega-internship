@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Application.Services;
 using Events.Application.DTOs;
 using Events.Application.Queries;
+using Events.Application.Commands;
 using MediatR;
 using Events.Application.Mappers;
 
@@ -57,5 +57,19 @@ public class SponsorController : ControllerBase
         var result = await _sender.Send(command, ct);
 
         return Ok(result);
+    }
+
+    [HttpDelete("{id:Guid}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<string>> DeleteSponsor(Guid id, CancellationToken ct = default)
+    {
+        var command = new DeleteSponsorCommand(id);
+        await _sender.Send(command, ct);
+
+        return Ok($"Sponzor sa ID-jem {id} je uspesno izbrisan");
     }
 }
