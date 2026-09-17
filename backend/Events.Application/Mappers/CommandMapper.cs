@@ -63,4 +63,9 @@ public class CommandMapper
     {
         return new CreateEventPhotoCommand(dto);
     }
+
+    public CreateEventSponsorshipCommand MapToCommand(EventSponsorshipCreateDTO dto)
+    {
+        return new CreateEventSponsorshipCommand(dto);
+    }
 }
