@@ -1,6 +1,7 @@
 using DotNetEnv;
 using Events.Api.Extensions;
 using Events.Api.Middleware;
+using Events.Infrastructure.Extensions;
 
 Env.TraversePath().Load();
 
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddSecurityServices();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

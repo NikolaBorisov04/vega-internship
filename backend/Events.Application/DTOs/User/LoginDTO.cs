@@ -4,9 +4,9 @@ namespace Events.Application.DTOs;
 
 public sealed record LoginDTO
 (
-    [property: Required]
+    [param: Required]
     string Email,
 
-    [property: Required]
+    [param: Required]
     string Password
 );

@@ -4,19 +4,19 @@ namespace Events.Application.DTOs;
 
 public sealed record SponsorCreateDTO
 (
-    [property: Required]
+    [param: Required]
     string Name,
 
-    [property: Required]
+    [param: Required]
     string ContactEmail,
 
-    [property: Required]
+    [param: Required]
     string Description,
 
-    [property: Required]
+    [param: Required]
     string LogoUrl,
 
-    [property: Required]
+    [param: Required]
     string TaxId,
 
     string? WebsiteUrl

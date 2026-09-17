@@ -4,18 +4,18 @@ namespace Events.Application.DTOs;
 
 public sealed record TicketTypeCreateDTO
 (
-    [property: Required]
+    [param: Required]
     string Name,
 
     decimal Price,
 
     Guid EventId,
 
-    [property: Required]
+    [param: Required]
     string Description,
 
     int QuantityAvailable,
 
-    [property: Required]
+    [param: Required]
     string TicketBackgroundImageUrl
 );

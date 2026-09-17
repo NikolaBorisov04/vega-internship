@@ -4,24 +4,24 @@ namespace Events.Application.DTOs;
 
 public record RegisterCustomerDTO
 (
-    [property: Required]
+    [param: Required]
     string Name,
 
-    [property: Required]
+    [param: Required]
     string Email,
 
-    [property: Required]
+    [param: Required]
     string Password,
 
-    [property: Required]
+    [param: Required]
     string Country,
 
-    [property: Required]
+    [param: Required]
     string City,
 
-    [property: Required]
+    [param: Required]
     string Address,
 
-    [property: Required]
+    [param: Required]
     string PhoneNumber
 );

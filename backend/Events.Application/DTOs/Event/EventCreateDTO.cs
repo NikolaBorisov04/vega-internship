@@ -4,22 +4,22 @@ namespace Events.Application.DTOs;
 
 public sealed record EventCreateDTO
 (
-    [property: Required]
+    [param: Required]
     string Title,
 
-    [property: Required]
+    [param: Required]
     string Description,
 
-    [property: Required]
+    [param: Required]
     string Country,
 
-    [property: Required]
+    [param: Required]
     string City,
 
-    [property: Required]
+    [param: Required]
     string Address,
 
-    [property: Required]
+    [param: Required]
     string MainImageURL,
 
     string? VenueName,

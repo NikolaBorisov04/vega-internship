@@ -4,7 +4,7 @@ namespace Events.Application.DTOs;
 
 public sealed record TicketCreateDTO
 (
-    [property: Required]
+    [param: Required]
     string QRCodeURL,
 
     int? SeatNumber,

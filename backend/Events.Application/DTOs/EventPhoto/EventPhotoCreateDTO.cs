@@ -4,7 +4,7 @@ namespace Events.Application.DTOs;
 
 public sealed record EventPhotoCreateDTO
 (
-    [property: Required]
+    [param: Required]
     string Url,
 
     string? Caption,
