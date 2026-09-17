@@ -5,6 +5,8 @@ using Events.Application.DTOs;
 using MediatR;
 using Events.Application.Queries;
 using Events.Application.Mappers;
+using Microsoft.VisualBasic;
+using Events.Application.Commands;
 
 namespace Events.Api.Controllers;
 
@@ -85,5 +87,19 @@ public class UserController : ControllerBase
         var user = await _sender.Send(command, ct);
 
         return Ok(user);
+    }
+
+    [HttpDelete("{id:Guid}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<string>> DeleteUser(Guid id, CancellationToken ct = default)
+    {
+        var command = new DeleteUserCommand(id);
+        await _sender.Send(command, ct);
+
+        return Ok($"Nalog sa ID-jem {id} je uspesno izbrisan");
     }
 }
