@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Events.Application.Queries;
 
-public sealed record GetEventByIdQuery(Guid Id) : IRequest<EventResponseDTO>;
+public sealed record GetEventByIdQuery(string Id) : IRequest<EventResponseDTO>;
