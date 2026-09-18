@@ -1,4 +1,5 @@
 using Events.Application.DTOs;
+using Events.Application.Factories;
 using Events.Application.Mappers;
 using Events.Application.Repositories;
 using Events.Application.Services;
@@ -44,16 +45,7 @@ public sealed class CreateTicketTypeCommandHandler : IRequestHandler<CreateTicke
             }
         }
         
-        // ovo da se prebaci u ticketType factory kasnije
-        var ticketType = new TicketType
-        {
-            Name = command.dto.Name,
-            Price = command.dto.Price,
-            EventId = command.dto.EventId,
-            Description = command.dto.Description,
-            QuantityAvailable = command.dto.QuantityAvailable,
-            TicketBackgroundImageUrl = command.dto.TicketBackgroundImageUrl
-        };
+        var ticketType = TicketTypeFactory.Create(command);
 
         _ticketTypeRepository.Add(ticketType);
         await _unitOfWork.SaveChangesAsync(ct);

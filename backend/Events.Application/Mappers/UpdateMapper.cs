@@ -24,4 +24,21 @@ public static class UpdateMapper
         if (dto.TicketBackgroundImageUrl is not null)
             ticketType.TicketBackgroundImageUrl = dto.TicketBackgroundImageUrl;
     }
+
+    public static void UpdateEntity(
+        TicketUpdateDTO dto,
+        Ticket ticketType)
+    {
+        if (dto.QRCodeURL is not null)
+            ticketType.QRCodeURL = dto.QRCodeURL;
+
+        if (dto.SeatNumber.HasValue)
+            ticketType.SeatNumber = dto.SeatNumber.Value;
+
+        if(dto.IsUsed.HasValue)
+            ticketType.IsUsed = dto.IsUsed.Value;
+        
+        if(dto.UsedAt.HasValue)
+            ticketType.UsedAt = dto.UsedAt.Value;
+    }
 }

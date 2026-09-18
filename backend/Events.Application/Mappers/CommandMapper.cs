@@ -78,4 +78,14 @@ public class CommandMapper
     {
         return new UpdateTicketTypeCommand(id, dto);
     }
+
+    public CreateTicketCommand MapToCommand(TicketCreateDTO dto)
+    {
+        return new CreateTicketCommand(dto);
+    }
+
+    public UpdateTicketCommand MapToCommand(Guid id, TicketUpdateDTO dto)
+    {
+        return new UpdateTicketCommand(id, dto);
+    }
 }
