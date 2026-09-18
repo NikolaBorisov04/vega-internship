@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Application.Services;
 using Events.Application.DTOs;
 using MediatR;
 using Events.Application.Queries;
 using Events.Application.Mappers;
-using Microsoft.VisualBasic;
+
 using Events.Application.Commands;
 
 namespace Events.Api.Controllers;

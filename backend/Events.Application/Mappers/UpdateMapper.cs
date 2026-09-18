@@ -184,4 +184,25 @@ public static class UpdateMapper
             sponsor.CreatedAt = DateTimeOffset.UtcNow;
         }
     }
+
+    public static void UpdateEntity(UpdateCustomerDTO dto, Customer customer)
+    {
+        if (dto.Name is not null)
+            customer.Name = dto.Name;
+
+        if (dto.Email is not null)
+            customer.Email = dto.Email;
+
+        if (dto.Country is not null)
+            customer.Country = dto.Country;
+
+        if (dto.City is not null)
+            customer.City = dto.City;
+
+        if (dto.Address is not null)
+            customer.Address = dto.Address;
+
+        if (dto.PhoneNumber is not null)
+            customer.PhoneNumber = dto.PhoneNumber;
+    }
 }
