@@ -88,4 +88,9 @@ public class CommandMapper
     {
         return new UpdateTicketCommand(id, dto);
     }
+
+    public UpdateEventCommand MapToCommand(Guid id, EventUpdateDTO dto)
+    {
+        return new UpdateEventCommand(id, dto);
+    }
 }

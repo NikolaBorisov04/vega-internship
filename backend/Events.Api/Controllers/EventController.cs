@@ -4,6 +4,7 @@ using Events.Application.DTOs;
 using Events.Application.Queries;
 using Events.Application.Mappers;
 using MediatR;
+using Events.Application.Commands;
 
 namespace Events.Api.Controllers;
 
@@ -57,6 +58,36 @@ public class EventController : ControllerBase
     public async Task<ActionResult<EventResponseDTO>> Create([FromBody] EventCreateDTO dto, CancellationToken ct)
     {
         var command = _commandMapper.MapToCommand(dto);
+        var result = await _sender.Send(command, ct);
+
+        return Ok(result);
+    }
+
+    [HttpPatch("{id:Guid}")]
+    [Authorize(Roles = "Organizer, Admin")]
+    [ProducesResponseType(typeof(TicketTypeResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<EventResponseDTO>> Update(Guid id, [FromBody] EventUpdateDTO dto, CancellationToken ct = default)
+    {
+        var command = _commandMapper.MapToCommand(id, dto);
+        var result = await _sender.Send(command, ct);
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:Guid}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<string>> Delete(Guid id, CancellationToken ct = default)
+    {
+        var command = new DeleteEventCommand(id);
         var result = await _sender.Send(command, ct);
 
         return Ok(result);

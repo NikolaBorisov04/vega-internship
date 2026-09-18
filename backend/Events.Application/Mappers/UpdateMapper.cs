@@ -10,35 +10,121 @@ public static class UpdateMapper
         TicketType ticketType)
     {
         if (dto.Name is not null)
+        {
             ticketType.Name = dto.Name;
-
+            ticketType.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+        
         if (dto.Price.HasValue)
+        {
             ticketType.Price = dto.Price.Value;
+            ticketType.ModifiedAt = DateTimeOffset.UtcNow;
+        }
 
         if (dto.Description is not null)
+        {
             ticketType.Description = dto.Description;
+            ticketType.ModifiedAt = DateTimeOffset.UtcNow;
+        }
 
         if (dto.QuantityAvailable.HasValue)
+        {
             ticketType.QuantityAvailable = dto.QuantityAvailable.Value;
+            ticketType.ModifiedAt = DateTimeOffset.UtcNow;
+        }
 
         if (dto.TicketBackgroundImageUrl is not null)
+        {
             ticketType.TicketBackgroundImageUrl = dto.TicketBackgroundImageUrl;
+            ticketType.ModifiedAt = DateTimeOffset.UtcNow;
+        }
     }
 
     public static void UpdateEntity(
         TicketUpdateDTO dto,
-        Ticket ticketType)
+        Ticket ticket)
     {
         if (dto.QRCodeURL is not null)
-            ticketType.QRCodeURL = dto.QRCodeURL;
+        {
+            ticket.QRCodeURL = dto.QRCodeURL;
+            ticket.ModifiedAt = DateTimeOffset.UtcNow;
+        }
 
         if (dto.SeatNumber.HasValue)
-            ticketType.SeatNumber = dto.SeatNumber.Value;
+        {
+            ticket.SeatNumber = dto.SeatNumber.Value;
+            ticket.ModifiedAt = DateTimeOffset.UtcNow;
+        }
 
         if(dto.IsUsed.HasValue)
-            ticketType.IsUsed = dto.IsUsed.Value;
-        
+        {
+            ticket.IsUsed = dto.IsUsed.Value;
+            ticket.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+
         if(dto.UsedAt.HasValue)
-            ticketType.UsedAt = dto.UsedAt.Value;
+        {   
+            ticket.UsedAt = dto.UsedAt.Value;
+            ticket.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+    }
+
+    public static void UpdateEntity(
+        EventUpdateDTO dto,
+        Event _event)
+    {
+        if (dto.Title is not null)
+        {
+            _event.Title = dto.Title;
+            _event.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+
+        if (dto.Description is not null)
+        {
+            _event.Description = dto.Description;
+            _event.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+
+        if(dto.Country is not null)
+        {
+            _event.Country = dto.Country;
+            _event.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+        
+        if(dto.City is not null)
+        {
+            _event.City = dto.City;
+            _event.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+
+        if(dto.Address is not null)
+        {
+            _event.Address = dto.Address;
+            _event.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+
+        if(dto.MainImageURL is not null)
+        {
+            _event.MainImageURL = dto.MainImageURL;
+            _event.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+        
+        if(dto.VenueName is not null)
+        {
+            _event.VenueName = dto.VenueName;
+            _event.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+        
+        if(dto.StartOfEvent.HasValue)
+        {
+            _event.StartOfEvent = dto.StartOfEvent.Value;
+            _event.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+
+        if(dto.EndOfEvent.HasValue)
+        {
+            _event.EndOfEvent = dto.EndOfEvent.Value;
+            _event.ModifiedAt = DateTimeOffset.UtcNow;
+        }
     }
 }
