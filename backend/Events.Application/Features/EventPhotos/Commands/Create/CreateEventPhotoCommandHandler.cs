@@ -1,4 +1,5 @@
 using Events.Application.DTOs;
+using Events.Application.Factories;
 using Events.Application.Mappers;
 using Events.Application.Repositories;
 using Events.Domain.Entities;
@@ -24,12 +25,7 @@ public sealed class CreateEventPhotoCommandHandler : IRequestHandler<CreateEvent
 
     public async Task<EventPhotoResponseDTO> Handle(CreateEventPhotoCommand command, CancellationToken ct)
     {
-        var newEventPhoto = new EventPhoto
-        {
-            Url = command.dto.Url,
-            Caption = command.dto.Caption,
-            EventId = command.dto.EventId
-        };
+        var newEventPhoto = EventPhotoFactory.Create(command);
 
         _eventPhotoRepository.Add(newEventPhoto);
 

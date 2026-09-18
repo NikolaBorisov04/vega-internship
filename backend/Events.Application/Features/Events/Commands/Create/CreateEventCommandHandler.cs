@@ -1,4 +1,5 @@
 using Events.Application.DTOs;
+using Events.Application.Factories;
 using Events.Application.Mappers;
 using Events.Application.Repositories;
 using Events.Application.Services;
@@ -29,19 +30,7 @@ public sealed class CreateEventCommandHandler : IRequestHandler<CreateEventComma
     {
         var organizerId = _currentUserService.UserId;
 
-        var newEvent = new Event
-        {
-            Title = command.dto.Title,
-            Description = command.dto.Description,
-            Country = command.dto.Country,
-            City = command.dto.City,
-            Address = command.dto.Address,
-            MainImageURL = command.dto.MainImageURL,
-            VenueName = command.dto.VenueName,
-            StartOfEvent = command.dto.StartOfEvent,
-            EndOfEvent = command.dto.EndOfEvent,
-            OrganizerId = organizerId
-        };
+        var newEvent = EventFactory.Create(command, organizerId);
 
         _eventRepository.Add(newEvent);
 

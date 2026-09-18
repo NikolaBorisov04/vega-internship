@@ -1,4 +1,5 @@
 using Events.Application.DTOs;
+using Events.Application.Factories;
 using Events.Application.Mappers;
 using Events.Application.Repositories;
 using Events.Application.Services;
@@ -24,15 +25,7 @@ public sealed class CreateSponsorCommandHandler : IRequestHandler<CreateSponsorC
     }
     public async Task<SponsorResponseDTO> Handle(CreateSponsorCommand command, CancellationToken ct)
     {
-        var newSponsor = new Sponsor
-        {
-            Name = command.dto.Name,
-            ContactEmail = command.dto.ContactEmail,
-            Description = command.dto.Description,
-            WebsiteUrl = command.dto.WebsiteUrl,
-            LogoUrl = command.dto.LogoUrl,
-            TaxId = command.dto.TaxId
-        };
+        var newSponsor = SponsorFactory.Create(command);
 
         _sponsorRepository.Add(newSponsor);
 

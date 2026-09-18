@@ -1,5 +1,4 @@
 using Events.Domain.Entities;
-using Events.Domain.Enums;
 using Events.Application.Commands;
 
 namespace Events.Application.Factories;
