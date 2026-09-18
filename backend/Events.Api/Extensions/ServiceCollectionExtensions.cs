@@ -27,12 +27,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<CommandMapper>();
 
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IEventService, EventService>();
-        services.AddScoped<ITicketService, TicketService>();
-        services.AddScoped<ISponsorService, SponsorService>();
-        services.AddScoped<ITicketTypeService, TicketTypeService>();
-        services.AddScoped<IEventSponsorshipService, EventSponsorshipService>();
-        services.AddScoped<IEventPhotoService, EventPhotoService>();
 
         services.AddScoped<IUnitOfWork>(
             sp => sp.GetRequiredService<ApplicationDbContext>());

@@ -11,7 +11,7 @@ public sealed class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCom
 {
     private readonly ITicketRepository _ticketRepository;
     private readonly ITicketTypeRepository _ticketTypeRepository;
-    private readonly IUserRepository _userRepository;
+    private readonly IEventRepository _eventRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ResponseMapper _responseMapper;
     private readonly ICurrentUserService _currentUserService;
@@ -19,14 +19,14 @@ public sealed class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCom
     public UpdateTicketCommandHandler(
         ITicketRepository ticketRepository,
         ITicketTypeRepository ticketTypeRepository,
-        IUserRepository userRepository,
+        IEventRepository eventRepository,
         IUnitOfWork unitOfWork,
         ResponseMapper responseMapper,
         ICurrentUserService currentUserService)
     {
         _ticketRepository = ticketRepository;
         _ticketTypeRepository = ticketTypeRepository;
-        _userRepository = userRepository;
+        _eventRepository = eventRepository;
         _unitOfWork = unitOfWork;
         _responseMapper = responseMapper;
         _currentUserService = currentUserService;
@@ -40,7 +40,7 @@ public sealed class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCom
         if (!_currentUserService.IsAdmin)
         {
             var ticketType = await _ticketTypeRepository.GetByIdAsync(ticket.TicketTypeId, ct) ?? throw new TicketTypeNotFoundException(ticket.TicketTypeId);
-            var organizerId = await _ticketTypeRepository.GetEventOrganizerIdAsync(ticketType.EventId, ct);
+            var organizerId = await _eventRepository.GetEventOrganizerIdAsync(ticketType.EventId, ct);
             
             if (organizerId != _currentUserService.UserId)
             {

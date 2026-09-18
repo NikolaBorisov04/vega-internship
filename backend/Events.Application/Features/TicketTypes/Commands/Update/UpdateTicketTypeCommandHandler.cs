@@ -10,17 +10,20 @@ namespace Events.Application.Commands;
 public sealed class UpdateTicketTypeCommandHandler : IRequestHandler<UpdateTicketTypeCommand, TicketTypeResponseDTO>
 {
     private readonly ITicketTypeRepository _ticketTypeRepository;
+    private readonly IEventRepository _eventRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ResponseMapper _responseMapper;
     private readonly ICurrentUserService _currentUserService;
 
     public UpdateTicketTypeCommandHandler(
         ITicketTypeRepository ticketTypeRepository,
+        IEventRepository eventRepository,
         IUnitOfWork unitOfWork,
         ResponseMapper responseMapper,
         ICurrentUserService currentUserService)
     {
         _ticketTypeRepository = ticketTypeRepository;
+        _eventRepository = eventRepository;
         _unitOfWork = unitOfWork;
         _responseMapper = responseMapper;
         _currentUserService = currentUserService;
@@ -33,7 +36,7 @@ public sealed class UpdateTicketTypeCommandHandler : IRequestHandler<UpdateTicke
 
         if (!_currentUserService.IsAdmin)
         {
-            var organizerId = await _ticketTypeRepository.GetEventOrganizerIdAsync(ticketType.EventId, ct);
+            var organizerId = await _eventRepository.GetEventOrganizerIdAsync(ticketType.EventId, ct);
             if (organizerId != _currentUserService.UserId)
             {
                 throw new UnauthorizedAccessException("Nemate dozvolu za izmenu ovog tipa tiketa.");

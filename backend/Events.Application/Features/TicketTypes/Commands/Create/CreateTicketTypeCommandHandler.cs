@@ -12,17 +12,20 @@ namespace Events.Application.Commands;
 public sealed class CreateTicketTypeCommandHandler : IRequestHandler<CreateTicketTypeCommand, TicketTypeResponseDTO>
 {
     private readonly ITicketTypeRepository _ticketTypeRepository;
+    private readonly IEventRepository _eventRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ResponseMapper _responseMapper;
     private readonly ICurrentUserService _currentUserService;
 
     public CreateTicketTypeCommandHandler(
         ITicketTypeRepository ticketTypeRepository,
+        IEventRepository eventRepository,
         IUnitOfWork unitOfWork,
         ResponseMapper responseMapper,
         ICurrentUserService currentUserService)
     {
         _ticketTypeRepository = ticketTypeRepository;
+        _eventRepository = eventRepository;
         _unitOfWork = unitOfWork;
         _responseMapper = responseMapper;
         _currentUserService = currentUserService;
@@ -38,7 +41,7 @@ public sealed class CreateTicketTypeCommandHandler : IRequestHandler<CreateTicke
 
         if (!_currentUserService.IsAdmin)
         {
-            var organizerId = await _ticketTypeRepository.GetEventOrganizerIdAsync(command.dto.EventId, ct);
+            var organizerId = await _eventRepository.GetEventOrganizerIdAsync(command.dto.EventId, ct);
             if (organizerId != _currentUserService.UserId)
             {
                 throw new UnauthorizedAccessException("Nemate dozvolu za kreiranje tipa tiketa za ovaj dogadjaj.");

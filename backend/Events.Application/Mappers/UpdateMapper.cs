@@ -5,16 +5,14 @@ namespace Events.Application.Mappers;
 
 public static class UpdateMapper
 {
-    public static void UpdateEntity(
-        TicketTypeUpdateDTO dto,
-        TicketType ticketType)
+    public static void UpdateEntity(TicketTypeUpdateDTO dto, TicketType ticketType)
     {
         if (dto.Name is not null)
         {
             ticketType.Name = dto.Name;
             ticketType.ModifiedAt = DateTimeOffset.UtcNow;
         }
-        
+
         if (dto.Price.HasValue)
         {
             ticketType.Price = dto.Price.Value;
@@ -40,9 +38,7 @@ public static class UpdateMapper
         }
     }
 
-    public static void UpdateEntity(
-        TicketUpdateDTO dto,
-        Ticket ticket)
+    public static void UpdateEntity(TicketUpdateDTO dto, Ticket ticket)
     {
         if (dto.QRCodeURL is not null)
         {
@@ -69,9 +65,7 @@ public static class UpdateMapper
         }
     }
 
-    public static void UpdateEntity(
-        EventUpdateDTO dto,
-        Event _event)
+    public static void UpdateEntity(EventUpdateDTO dto, Event _event)
     {
         if (dto.Title is not null)
         {
@@ -125,6 +119,21 @@ public static class UpdateMapper
         {
             _event.EndOfEvent = dto.EndOfEvent.Value;
             _event.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+    }
+
+    public static void UpdateEntity(EventPhotoUpdateDTO dto, EventPhoto eventPhoto)
+    {
+        if (dto.Url is not null)
+        {
+            eventPhoto.Url = dto.Url;
+            eventPhoto.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+
+        if (dto.Caption is not null)
+        {
+            eventPhoto.Caption = dto.Caption;
+            eventPhoto.ModifiedAt = DateTimeOffset.UtcNow;
         }
     }
 }

@@ -1,3 +1,4 @@
+using EventPhotos.Application.Commands;
 using Events.Application.Commands;
 using Events.Application.DTOs;
 using Events.Domain.Enums;
@@ -62,6 +63,11 @@ public class CommandMapper
     public CreateEventPhotoCommand MapToCommand(EventPhotoCreateDTO dto)
     {
         return new CreateEventPhotoCommand(dto);
+    }
+
+    public UpdateEventPhotoCommand MapToCommand(Guid id, EventPhotoUpdateDTO dto)
+    {
+        return new UpdateEventPhotoCommand(id, dto);
     }
 
     public CreateEventSponsorshipCommand MapToCommand(EventSponsorshipCreateDTO dto)
