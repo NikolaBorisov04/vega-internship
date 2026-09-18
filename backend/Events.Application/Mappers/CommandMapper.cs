@@ -59,6 +59,11 @@ public class CommandMapper
         return new CreateSponsorCommand(dto);
     }
 
+    public UpdateSponsorCommand MapToCommand(Guid id, SponsorUpdateDTO dto)
+    {
+        return new UpdateSponsorCommand(id, dto);
+    }
+
     public CreateEventPhotoCommand MapToCommand(EventPhotoCreateDTO dto)
     {
         return new CreateEventPhotoCommand(dto);

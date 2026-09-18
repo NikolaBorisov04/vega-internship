@@ -145,4 +145,43 @@ public static class UpdateMapper
             eventSponsorship.ModifiedAt = DateTimeOffset.UtcNow;
         }
     }
+
+    public static void UpdateEntity(SponsorUpdateDTO dto, Sponsor sponsor)
+    {
+        if(dto.Name is not null)
+        {
+            sponsor.Name = dto.Name;
+            sponsor.CreatedAt = DateTimeOffset.UtcNow;
+        }
+
+        if(dto.ContactEmail is not null)
+        {
+            sponsor.ContactEmail = dto.ContactEmail;
+            sponsor.CreatedAt = DateTimeOffset.UtcNow;
+        }
+
+        if(dto.Description is not null)
+        {
+            sponsor.Description = dto.Description;
+            sponsor.CreatedAt = DateTimeOffset.UtcNow;
+        }
+
+        if(dto.LogoUrl is not null)
+        {
+            sponsor.LogoUrl = dto.LogoUrl;
+            sponsor.CreatedAt = DateTimeOffset.UtcNow;
+        }
+
+        if(dto.TaxId is not null)
+        {
+            sponsor.TaxId = dto.TaxId;
+            sponsor.CreatedAt = DateTimeOffset.UtcNow;
+        }
+
+        if(dto.WebsiteUrl is not null)
+        {
+            sponsor.WebsiteUrl = dto.WebsiteUrl;
+            sponsor.CreatedAt = DateTimeOffset.UtcNow;
+        }
+    }
 }
