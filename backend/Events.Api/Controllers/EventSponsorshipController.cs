@@ -59,6 +59,20 @@ public class EventSponsorshipController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPatch("{id:Guid}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<string>> UpdateEventSponsorship(Guid id, [FromBody] EventSponsorshipUpdateDTO dto, CancellationToken ct = default)
+    {
+        var command = _commandMapper.MapToCommand(id, dto);
+        var result = await _sender.Send(command, ct);
+
+        return Ok(result);
+    }
+
     [HttpDelete("{id:Guid}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]

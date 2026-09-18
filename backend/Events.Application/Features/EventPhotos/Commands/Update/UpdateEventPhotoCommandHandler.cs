@@ -1,4 +1,4 @@
-using EventPhotos.Application.Commands;
+using Events.Application.Commands;
 using Events.Application.DTOs;
 using Events.Application.Mappers;
 using Events.Application.Repositories;

@@ -136,4 +136,13 @@ public static class UpdateMapper
             eventPhoto.ModifiedAt = DateTimeOffset.UtcNow;
         }
     }
+
+    public static void UpdateEntity(EventSponsorshipUpdateDTO dto, EventSponsorship eventSponsorship)
+    {
+        if(dto.ContributionAmount.HasValue)
+        {
+            eventSponsorship.ContributionAmount = dto.ContributionAmount.Value;
+            eventSponsorship.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+    }
 }
