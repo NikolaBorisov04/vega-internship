@@ -7,9 +7,6 @@ public sealed class UpdateTicketTypeCommandValidator : AbstractValidator<UpdateT
 {
     public UpdateTicketTypeCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("ID tipa tiketa je obavezan.");
-
         When(x => x.dto.Name is not null, () =>
         {
             RuleFor(x => x.dto.Name)
