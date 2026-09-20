@@ -11,7 +11,7 @@ public sealed class UpdateSponsorCommandValidator : AbstractValidator<UpdateSpon
         {
             RuleFor(x => x.Dto.Name)
                 .NotEmpty().WithMessage("Ime ne moze biti prazno.")
-                .MaximumLength(100).WithMessage("Ime ne moze imati vise od 100 karaktera.");
+                .MaximumLength(20).WithMessage("Ime ne moze imati vise od 20 karaktera.");
         });
 
         When(x => x.Dto.ContactEmail is not null, () =>

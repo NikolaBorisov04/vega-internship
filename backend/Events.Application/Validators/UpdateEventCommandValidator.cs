@@ -11,14 +11,14 @@ public sealed class UpdateEventCommandValidator : AbstractValidator<UpdateEventC
         {
             RuleFor(x => x.dto.Title)
                 .NotEmpty().WithMessage("Naslov ne moze biti prazan.")
-                .MaximumLength(20).WithMessage("Naslov ne moze imati vise od 100 karaktera.");
+                .MaximumLength(20).WithMessage("Naslov mora da ima manje od 20 karaktera.");
         });
 
         When(x => x.dto.Description is not null, () =>
         {
             RuleFor(x => x.dto.Description)
                 .NotEmpty().WithMessage("Opis ne moze biti prazan.")
-                .MaximumLength(200).WithMessage("Opis ne moze imati vise od 2000 karaktera.");
+                .MaximumLength(200).WithMessage("Opis mora imati manje od 200 karaktera.");
         });
 
         When(x => x.dto.Country is not null, () =>
@@ -52,7 +52,7 @@ public sealed class UpdateEventCommandValidator : AbstractValidator<UpdateEventC
         When(x => x.dto.VenueName is not null, () =>
         {
             RuleFor(x => x.dto.VenueName)
-                .MaximumLength(100).WithMessage("Naziv lokacije ne moze imati vise od 100 karaktera.");
+                .MaximumLength(20).WithMessage("Ime objekta mora imati manje od 20 karaktera.");
         });
 
         When(x => x.dto.StartOfEvent.HasValue && x.dto.EndOfEvent.HasValue, () =>
