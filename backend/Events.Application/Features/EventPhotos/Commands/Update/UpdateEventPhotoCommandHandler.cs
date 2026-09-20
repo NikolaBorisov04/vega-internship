@@ -1,5 +1,6 @@
 using Events.Application.Commands;
 using Events.Application.DTOs;
+using Events.Application.Extensions;
 using Events.Application.Mappers;
 using Events.Application.Repositories;
 using Events.Application.Services;
@@ -43,7 +44,7 @@ public sealed class UpdateEventPhotoCommandHandler : IRequestHandler<UpdateEvent
                 throw new UnauthorizedAccessException("Nemate dozvolu za izmenu ove slike.");
         }
 
-        UpdateMapper.UpdateEntity(command.dto, eventPhoto);
+        eventPhoto.UpdateFrom(command.dto);
 
         _eventPhotoRepository.Update(eventPhoto);
         await _unitOfWork.SaveChangesAsync(ct);

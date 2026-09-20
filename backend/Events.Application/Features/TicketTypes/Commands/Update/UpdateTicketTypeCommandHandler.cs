@@ -1,4 +1,5 @@
 using Events.Application.DTOs;
+using Events.Application.Extensions;
 using Events.Application.Mappers;
 using Events.Application.Repositories;
 using Events.Application.Services;
@@ -43,7 +44,7 @@ public sealed class UpdateTicketTypeCommandHandler : IRequestHandler<UpdateTicke
             }
         }
 
-        UpdateMapper.UpdateEntity(command.dto, ticketType);
+        ticketType.UpdateFrom(command.dto);
 
         _ticketTypeRepository.Update(ticketType);
         await _unitOfWork.SaveChangesAsync(ct);

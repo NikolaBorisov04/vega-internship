@@ -1,4 +1,5 @@
 using Events.Application.DTOs;
+using Events.Application.Extensions;
 using Events.Application.Mappers;
 using Events.Application.Repositories;
 using Events.Application.Services;
@@ -42,7 +43,7 @@ public sealed class UpdateEventCommandHandler : IRequestHandler<UpdateEventComma
                 throw new UnauthorizedAccessException("Nemate dozvolu za izmenu ovog dogadjaja.");
         }
 
-        UpdateMapper.UpdateEntity(command.dto, _event);
+        _event.UpdateFrom(command.dto);
 
         _eventRepository.Update(_event);
         await _unitOfWork.SaveChangesAsync(ct);

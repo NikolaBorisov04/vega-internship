@@ -1,4 +1,5 @@
 using Events.Application.DTOs;
+using Events.Application.Extensions;
 using Events.Application.Mappers;
 using Events.Application.Repositories;
 using Events.Domain.Exceptions;
@@ -28,7 +29,7 @@ public sealed class UpdateSponsorCommandHandler : IRequestHandler<UpdateSponsorC
             ?? throw new SponsorNotFoundException(command.Id);
 
 
-        UpdateMapper.UpdateEntity(command.Dto, eventsponsorship);
+        eventsponsorship.UpdateFrom(command.Dto);
 
         _sponsorRepository.Update(eventsponsorship);
         await _unitOfWork.SaveChangesAsync(ct);
