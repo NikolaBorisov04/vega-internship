@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getEvents } from "../api/EventApi";
+import { getEvents } from "../api/eventApi";
 
 export function useEvents() {
   return useQuery({

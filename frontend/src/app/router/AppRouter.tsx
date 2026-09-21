@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { LoginPage } from "../../features/auth/pages/LoginPage";
-import { EventsPage } from "../../features/events/pages/EventsPage";
-import { EventDetailsPage } from "../../features/events/pages/EventDetailsPage";
+import { EventsPage } from "../../features/events/pages/EventsPage/EventsPage";
+import { EventDetailsPage } from "../../features/events/pages/EventDetailsPage/EventDetailsPage";
 
 
 export function AppRouter() {

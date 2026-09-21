@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { EventResponse } from "../types/Event";
+import type { EventResponse } from "../../types/event";
 import "./EventCard.css";
 
 interface EventCardProps {
