@@ -7,13 +7,6 @@ public sealed class UpdateEventPhotoCommandValidator : AbstractValidator<UpdateE
 {
     public UpdateEventPhotoCommandValidator()
     {
-        When(x => x.dto.Url is not null, () =>
-        {
-            RuleFor(x => x.dto.Url)
-                .NotEmpty().WithMessage("URL slike ne moze biti prazan.")
-                .MaximumLength(1000).WithMessage("URL slike ne moze imati vise od 1000 karaktera.");
-        });
-
         When(x => x.dto.Caption is not null, () =>
         {
             RuleFor(x => x.dto.Caption)

@@ -9,7 +9,6 @@ public static class EventPhotoFactory
     {
         return new EventPhoto
         {
-            Url = command.dto.Url,
             Caption = command.dto.Caption,
             EventId = command.dto.EventId
         };

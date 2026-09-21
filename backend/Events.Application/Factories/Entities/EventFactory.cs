@@ -5,7 +5,7 @@ namespace Events.Application.Factories;
 
 public static class EventFactory
 {
-    public static Event Create(CreateEventCommand command, Guid organizerId)
+    public static Event Create(CreateEventCommand command, Guid organizerId, string imageUrl, string imagePublicId)
     {
         return new Event
         {
@@ -14,11 +14,12 @@ public static class EventFactory
             Country = command.dto.Country,
             City = command.dto.City,
             Address = command.dto.Address,
-            MainImageURL = command.dto.MainImageURL,
             VenueName = command.dto.VenueName,
             StartOfEvent = command.dto.StartOfEvent,
             EndOfEvent = command.dto.EndOfEvent,
-            OrganizerId = organizerId
+            OrganizerId = organizerId,
+            MainImageURL = imageUrl,
+            MainImagePublicId = imagePublicId
         };
     }
 }

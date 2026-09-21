@@ -115,12 +115,6 @@ public static class EntityUpdateExtensions
             modified = true;
         }
 
-        if (dto.MainImageURL is not null)
-        {
-            _event.MainImageURL = dto.MainImageURL;
-            modified = true;
-        }
-
         if (dto.VenueName is not null)
         {
             _event.VenueName = dto.VenueName;
@@ -148,12 +142,6 @@ public static class EntityUpdateExtensions
         EventPhotoUpdateDTO dto)
     {
         bool modified = false;
-
-        if (dto.Url is not null)
-        {
-            eventPhoto.Url = dto.Url;
-            modified = true;
-        }
 
         if (dto.Caption is not null)
         {

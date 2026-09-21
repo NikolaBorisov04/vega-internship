@@ -9,6 +9,9 @@ public sealed record EventPhotoResponseDTO
     [property: Required]
     string Url,
 
+    [property: Required]
+    string PublicId,
+
     string? Caption,
 
     Guid EventId,

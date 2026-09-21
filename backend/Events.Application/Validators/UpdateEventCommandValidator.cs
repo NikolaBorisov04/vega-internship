@@ -42,13 +42,6 @@ public sealed class UpdateEventCommandValidator : AbstractValidator<UpdateEventC
                 .MaximumLength(200).WithMessage("Adresa ne moze imati vise od 200 karaktera.");
         });
 
-        When(x => x.dto.MainImageURL is not null, () =>
-        {
-            RuleFor(x => x.dto.MainImageURL)
-                .NotEmpty().WithMessage("URL glavne slike ne moze biti prazan.")
-                .MaximumLength(1000).WithMessage("URL glavne slike ne moze imati vise od 1000 karaktera.");
-        });
-
         When(x => x.dto.VenueName is not null, () =>
         {
             RuleFor(x => x.dto.VenueName)

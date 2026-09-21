@@ -5,6 +5,8 @@ using Events.Application.Queries;
 using Events.Application.Mappers;
 using MediatR;
 using Events.Application.Commands;
+using Events.API.Requests;
+using Events.Application.Storage;
 
 namespace Events.Api.Controllers;
 
@@ -55,9 +57,29 @@ public class EventController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<EventResponseDTO>> Create([FromBody] EventCreateDTO dto, CancellationToken ct)
+    public async Task<ActionResult<EventResponseDTO>> Create([FromForm] CreateEventRequest request, CancellationToken ct)
     {
-        var command = _commandMapper.MapToCommand(dto);
+        //extract these later
+        var dto = new EventCreateDTO(
+            request.Title,
+            request.Description,
+            request.Country,
+            request.City,
+            request.Address,
+            request.VenueName,
+            request.StartOfEvent,
+            request.EndOfEvent
+        );
+
+        var file = new FileUpload(
+            request.MainImage.OpenReadStream(),
+            request.MainImage.FileName,
+            request.MainImage.ContentType,
+            request.MainImage.Length
+        );
+
+        var command = new CreateEventCommand(dto, file);
+
         var result = await _sender.Send(command, ct);
 
         return Ok(result);

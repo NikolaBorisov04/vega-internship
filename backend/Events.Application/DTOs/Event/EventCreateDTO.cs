@@ -19,9 +19,6 @@ public sealed record EventCreateDTO
     [param: Required]
     string Address,
 
-    [param: Required]
-    string MainImageURL,
-
     string? VenueName,
 
     DateTimeOffset StartOfEvent,

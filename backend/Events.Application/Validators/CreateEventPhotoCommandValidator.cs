@@ -7,8 +7,6 @@ public sealed class CreateEventPhotoCommandValidator : AbstractValidator<CreateE
 {
     public CreateEventPhotoCommandValidator()
     {
-        RuleFor(x => x.dto.Url)
-            .NotEmpty().WithMessage("URL slike je obavezan.");
         RuleFor(x => x.dto.EventId)
             .NotEmpty().WithMessage("ID dogadjaja je obavezan.");
     }

@@ -25,6 +25,9 @@ public sealed record EventResponseDTO
     [property: Required]
     string MainImageURL,
 
+    [property: Required]
+    string MainImagePublicId,
+
     string? VenueName,
 
     EventPriority Priority,

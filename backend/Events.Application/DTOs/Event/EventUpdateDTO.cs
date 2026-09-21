@@ -12,8 +12,6 @@ public sealed record EventUpdateDTO
 
     string? Address,
 
-    string? MainImageURL,
-
     string? VenueName,
 
     DateTimeOffset? StartOfEvent,

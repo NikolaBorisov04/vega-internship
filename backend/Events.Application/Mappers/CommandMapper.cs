@@ -6,10 +6,6 @@ namespace Events.Application.Mappers;
 
 public class CommandMapper
 {
-    public CreateEventCommand MapToCommand(EventCreateDTO dto)
-    {
-        return new CreateEventCommand(dto);
-    }
     public CreateUserCommand MapToCommand(RegisterCustomerDTO dto)
     {
         return new CreateUserCommand(
