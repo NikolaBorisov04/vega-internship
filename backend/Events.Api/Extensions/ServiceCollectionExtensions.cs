@@ -10,6 +10,7 @@ using Events.Application;
 using FluentValidation;
 using MediatR;
 using Events.Application.Behaviors;
+using System.Text.Json.Serialization;
 
 namespace Events.Api.Extensions;
 
@@ -22,6 +23,18 @@ public static class ServiceCollectionExtensions
         
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
+        
+        services.AddCors(options =>
+        {
+            options.AddPolicy("Events", policy =>
+            {
+                policy
+                    .WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+        
 
         services.AddSingleton<ResponseMapper>();
         services.AddSingleton<CommandMapper>();
@@ -49,6 +62,12 @@ public static class ServiceCollectionExtensions
         {
             options.SuppressAsyncSuffixInActionNames = false;
             // Ovo je po default true, sklonio sam ga zato sto mi je brisalo "Async" ime rute i onda kad pozovem u kontroler za create GetByIdAsync prijavljuje error 500 jer se poziva na rutu GetById
+        })
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(
+                new JsonStringEnumConverter()
+            );
         });
 
         services.AddEndpointsApiExplorer();

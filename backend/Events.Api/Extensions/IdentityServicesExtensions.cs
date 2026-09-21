@@ -6,7 +6,7 @@ namespace Events.Api.Extensions;
 
 public static class IdentityServicesExtensions
 {
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
     {
         var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? throw new InvalidOperationException("JWT_KEY nije definisan u .env fajlu.");
 
