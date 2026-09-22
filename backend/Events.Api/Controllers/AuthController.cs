@@ -22,11 +22,11 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Login([FromBody] LoginDTO dto)
     {
         var user = await _userService.ValidateUserAsync(dto.Email, dto.Password);
-        if (user == null) return Unauthorized("Pogresan email ili lozinka");
 
         var token = _tokenService.GenerateJwtToken(user);
 

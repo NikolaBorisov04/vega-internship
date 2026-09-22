@@ -29,12 +29,12 @@ public class UserService : IUserService
 
         if (user == null)
         {
-            return null;
+            throw new KeyNotFoundException("Email address was not found.");
         }
 
         if (!_passwordHasher.VerifyPassword(password, user.PasswordHash))
         {
-            return null;
+            throw new UnauthorizedAccessException("Password is incorect");
         }
 
         return _responseMapper.MapToResponse(user);
