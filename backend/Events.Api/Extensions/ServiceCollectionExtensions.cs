@@ -51,6 +51,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITicketTypeRepository, TicketTypeRepository>();
         services.AddScoped<IEventSponsorshipRepository, EventSponsorshipRepository>();
         services.AddScoped<IEventPhotoRepository, EventPhotoRepository>();
+        services.AddScoped<IOrganizerRepository, OrganizerRepository>();
 
         services.AddApplication();
 

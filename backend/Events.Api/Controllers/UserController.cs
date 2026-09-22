@@ -50,6 +50,18 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
+    [HttpGet("organizer/event/{eventId:Guid}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UserResponseDTO>> GetOrganizerByEventId(Guid eventId, CancellationToken ct)
+    {
+        var query = new GetOrganizerByEventIdQuery(eventId);
+        var organizer = await _sender.Send(query, ct);
+
+        return Ok(organizer);
+    }
+
     [HttpPost("register/customer")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status201Created)]
