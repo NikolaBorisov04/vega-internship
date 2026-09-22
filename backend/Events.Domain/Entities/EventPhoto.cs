@@ -10,6 +10,10 @@ public class EventPhoto : AuditableEntity
     [Required]
     public string Url { get; set; }
 
+    [MaxLength(1000)]
+    [Required]
+    public string PublicId { get; set; }
+
     [MaxLength(100)]
     public string? Caption { get; set; }
 

@@ -1,0 +1,214 @@
+.events-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+  min-height: 440px;
+  overflow: hidden;
+  padding: 72px max(24px, calc((100vw - 1240px) / 2));
+  background:
+    radial-gradient(circle at 75% 20%, #6b4be8 0, transparent 30%),
+    radial-gradient(circle at 92% 90%, #e9438d 0, transparent 34%),
+    linear-gradient(135deg, #171122 0%, #281440 52%, #401b51 100%);
+  color: white;
+}
+
+.events-hero::before,
+.events-hero::after {
+  position: absolute;
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.events-hero::before {
+  width: 300px;
+  height: 300px;
+  top: -140px;
+  left: 48%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.events-hero::after {
+  width: 450px;
+  height: 450px;
+  right: -180px;
+  bottom: -250px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.events-hero__content {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  max-width: 720px;
+}
+
+.events-hero__eyebrow {
+  display: inline-flex;
+  margin-bottom: 16px;
+  padding: 7px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffb8db;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.events-hero h1 {
+  max-width: 690px;
+  margin: 0;
+  font-size: clamp(45px, 6vw, 78px);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.events-hero h1 span {
+  display: block;
+  color: #ff8fc4;
+}
+
+.events-hero p {
+  max-width: 590px;
+  margin: 23px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.events-hero__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 25px;
+}
+
+.events-hero__chips span {
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.83);
+  font-size: 12px;
+  font-weight: 700;
+  backdrop-filter: blur(10px);
+}
+
+.events-hero__art {
+  position: relative;
+  min-height: 350px;
+}
+
+.events-hero__disc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.055) 0,
+      rgba(255, 255, 255, 0.055) 2px,
+      transparent 2px,
+      transparent 9px
+    ),
+    linear-gradient(135deg, #11101a, #382052);
+  box-shadow:
+    0 35px 80px rgba(0, 0, 0, 0.32),
+    inset 0 0 50px rgba(255, 255, 255, 0.05);
+  transform: translate(-50%, -50%) rotate(-18deg);
+}
+
+.events-hero__disc::before {
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  content: "";
+}
+
+.events-hero__disc-hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 46px;
+  height: 46px;
+  border: 7px solid #e9438d;
+  border-radius: 50%;
+  background: #21152f;
+  transform: translate(-50%, -50%);
+}
+
+.events-hero__note {
+  position: absolute;
+  z-index: 3;
+  color: #ff8fc4;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+.events-hero__note--one {
+  top: 15%;
+  right: 10%;
+  font-size: 70px;
+  transform: rotate(12deg);
+}
+
+.events-hero__note--two {
+  right: 0;
+  bottom: 13%;
+  font-size: 50px;
+  color: #8d7cff;
+  transform: rotate(-14deg);
+}
+
+.events-hero__spark {
+  position: absolute;
+  color: #ffffff;
+  font-size: 22px;
+  opacity: 0.8;
+}
+
+.events-hero__spark--one {
+  top: 16%;
+  left: 7%;
+}
+
+.events-hero__spark--two {
+  right: 5%;
+  bottom: 8%;
+}
+
+.events-content {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 48px 0 80px;
+}
+
+@media (max-width: 760px) {
+  .events-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: 55px;
+    padding-bottom: 35px;
+  }
+
+  .events-hero__art {
+    min-height: 260px;
+  }
+
+  .events-hero__disc {
+    width: 220px;
+    height: 220px;
+  }
+
+  .events-hero__note--one {
+    right: 7%;
+  }
+}

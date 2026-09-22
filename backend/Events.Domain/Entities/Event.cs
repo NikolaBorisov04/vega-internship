@@ -28,8 +28,12 @@ public class Event : AuditableEntity
     public string Address { get; set; }
 
     [Required]
-    [MaxLength(200)]
+    [MaxLength(1000)]
     public string MainImageURL {get; set;}
+
+    [Required]
+    [MaxLength(1000)]
+    public string MainImagePublicId { get; set; }
 
     [MaxLength(100)]
     public string VenueName { get; set; }

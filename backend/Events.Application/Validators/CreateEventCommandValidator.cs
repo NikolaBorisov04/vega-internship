@@ -3,46 +3,51 @@ using FluentValidation;
 
 namespace Events.Application.Validators;
 
-public sealed class CreateEventCommandValidator : AbstractValidator<CreateEventCommand>
+public sealed class CreateEventCommandValidator
+    : AbstractValidator<CreateEventCommand>
 {
+    private const long MaxFileSize = 5 * 1024 * 1024;
+
+    private static readonly string[] AllowedContentTypes =
+    [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
     public CreateEventCommandValidator()
     {
         RuleFor(x => x.dto.Title)
             .NotEmpty()
-            .WithMessage("Naslov je obavezan.")
-            .MaximumLength(20)
-            .WithMessage("Naslov mora da ima manje od 20 karaktera.");
+            .MaximumLength(200);
 
         RuleFor(x => x.dto.Description)
-            .MaximumLength(200)
-            .WithMessage("Opis mora imati manje od 200 karaktera.");
+            .NotEmpty();
 
         RuleFor(x => x.dto.Country)
-            .NotEmpty()
-            .WithMessage("Drzava je obavezna.");
+            .NotEmpty();
 
         RuleFor(x => x.dto.City)
-            .NotEmpty()
-            .WithMessage("Grad je obavezan.");
+            .NotEmpty();
 
         RuleFor(x => x.dto.Address)
-            .NotEmpty()
-            .WithMessage("Adresa je obavezna.");
-
-        RuleFor(x => x.dto.VenueName)
-            .MaximumLength(20)
-            .WithMessage("Ime objekta mora imati manje od 20 karaktera.");
-
-        RuleFor(x => x.dto.StartOfEvent)
-            .NotEmpty()
-            .WithMessage("Datum i vreme pocetka dogadjaja su obavezni.");
+            .NotEmpty();
 
         RuleFor(x => x.dto.EndOfEvent)
-            .NotEmpty()
-            .WithMessage("Datum i vreme zavrsetka dogadjaja su obavezni.");
+            .GreaterThan(x => x.dto.StartOfEvent)
+            .WithMessage("End of event must be after start of event.");
 
-        RuleFor(x => x.dto)
-            .Must(x => x.EndOfEvent > x.StartOfEvent)
-            .WithMessage("Kraj dogadjaja mora biti nakon pocetka.");
+        RuleFor(x => x.MainImage)
+            .NotNull()
+            .WithMessage("Main event image is required.");
+
+        RuleFor(x => x.MainImage.Length)
+            .LessThanOrEqualTo(MaxFileSize)
+            .WithMessage("Main event image cannot exceed 5 MB.");
+
+        RuleFor(x => x.MainImage.ContentType)
+            .Must(contentType =>
+                AllowedContentTypes.Contains(contentType))
+            .WithMessage("Only JPEG, PNG and WebP images are allowed.");
     }
 }
