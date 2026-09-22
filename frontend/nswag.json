@@ -1,0 +1,17 @@
+{
+  "runtime": "Net100",
+  "documentGenerator": {
+    "fromDocument": {
+      "url": "http://localhost:5128/swagger/v1/swagger.json"
+    }
+  },
+  "codeGenerators": {
+    "openApiToTypeScriptClient": {
+      "template": "Fetch",
+      "typeStyle": "Interface",
+      "generateClientClasses": true,
+      "generateClientInterfaces": false,
+      "output": "src/api/generated/api.ts"
+    }
+  }
+}

@@ -32,8 +32,10 @@ public sealed record EventResponseDTO
 
     EventPriority Priority,
 
+    [property: Required]
     DateTimeOffset StartOfEvent,
-
+    
+    [property: Required]
     DateTimeOffset EndOfEvent,
 
     Guid OrganizerId

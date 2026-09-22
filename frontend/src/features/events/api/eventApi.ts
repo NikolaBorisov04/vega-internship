@@ -1,15 +1,15 @@
+import type { EventResponseDTO } from "../../../api/generated/api";
 import { httpClient } from "../../../shared/api/httpClient";
-import type { EventResponse } from "../types/Event";
 
 export async function getEvents(
   signal?: AbortSignal,
-): Promise<EventResponse[]> {
-  return httpClient.get<EventResponse[]>("/Event/all", signal);
+): Promise<EventResponseDTO[]> {
+  return httpClient.get<EventResponseDTO[]>("/Event/all", signal);
 }
 
 export async function getEventById(
   id: string,
   signal?: AbortSignal,
-): Promise<EventResponse> {
-  return httpClient.get<EventResponse>(`/Event/${id}`, signal);
+): Promise<EventResponseDTO> {
+  return httpClient.get<EventResponseDTO>(`/Event/${id}`, signal);
 }

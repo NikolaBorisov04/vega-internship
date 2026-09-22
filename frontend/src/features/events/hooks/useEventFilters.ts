@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import type { EventResponse } from "../types/event";
+import type { EventResponseDTO } from "../../../api/generated/api";
 
 export type SortOption = "dateAsc" | "dateDesc" | "title";
 
-export function useEventFilters(events: EventResponse[]) {
+export function useEventFilters(events: EventResponseDTO[]) {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("all");
   const [sort, setSort] = useState<SortOption>("dateAsc");
@@ -24,7 +24,7 @@ export function useEventFilters(events: EventResponse[]) {
         event.description.toLowerCase().includes(normalizedSearch) ||
         event.city.toLowerCase().includes(normalizedSearch) ||
         event.country.toLowerCase().includes(normalizedSearch) ||
-        event.venueName.toLowerCase().includes(normalizedSearch);
+        event.venueName?.toLowerCase().includes(normalizedSearch);
 
       const matchesCity =
         city === "all" || event.city === city;

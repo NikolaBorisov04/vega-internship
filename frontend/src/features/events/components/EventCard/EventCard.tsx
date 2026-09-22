@@ -1,25 +1,10 @@
 import { Link } from "react-router-dom";
-import type { EventResponse } from "../../types/event";
 import "./EventCard.css";
+import type { EventResponseDTO } from "../../../../api/generated/api";
+import { formatEventRange } from "../../../../shared/utils/formatDateTime";
 
 interface EventCardProps {
-  event: EventResponse;
-}
-
-function formatDate(date: string): string {
-  return new Intl.DateTimeFormat("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(date));
-}
-
-function formatTime(date: string): string {
-  return new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(date));
+  event: EventResponseDTO;
 }
 
 export function EventCard({ event }: EventCardProps) {
@@ -37,7 +22,7 @@ export function EventCard({ event }: EventCardProps) {
           onError={(e) => {
             e.currentTarget.style.display = "none";
             e.currentTarget.parentElement?.classList.add(
-              "event-card__image-wrapper--fallback",
+              "event-card__image-wrapper--fallback"
             );
           }}
         />
@@ -57,9 +42,9 @@ export function EventCard({ event }: EventCardProps) {
 
       <div className="event-card__content">
         <div className="event-card__meta">
-          <span>{formatDate(event.startOfEvent)}</span>
-          <span className="event-card__separator">•</span>
-          <span>{formatTime(event.startOfEvent)}</span>
+          <time dateTime={new Date(event.startOfEvent).toISOString()}>
+            {formatEventRange(event.startOfEvent, event.endOfEvent)}
+          </time>
         </div>
 
         <h2 className="event-card__title">{event.title}</h2>

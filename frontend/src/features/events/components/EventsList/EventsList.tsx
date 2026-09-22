@@ -1,9 +1,9 @@
-import type { EventResponse } from "../../types/event";
+import type { EventResponseDTO } from "../../../../api/generated/api";
 import { EventCard } from "../EventCard/EventCard";
 import "./EventsList.css"
 
 interface EventsListProps {
-  events: EventResponse[];
+  events: EventResponseDTO[];
   isLoading: boolean;
   isError: boolean;
   onRetry: () => void;
