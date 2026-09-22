@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Application.Services;
 using Events.Application.DTOs;
-using Events.Domain.Exceptions;
+using Events.Application.Queries;
+using Events.Application.Commands;
+using Events.Application.Mappers;
+using MediatR;
 
 namespace Events.Api.Controllers;
 
@@ -10,36 +12,35 @@ namespace Events.Api.Controllers;
 [Route("api/[controller]")]
 public class TicketTypeController : ControllerBase
 {
-    private readonly ITicketTypeService _ticketTypeService;
+    private readonly ISender _sender;
+    private readonly CommandMapper _commandMapper;
 
-    public TicketTypeController(ITicketTypeService ticketTypeService, ICurrentUserService currentUserService)
+    public TicketTypeController(ISender sender, CommandMapper commandMapper)
     {
-        _ticketTypeService = ticketTypeService;
+        _sender = sender;
+        _commandMapper = commandMapper;
     }
 
     [HttpGet("{id:Guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(TicketTypeResponseDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetByIdAsync(Guid id)
+    public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
-        var ticketType = await _ticketTypeService.GetByIdAsync(id);
-
-        if (ticketType == null)
-            throw new TicketTypeNotFoundException(id);
+        var query = new GetTicketTypeByIdQuery(id);
+        var ticketType = await _sender.Send(query, ct);
 
         return Ok(ticketType);
     }
 
     [HttpGet("all")]
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(IEnumerable<TicketTypeResponseDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync(CancellationToken ct = default)
     {
-        var ticketTypes = await _ticketTypeService.GetAllAsync();
-        if (!ticketTypes.Any())
-            return NotFound(new { message = "Nema tipova tiketa u bazi." });
+        var query = new GetTicketTypesQuery();
+        var ticketTypes = await _sender.Send(query, ct);
 
         return Ok(ticketTypes);
     }
@@ -48,12 +49,10 @@ public class TicketTypeController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<TicketTypeResponseDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetByEventIdAsync(Guid eventId, CancellationToken ct)
+    public async Task<IActionResult> GetByEventIdAsync(Guid eventId, CancellationToken ct = default)
     {
-        var ticketTypes = await _ticketTypeService.GetByEventIdAsync(eventId, ct);
-
-        if (!ticketTypes.Any())
-            throw new NoTicketTypesForEventIdException(eventId);
+        var query = new GetTicketTypesByEventIdQuery(eventId);
+        var ticketTypes = await _sender.Send(query, ct);
 
         return Ok(ticketTypes);
     }
@@ -65,13 +64,44 @@ public class TicketTypeController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TicketTypeResponseDTO>> Create([FromBody] TicketTypeCreateDTO dto, CancellationToken ct)
+    public async Task<ActionResult<TicketTypeResponseDTO>> Create([FromBody] TicketTypeCreateDTO dto, CancellationToken ct = default)
     {
-        var result = await _ticketTypeService.CreateAsync(dto, ct);
+        var command = _commandMapper.MapToCommand(dto);
+        var result = await _sender.Send(command, ct);
 
         return CreatedAtAction(
             nameof(GetByIdAsync),
             new { id = result.Id },
             result);
+    }
+
+    [HttpPatch("{id:Guid}")]
+    [Authorize(Roles = "Organizer, Admin")]
+    [ProducesResponseType(typeof(TicketTypeResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TicketTypeResponseDTO>> Update(Guid id, [FromBody] TicketTypeUpdateDTO dto, CancellationToken ct = default)
+    {
+        var command = _commandMapper.MapToCommand(id, dto);
+        var result = await _sender.Send(command, ct);
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:Guid}")]
+    [Authorize(Roles = "Organizer, Admin")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<string>> Delete(Guid id, CancellationToken ct = default)
+    {
+        var command = new DeleteTicketTypeCommand(id);
+        var result = await _sender.Send(command, ct);
+
+        return Ok(result);
     }
 }

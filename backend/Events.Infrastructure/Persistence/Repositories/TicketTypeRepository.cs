@@ -14,14 +14,6 @@ public class TicketTypeRepository : Repository<TicketType>, ITicketTypeRepositor
         return _context.Events.AnyAsync(e => e.Id == eventId, ct);
     }
 
-    public async Task<Guid?> GetEventOrganizerIdAsync(Guid eventId, CancellationToken ct = default)
-    {
-        return await _context.Events
-            .Where(e => e.Id == eventId)
-            .Select(e => e.OrganizerId)
-            .FirstOrDefaultAsync(ct);
-    }
-
     public async Task<IReadOnlyList<TicketType>> GetByEventIdAsync(Guid eventId, CancellationToken ct = default)
     {
         return await _dbSet

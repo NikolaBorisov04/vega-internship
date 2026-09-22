@@ -40,6 +40,7 @@ public class ResponseMapper
             _event.City,
             _event.Address,
             _event.MainImageURL,
+            _event.MainImagePublicId,
             _event.VenueName,
             _event.Priority,
             _event.StartOfEvent,
@@ -93,6 +94,7 @@ public class ResponseMapper
         return new EventPhotoResponseDTO(
             eventPhoto.Id,
             eventPhoto.Url,
+            eventPhoto.PublicId,
             eventPhoto.Caption,
             eventPhoto.EventId,
             eventPhoto.CreatedAt,

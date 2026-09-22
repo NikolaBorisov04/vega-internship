@@ -1,0 +1,124 @@
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.events-state {
+  display: flex;
+  min-height: 320px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 30px;
+  border: 1px dashed #d9cce1;
+  border-radius: 22px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.events-state__icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  margin-bottom: 15px;
+  border-radius: 18px;
+  background: #f4eaf3;
+  color: #e9438d;
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.events-state h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.events-state p {
+  max-width: 450px;
+  margin: 8px 0 20px;
+  color: #7f7188;
+  line-height: 1.55;
+}
+
+.events-state__button {
+  border: 0;
+  border-radius: 11px;
+  padding: 11px 17px;
+  background: #21152f;
+  color: white;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.event-card-skeleton {
+  overflow: hidden;
+  border: 1px solid #eee7f1;
+  border-radius: 22px;
+  background: white;
+}
+
+.event-card-skeleton__image {
+  height: 235px;
+  background: #ede8f0;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+
+.event-card-skeleton__body {
+  padding: 22px;
+}
+
+.event-card-skeleton__line {
+  width: 80%;
+  height: 12px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: #ede8f0;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+
+.event-card-skeleton__line--small {
+  width: 35%;
+}
+
+.event-card-skeleton__line--title {
+  width: 68%;
+  height: 23px;
+  margin-bottom: 15px;
+}
+
+.event-card-skeleton__button {
+  width: 100%;
+  height: 43px;
+  margin-top: 15px;
+  border-radius: 12px;
+  background: #ede8f0;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1050px) {
+  .events-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+}

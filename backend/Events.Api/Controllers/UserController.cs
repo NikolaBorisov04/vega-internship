@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Events.Application.Services;
 using Events.Application.DTOs;
 using MediatR;
 using Events.Application.Queries;
 using Events.Application.Mappers;
+
+using Events.Application.Commands;
 
 namespace Events.Api.Controllers;
 
@@ -49,6 +50,18 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
+    [HttpGet("organizer/event/{eventId:Guid}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UserResponseDTO>> GetOrganizerByEventId(Guid eventId, CancellationToken ct)
+    {
+        var query = new GetOrganizerByEventIdQuery(eventId);
+        var organizer = await _sender.Send(query, ct);
+
+        return Ok(organizer);
+    }
+
     [HttpPost("register/customer")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -85,5 +98,19 @@ public class UserController : ControllerBase
         var user = await _sender.Send(command, ct);
 
         return Ok(user);
+    }
+
+    [HttpDelete("{id:Guid}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<string>> DeleteUser(Guid id, CancellationToken ct = default)
+    {
+        var command = new DeleteUserCommand(id);
+        await _sender.Send(command, ct);
+
+        return Ok($"Nalog sa ID-jem {id} je uspesno izbrisan");
     }
 }

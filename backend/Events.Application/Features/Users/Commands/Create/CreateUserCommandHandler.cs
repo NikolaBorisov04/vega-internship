@@ -1,8 +1,10 @@
 using Events.Application.DTOs;
 using Events.Application.Factories;
+using Events.Application.Factories.Email;
 using Events.Application.Mappers;
 using Events.Application.Repositories;
 using Events.Application.Security;
+using Events.Application.Services;
 using MediatR;
 
 namespace Events.Application.Commands;
@@ -14,17 +16,20 @@ public sealed class CreateUserCommandHandler
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ResponseMapper _responseMapper;
+    private readonly IEmailService _emailService;
 
     public CreateUserCommandHandler(
         IUserRepository userRepository,
         IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher,
-        ResponseMapper responseMapper)
+        ResponseMapper responseMapper,
+        IEmailService emailService)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
         _responseMapper = responseMapper;
+        _emailService = emailService;
     }
 
     public async Task<UserResponseDTO> Handle(
@@ -48,6 +53,10 @@ public sealed class CreateUserCommandHandler
         _userRepository.Add(user);
 
         await _unitOfWork.SaveChangesAsync(ct);
+
+        var welcomeEmail = WelcomeEmailFactory.Create(user);
+
+        await _emailService.SendEmailAsync(welcomeEmail, ct);
 
         return _responseMapper.MapToResponse(user);
     }
