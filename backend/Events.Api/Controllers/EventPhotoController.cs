@@ -45,6 +45,18 @@ public class EventPhotoController : ControllerBase
         return Ok(eventPhotos);
     }
 
+    [HttpGet("event/{eventId:Guid}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(IEnumerable<EventPhotoResponseDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetByEventIdAsync(Guid eventId, CancellationToken ct = default)
+    {
+        var query = new GetEventPhotosByEventIdQuery(eventId);
+        var eventPhotos = await _sender.Send(query, ct);
+
+        return Ok(eventPhotos);
+    }
+
     [HttpPost("create")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
