@@ -84,7 +84,7 @@ public static class ServiceCollectionExtensions
                 In = ParameterLocation.Header,
                 Description = "Unesite vas JWT token."
             });
-
+            
             options.AddSecurityRequirement(x => new OpenApiSecurityRequirement
             {
                 {
@@ -92,6 +92,10 @@ public static class ServiceCollectionExtensions
                     new List<string>()
                 }
             });
+
+            options.UseAllOfToExtendReferenceSchemas();
+
+            options.EnableAnnotations();
         });
 
         services.AddExceptionHandler<ExceptionMiddleware>();

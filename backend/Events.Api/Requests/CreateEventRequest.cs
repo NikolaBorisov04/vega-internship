@@ -1,22 +1,33 @@
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 namespace Events.API.Requests;
 
-public sealed class CreateEventRequest
+public sealed record CreateEventRequest
 {
-    public string Title { get; set; } = null!;
+    [BindRequired, Required]
+    public required string Title { get; init; }
 
-    public string Description { get; set; } = null!;
+    [BindRequired, Required]
+    public required string Description { get; init; }
 
-    public string Country { get; set; } = null!;
+    [BindRequired, Required]
+    public required string Country { get; init; }
 
-    public string City { get; set; } = null!;
+    [BindRequired, Required]
+    public required string City { get; init; }
 
-    public string Address { get; set; } = null!;
+    [BindRequired, Required]
+    public required string Address { get; init; }
 
-    public string? VenueName { get; set; }
+    public string? VenueName { get; init; }
 
-    public DateTimeOffset StartOfEvent { get; set; }
+    [BindRequired, Required]
+    public required DateTimeOffset StartOfEvent { get; init; }
 
-    public DateTimeOffset EndOfEvent { get; set; }
+    [BindRequired, Required]
+    public required DateTimeOffset EndOfEvent { get; init; }
 
-    public IFormFile MainImage { get; set; } = null!;
+    [BindRequired, Required]
+    public required IFormFile MainImage { get; init; }
 }

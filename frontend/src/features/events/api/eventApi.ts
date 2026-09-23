@@ -13,3 +13,5 @@ export async function getEventById(
 ): Promise<EventResponseDTO> {
   return httpClient.get<EventResponseDTO>(`/Event/${id}`, signal);
 }
+
+// create event -> store -> izvuci iz store zustand

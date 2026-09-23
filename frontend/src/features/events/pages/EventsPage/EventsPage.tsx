@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { EventFilters } from "../../components/EventFilters/EventFilters";
 import { EventsHero } from "../../components/EventsHero/EventsHero";
 import { EventsList } from "../../components/EventsList/EventsList";
 import { useEventFilters } from "../../hooks/useEventFilters";
 import { useEvents } from "../../hooks/useEvents";
 import "./EventsPage.css";
+import { useAuth } from "../../../auth/context/AuthContext";
 
 export function EventsPage() {
   const {
@@ -25,23 +27,41 @@ export function EventsPage() {
     clearFilters,
   } = useEventFilters(events);
 
+  const navigate = useNavigate();
+  const { role } = useAuth();
+
   return (
     <main className="events-page">
       <EventsHero />
       
       <section className="events-content">
-        <header className="events-toolbar">
+        <div className="events-toolbar">
           <div>
             <p className="events-toolbar__label">EXPLORE</p>
 
             <h2>Events worth showing up for</h2>
           </div>
 
+          <div className="events-toolbar__actions">
+            {role === "Organizer" && (
+                <button
+                    type="button"
+                    className="events-create-button"
+                    onClick={() =>
+                        navigate("/createevent")
+                    }
+                >
+                    <span>+</span>
+                    Create Event
+                </button>
+            )}
+          </div>
+
           <span className="events-toolbar__count">
             {filteredEvents.length}{" "}
             {filteredEvents.length === 1 ? "event" : "events"}
           </span>
-        </header>
+        </div>
 
         <EventFilters
           search={search}
