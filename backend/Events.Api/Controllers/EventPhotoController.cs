@@ -5,6 +5,9 @@ using Events.Application.Queries;
 using Events.Application.Commands;
 using MediatR;
 using Events.Application.Mappers;
+using Swashbuckle.AspNetCore.Annotations;
+using Events.API.Requests;
+using Events.Application.Storage;
 
 namespace Events.Api.Controllers;
 
@@ -59,16 +62,30 @@ public class EventPhotoController : ControllerBase
 
     [HttpPost("create")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<EventPhotoResponseDTO>> Create([FromBody] EventPhotoCreateDTO dto, CancellationToken ct)
+    [Consumes("multipart/form-data")]
+    [SwaggerOperation(OperationId = "CreateEventPhoto")]
+    [ProducesResponseType(typeof(EventPhotoResponseDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<EventPhotoResponseDTO>> Create([FromForm] CreateEventPhotoRequest request, CancellationToken ct)
     {
-        var command = _commandMapper.MapToCommand(dto);
+        var dto = new EventPhotoCreateDTO(
+            request.Caption,
+            request.EventId
+        );
+
+        var file = new FileUpload(
+            request.Image.OpenReadStream(),
+            request.Image.FileName,
+            request.Image.ContentType,
+            request.Image.Length
+        );
+
+        var command = _commandMapper.MapToCommand(dto, file);
         var result = await _sender.Send(command, ct);
 
-        return Ok(result);
+        return StatusCode(StatusCodes.Status201Created, result);
     }
 
     [HttpPatch("{id:Guid}")]

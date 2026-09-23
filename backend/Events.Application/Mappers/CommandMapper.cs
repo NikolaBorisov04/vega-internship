@@ -1,5 +1,6 @@
 using Events.Application.Commands;
 using Events.Application.DTOs;
+using Events.Application.Storage;
 using Events.Domain.Enums;
 
 namespace Events.Application.Mappers;
@@ -60,9 +61,9 @@ public class CommandMapper
         return new UpdateSponsorCommand(id, dto);
     }
 
-    public CreateEventPhotoCommand MapToCommand(EventPhotoCreateDTO dto)
+    public CreateEventPhotoCommand MapToCommand(EventPhotoCreateDTO dto, FileUpload file)
     {
-        return new CreateEventPhotoCommand(dto);
+        return new CreateEventPhotoCommand(dto, file);
     }
 
     public UpdateEventPhotoCommand MapToCommand(Guid id, EventPhotoUpdateDTO dto)
@@ -98,6 +99,11 @@ public class CommandMapper
     public UpdateTicketCommand MapToCommand(Guid id, TicketUpdateDTO dto)
     {
         return new UpdateTicketCommand(id, dto);
+    }
+
+    public CreateEventCommand MapToCommand(EventCreateDTO dto, FileUpload file)
+    {
+        return new CreateEventCommand(dto, file);
     }
 
     public UpdateEventCommand MapToCommand(Guid id, EventUpdateDTO dto)

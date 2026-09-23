@@ -5,12 +5,14 @@ namespace Events.Application.Factories;
 
 public static class EventPhotoFactory
 {
-    public static EventPhoto Create(CreateEventPhotoCommand command)
+    public static EventPhoto Create(CreateEventPhotoCommand command, string imageUrl, string imagePublicId)
     {
         return new EventPhoto
         {
-            Caption = command.dto.Caption,
-            EventId = command.dto.EventId
+            Caption = command.Dto.Caption,
+            EventId = command.Dto.EventId,
+            Url = imageUrl,
+            PublicId = imagePublicId
         };
     }
 }

@@ -81,7 +81,7 @@ public class EventController : ControllerBase
             request.MainImage.Length
         );
 
-        var command = new CreateEventCommand(dto, file);
+        var command = _commandMapper.MapToCommand(dto, file);
 
         var result = await _sender.Send(command, ct);
 
