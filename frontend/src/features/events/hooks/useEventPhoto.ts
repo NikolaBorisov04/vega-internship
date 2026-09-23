@@ -1,12 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { Client, type EventPhotoResponseDTO } from "../../../api/generated/api";
+import {
+  Client,
+  type EventPhotoResponseDTO,
+  type ProblemDetails,
+} from "../../../api/generated/api";
 
 const apiClient = new Client(
   import.meta.env.VITE_API_URL
 );
 
 export function useEventPhoto(eventId: string | undefined) {
-  return useQuery<EventPhotoResponseDTO[], Error>({
+  return useQuery<EventPhotoResponseDTO[], ProblemDetails>({
     queryKey: ["event-photos", eventId],
 
     queryFn: async () => {

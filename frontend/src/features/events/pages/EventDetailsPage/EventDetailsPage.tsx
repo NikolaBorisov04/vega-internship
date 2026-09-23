@@ -29,8 +29,10 @@ export function EventDetailsPage() {
   const {
     data: eventPhotos = [],
     isLoading: isPhotosLoading,
-    isError: isPhotosError,
+    error: photosError,
+    refetch: refetchPhotos,
   } = useEventPhoto(id);
+console.log("PHOTO ERROR: ", photosError);
 
   if (isLoading) {
     return (
@@ -106,7 +108,6 @@ export function EventDetailsPage() {
       </main>
     );
   }
-
   const isHighPriority =
     event.priority === EventPriority.High;
 
@@ -285,7 +286,8 @@ export function EventDetailsPage() {
             mainImageURL={event.mainImageURL}
             photos={eventPhotos}
             isLoading={isPhotosLoading}
-            isError={isPhotosError}
+            error={photosError}
+            onRetry={() => refetchPhotos()}
           />
         </section>
 

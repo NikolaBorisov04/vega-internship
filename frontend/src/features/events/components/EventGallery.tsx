@@ -1,12 +1,15 @@
-import type { EventPhotoResponseDTO } from "../../../api/generated/api";
-
+import type {
+  EventPhotoResponseDTO,
+  ProblemDetails,
+} from "../../../api/generated/api";
 
 interface EventGalleryProps {
   eventTitle: string;
   mainImageURL: string;
   photos: EventPhotoResponseDTO[];
   isLoading: boolean;
-  isError: boolean;
+  error?: ProblemDetails | null;
+  onRetry?: () => void;
 }
 
 export function EventGallery({
@@ -14,7 +17,8 @@ export function EventGallery({
   mainImageURL,
   photos,
   isLoading,
-  isError,
+  error,
+  onRetry,
 }: EventGalleryProps) {
   if (isLoading) {
     return (
@@ -26,12 +30,21 @@ export function EventGallery({
     );
   }
 
-  if (isError) {
+  if (error) {
     return (
       <div className="event-gallery event-gallery--error">
         <div className="event-gallery__message">
-          We couldn't load the event photos.
+          {error.detail}
         </div>
+
+        {onRetry && (
+          <button
+            type="button"
+            onClick={onRetry}
+          >
+            Try again
+          </button>
+        )}
       </div>
     );
   }

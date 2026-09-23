@@ -579,7 +579,55 @@
 
 /* Error state */
 .event-gallery--error .event-gallery__message {
-  border-color: rgba(255, 100, 100, 0.12);
+  display: flex;
+  min-height: 220px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  padding: 2rem;
+  border: 1px solid #e8e0ed;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(33, 21, 56, 0.04);
+  color: #6d6372;
+  text-align: center;
+}
+
+.event-gallery--error .event-gallery__message h3 {
+  margin: 0;
+  color: #281836;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.event-gallery--error .event-gallery__message p {
+  max-width: 650px;
+  margin: 0;
+  color: #7b6f82;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.event-gallery--error .event-gallery__message button {
+  margin-top: 8px;
+  border: 0;
+  border-radius: 11px;
+  padding: 12px 19px;
+  background: #21152f;
+  color: #ffffff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.event-gallery--error .event-gallery__message button:hover {
+  background: #e9438d;
+  transform: translateY(-1px);
 }
 
 /* --------------------------------------------------
