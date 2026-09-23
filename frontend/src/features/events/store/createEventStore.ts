@@ -44,19 +44,13 @@ export const useCreateEventStore =
                 nextStep: () =>
                     set((state) => ({
                         currentStep:
-                            state.currentStep < 4
-                                ? ((state.currentStep +
-                                      1) as 1 | 2 | 3 | 4)
-                                : 4,
+                            state.currentStep < 4 ? ((state.currentStep + 1) as 1 | 2 | 3 | 4) : 4,
                     })),
 
                 previousStep: () =>
                     set((state) => ({
                         currentStep:
-                            state.currentStep > 1
-                                ? ((state.currentStep -
-                                      1) as 1 | 2 | 3 | 4)
-                                : 1,
+                            state.currentStep > 1 ? ((state.currentStep - 1) as 1 | 2 | 3 | 4) : 1,
                     })),
 
                 reset: () =>
@@ -83,7 +77,7 @@ export const useCreateEventStore =
                     endOfEvent: state.endOfEvent,
                     currentStep: state.currentStep,
 
-                    // Do not persist File.
+                    // we can't persist a file inside the local storage
                     mainImage: null,
                 }),
             }
