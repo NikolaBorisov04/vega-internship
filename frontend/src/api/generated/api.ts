@@ -654,30 +654,43 @@ export class Client {
     }
 
     /**
-     * @param body (optional) 
+     * @param caption (optional) 
+     * @param eventId (optional) 
+     * @param image (optional) 
      * @return Created
      */
-    create(body: EventPhotoCreateDTO | undefined): Promise<EventPhotoResponseDTO> {
+    createEventPhoto(caption: string | undefined, eventId: string | undefined, image: FileParameter | undefined): Promise<EventPhotoResponseDTO> {
         let url_ = this.baseUrl + "/api/EventPhoto/create";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+        const content_ = new FormData();
+        if (caption === null || caption === undefined)
+            throw new globalThis.Error("The parameter 'caption' cannot be null.");
+        else
+            content_.append("Caption", caption.toString());
+        if (eventId === null || eventId === undefined)
+            throw new globalThis.Error("The parameter 'eventId' cannot be null.");
+        else
+            content_.append("EventId", eventId.toString());
+        if (image === null || image === undefined)
+            throw new globalThis.Error("The parameter 'image' cannot be null.");
+        else
+            content_.append("Image", image.data, image.fileName ? image.fileName : "Image");
 
         let options_: RequestInit = {
             body: content_,
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate(_response);
+            return this.processCreateEventPhoto(_response);
         });
     }
 
-    protected processCreate(response: Response): Promise<EventPhotoResponseDTO> {
+    protected processCreateEventPhoto(response: Response): Promise<EventPhotoResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -922,7 +935,7 @@ export class Client {
      * @param body (optional) 
      * @return Created
      */
-    create2(body: EventSponsorshipCreateDTO | undefined): Promise<EventSponsorshipResponseDTO> {
+    create(body: EventSponsorshipCreateDTO | undefined): Promise<EventSponsorshipResponseDTO> {
         let url_ = this.baseUrl + "/api/EventSponsorship/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -938,11 +951,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate2(_response);
+            return this.processCreate(_response);
         });
     }
 
-    protected processCreate2(response: Response): Promise<EventSponsorshipResponseDTO> {
+    protected processCreate(response: Response): Promise<EventSponsorshipResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -1232,7 +1245,7 @@ export class Client {
      * @param body (optional) 
      * @return Created
      */
-    create3(body: SponsorCreateDTO | undefined): Promise<SponsorResponseDTO> {
+    create2(body: SponsorCreateDTO | undefined): Promise<SponsorResponseDTO> {
         let url_ = this.baseUrl + "/api/Sponsor/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1248,11 +1261,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate3(_response);
+            return this.processCreate2(_response);
         });
     }
 
-    protected processCreate3(response: Response): Promise<SponsorResponseDTO> {
+    protected processCreate2(response: Response): Promise<SponsorResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -1527,7 +1540,7 @@ export class Client {
      * @param body (optional) 
      * @return Created
      */
-    create4(body: TicketCreateDTO | undefined): Promise<TicketResponseDTO> {
+    create3(body: TicketCreateDTO | undefined): Promise<TicketResponseDTO> {
         let url_ = this.baseUrl + "/api/Ticket/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1543,11 +1556,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate4(_response);
+            return this.processCreate3(_response);
         });
     }
 
-    protected processCreate4(response: Response): Promise<TicketResponseDTO> {
+    protected processCreate3(response: Response): Promise<TicketResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -1849,7 +1862,7 @@ export class Client {
      * @param body (optional) 
      * @return Created
      */
-    create5(body: TicketTypeCreateDTO | undefined): Promise<TicketTypeResponseDTO> {
+    create4(body: TicketTypeCreateDTO | undefined): Promise<TicketTypeResponseDTO> {
         let url_ = this.baseUrl + "/api/TicketType/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1865,11 +1878,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate5(_response);
+            return this.processCreate4(_response);
         });
     }
 
-    protected processCreate5(response: Response): Promise<TicketTypeResponseDTO> {
+    protected processCreate4(response: Response): Promise<TicketTypeResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -2277,11 +2290,6 @@ export class Client {
     }
 }
 
-export interface EventPhotoCreateDTO {
-    caption?: string | undefined;
-    eventId?: string;
-}
-
 export interface EventPhotoResponseDTO {
     id?: string;
     url: string;
@@ -2299,18 +2307,6 @@ export interface EventPhotoUpdateDTO {
 export enum EventPriority {
     Standard = "Standard",
     High = "High",
-}
-
-export interface CreateEventRequest {
-    title: string;
-    description: string;
-    country: string;
-    city: string;
-    address: string;
-    venueName: string;
-    startOfEvent: string;
-    endOfEvent: string;
-    mainImage: File | null;
 }
 
 export interface EventResponseDTO {

@@ -1,9 +1,19 @@
 import { Link, useParams } from "react-router-dom";
+
 import { useEvent } from "../../hooks/useEvent";
+import { useEventPhoto } from "../../hooks/useEventPhoto";
+
+import { EventGallery } from "../../components/EventGallery";
+
 import { ApiError } from "../../../../shared/api/httpClient";
 import { EventPriority } from "../../../../api/generated/api";
-import { formatDateTime, formatEventRange } from "../../../../shared/utils/formatDateTime";
-import "./EventDetailsPage.css"
+
+import {
+  formatDateTime,
+  formatEventRange,
+} from "../../../../shared/utils/formatDateTime";
+
+import "./EventDetailsPage.css";
 
 export function EventDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +26,12 @@ export function EventDetailsPage() {
     refetch,
   } = useEvent(id);
 
+  const {
+    data: eventPhotos = [],
+    isLoading: isPhotosLoading,
+    isError: isPhotosError,
+  } = useEventPhoto(id);
+
   if (isLoading) {
     return (
       <main className="event-details-page">
@@ -27,6 +43,7 @@ export function EventDetailsPage() {
 
           <div className="event-details-loading">
             <div className="event-details-loading__hero" />
+
             <div className="event-details-loading__content">
               <div className="skeleton skeleton--small" />
               <div className="skeleton skeleton--title" />
@@ -90,7 +107,8 @@ export function EventDetailsPage() {
     );
   }
 
-  const isHighPriority = event.priority === EventPriority.High;
+  const isHighPriority =
+    event.priority === EventPriority.High;
 
   return (
     <main className="event-details-page">
@@ -118,7 +136,7 @@ export function EventDetailsPage() {
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
                   e.currentTarget.parentElement?.classList.add(
-                    "event-details-hero__image-frame--fallback",
+                    "event-details-hero__image-frame--fallback"
                   );
                 }}
               />
@@ -139,7 +157,7 @@ export function EventDetailsPage() {
             <div className="event-details-hero__date">
               {formatEventRange(
                 event.startOfEvent,
-                event.endOfEvent,
+                event.endOfEvent
               )}
             </div>
 
@@ -262,41 +280,13 @@ export function EventDetailsPage() {
             <h2>See the atmosphere.</h2>
           </div>
 
-          <div className="event-gallery">
-            <div className="event-gallery__featured">
-              <img
-                src={event.mainImageURL}
-                alt={`${event.title} main`}
-              />
-            </div>
-
-            <div className="event-gallery__placeholder">
-              <span>+</span>
-              <strong>Event photos</strong>
-              <p>
-                Additional photos from this event will appear
-                here.
-              </p>
-            </div>
-
-            <div className="event-gallery__placeholder">
-              <span>+</span>
-              <strong>Event photos</strong>
-              <p>
-                Additional photos from this event will appear
-                here.
-              </p>
-            </div>
-
-            <div className="event-gallery__placeholder">
-              <span>+</span>
-              <strong>Event photos</strong>
-              <p>
-                Additional photos from this event will appear
-                here.
-              </p>
-            </div>
-          </div>
+          <EventGallery
+            eventTitle={event.title}
+            mainImageURL={event.mainImageURL}
+            photos={eventPhotos}
+            isLoading={isPhotosLoading}
+            isError={isPhotosError}
+          />
         </section>
 
         {/* ORGANIZER */}

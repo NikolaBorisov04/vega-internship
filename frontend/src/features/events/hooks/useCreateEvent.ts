@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { useAuth } from "../../auth/context/AuthContext";
-import type { CreateEventRequest } from "../../../api/generated/api";
+import type { CreateEventRequest } from "../../../api/generated/createEventRequest";
 
 const API_URL = import.meta.env.VITE_API_URL.replace(/\/$/, "");
 
@@ -42,7 +42,7 @@ async function createEventRequest(
     );
 
     const response = await fetch(
-        `${API_URL}/Event/create`,
+        `${API_URL}/api/Event/create`,
         {
             method: "POST",
             headers: {

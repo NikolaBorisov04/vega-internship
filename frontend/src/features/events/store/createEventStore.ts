@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import type { CreateEventRequest } from "../../../api/generated/createEventRequest";
 
-import type { CreateEventRequest } from "../../../api/generated/api";
 
 interface CreateEventState extends CreateEventRequest {
     currentStep: 1 | 2 | 3 | 4;
