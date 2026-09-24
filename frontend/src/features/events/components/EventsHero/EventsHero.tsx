@@ -15,7 +15,7 @@ export function EventsHero() {
 
         <p>
           Discover concerts, festivals, shows and experiences
-          worth getting out of the house for.
+          worth going out for.
         </p>
       </div>
 
