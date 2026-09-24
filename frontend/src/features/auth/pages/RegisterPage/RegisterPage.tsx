@@ -423,54 +423,6 @@ export default function RegisterPage() {
                                 />
                             </div>
                         </div>
-
-                        <div className="register-console__footer">
-                            <div>
-                                <span>
-                                    01
-                                </span>
-
-                                <strong>
-                                    CHOOSE
-                                </strong>
-                            </div>
-
-                            <div>
-                                <span>
-                                    02
-                                </span>
-
-                                <strong>
-                                    BUILD
-                                </strong>
-                            </div>
-
-                            <div>
-                                <span>
-                                    03
-                                </span>
-
-                                <strong>
-                                    EXPERIENCE
-                                </strong>
-                            </div>
-                        </div>
-
-                        <div className="register-showcase__tags">
-                            {allowedRoles.map(
-                                (role) => (
-                                    <span
-                                        key={
-                                            role
-                                        }
-                                    >
-                                        {
-                                            role
-                                        }
-                                    </span>
-                                )
-                            )}
-                        </div>
                     </div>
 
                     <div className="register-showcase__footer">

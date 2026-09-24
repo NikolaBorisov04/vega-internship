@@ -90,7 +90,7 @@ export function AppHeader() {
                         >
                             {isAuthenticated
                                 ? "Create profile"
-                                : "Create account"}
+                                : "Register"}
                         </button>
                     )}
 
