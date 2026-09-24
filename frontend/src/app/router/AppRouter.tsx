@@ -6,6 +6,7 @@ import { AppLayout } from "../../layouts/AppLayout";
 import { GuestRoute } from "./GuestRoute";
 import { OrganizerRoute } from "./OrganizerRoute";
 import { CreateEventPage } from "../../features/events/pages/CreateEventPage/CreateEventPage";
+import { ROUTES } from "../../constants/routes";
 
 
 export function AppRouter() {
@@ -13,25 +14,25 @@ export function AppRouter() {
         <Routes>
             <Route element={<GuestRoute />}>
                 <Route
-                    path="/login"
+                    path={ROUTES.LOGIN}
                     element={<LoginPage />}
                 />
             </Route>
 
             <Route element={<AppLayout />}>
                 <Route
-                    path="/events"
+                    path={ROUTES.EVENTS}
                     element={<EventsPage />}
                 />
 
                 <Route
-                    path="/events/:id"
+                    path={`${ROUTES.EVENTS}/:id`}
                     element={<EventDetailsPage />}
                 />
 
                 <Route element={<OrganizerRoute />}>
                     <Route
-                        path="/createevent"
+                        path={ROUTES.CREATEEVENT}
                         element={<CreateEventPage />}
                     />
                 </Route>
@@ -39,7 +40,7 @@ export function AppRouter() {
 
             <Route
                 path="*"
-                element={<Navigate to="/events" replace />}
+                element={<Navigate to={ROUTES.EVENTS} replace />}
             />
         </Routes>
     );

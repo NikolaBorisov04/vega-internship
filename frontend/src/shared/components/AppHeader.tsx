@@ -2,6 +2,7 @@ import { Music2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../features/auth/context/AuthContext";
+import { ROUTES } from "../../constants/routes";
 
 import "./AppHeader.css";
 
@@ -12,8 +13,8 @@ export function AppHeader() {
     const { isAuthenticated, signOut } = useAuth();
 
     const isAuthRoute =
-        location.pathname === "/login" ||
-        location.pathname === "/register";
+        location.pathname === ROUTES.LOGIN ||
+        location.pathname === ROUTES.REGISTER;
 
     if (isAuthRoute) {
         return null;
@@ -22,11 +23,11 @@ export function AppHeader() {
     const handleAuthClick = () => {
         if (isAuthenticated) {
             signOut();
-            navigate("/events");
+            navigate(ROUTES.EVENTS);
             return;
         }
 
-        navigate("/login");
+        navigate(ROUTES.LOGIN);
     };
 
     return (
@@ -37,7 +38,7 @@ export function AppHeader() {
                 <button
                     type="button"
                     className="app-header__brand"
-                    onClick={() => navigate("/events")}
+                    onClick={() => navigate(ROUTES.EVENTS)}
                 >
                     <span className="app-header__brand-icon">
                         <Music2 size={19} />
@@ -53,7 +54,7 @@ export function AppHeader() {
                     <button
                         type="button"
                         className="app-header__nav-link"
-                        onClick={() => navigate("/events")}
+                        onClick={() => navigate(ROUTES.EVENTS)}
                     >
                         Explore
                     </button>
@@ -70,9 +71,7 @@ export function AppHeader() {
                         }`}
                         onClick={handleAuthClick}
                     >
-                        {isAuthenticated
-                            ? "Log out"
-                            : "Log in"}
+                        {isAuthenticated ? "Log out" : "Log in"}
                     </button>
                 </div>
             </div>

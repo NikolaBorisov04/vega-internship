@@ -6,6 +6,7 @@ import { useEventFilters } from "../../hooks/useEventFilters";
 import { useEvents } from "../../hooks/useEvents";
 import "./EventsPage.css";
 import { useAuth } from "../../../auth/context/AuthContext";
+import { UserRole } from "../../../../api/generated/api";
 
 export function EventsPage() {
   const {
@@ -43,7 +44,7 @@ export function EventsPage() {
           </div>
 
           <div className="events-toolbar__actions">
-            {role === "Organizer" && (
+            {role === UserRole.Organizer && (
                 <button
                     type="button"
                     className="events-create-button"
