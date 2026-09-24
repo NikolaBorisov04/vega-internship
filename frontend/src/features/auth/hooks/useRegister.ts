@@ -1,10 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 
-import type {
-    RegisterAdminDTO,
-    RegisterCustomerDTO,
-    RegisterOrganizerDTO,
-    UserResponseDTO,
+import {
+    UserRole,
+    type RegisterAdminDTO,
+    type RegisterCustomerDTO,
+    type RegisterOrganizerDTO,
+    type UserResponseDTO,
 } from "../../../api/generated/api";
 
 import { apiClient } from "../../../api/client";
@@ -32,77 +33,51 @@ interface UseRegisterResult {
 }
 
 export function useRegister(): UseRegisterResult {
-    const mutation =
-        useMutation<
-            UserResponseDTO,
-            unknown,
-            RegisterPayload
-        >({
-            mutationFn: async ({
-                role,
-                data,
-            }) => {
-                const commonFields = {
-                    name: data.name.trim(),
-                    email: data.email.trim(),
-                    password: data.password,
-                    country: data.country.trim(),
-                    city: data.city.trim(),
-                    address: data.address.trim(),
-                    phoneNumber:
-                        data.phoneNumber.trim(),
-                };
+    const mutation = useMutation<
+        UserResponseDTO,
+        unknown,
+        RegisterPayload
+    >({
+        mutationFn: async ({ role, data }) => {
+            const fields = {
+                name: data.name.trim(),
+                email: data.email.trim(),
+                password: data.password,
+                country: data.country.trim(),
+                city: data.city.trim(),
+                address: data.address.trim(),
+                phoneNumber: data.phoneNumber.trim(),
+            };
 
-                switch (role) {
-                    case "Customer": {
-                        const payload: RegisterCustomerDTO = {
-                            ...commonFields,
-                        };
+            switch (role) {
+                case UserRole.Customer:
+                    return apiClient.customer(
+                        fields satisfies RegisterCustomerDTO
+                    );
 
-                        return apiClient.customer(
-                            payload
-                        );
-                    }
+                case UserRole.Organizer:
+                    return apiClient.organizer({
+                        ...fields,
+                        companyName: data.companyName.trim(),
+                    } satisfies RegisterOrganizerDTO);
 
-                    case "Organizer": {
-                        const payload: RegisterOrganizerDTO = {
-                            ...commonFields,
-                            companyName:
-                                data.companyName.trim(),
-                        };
+                case UserRole.Admin:
+                    return apiClient.admin({
+                        ...fields,
+                        companyName: data.companyName.trim(),
+                    } satisfies RegisterAdminDTO);
 
-                        return apiClient.organizer(
-                            payload
-                        );
-                    }
-
-                    case "Admin": {
-                        const payload: RegisterAdminDTO = {
-                            ...commonFields,
-                            companyName:
-                                data.companyName.trim(),
-                        };
-
-                        return apiClient.admin(
-                            payload
-                        );
-                    }
-
-                    default:
-                        throw new Error(
-                            "Invalid registration role."
-                        );
-                }
-            },
-        });
+                default:
+                    throw new Error("Invalid registration role.");
+            }
+        },
+    });
 
     const register = async (
         payload: RegisterPayload
     ): Promise<UserResponseDTO | null> => {
         try {
-            return await mutation.mutateAsync(
-                payload
-            );
+            return await mutation.mutateAsync(payload);
         } catch {
             return null;
         }
@@ -110,16 +85,10 @@ export function useRegister(): UseRegisterResult {
 
     return {
         register,
-
         isLoading: mutation.isPending,
-
         error: mutation.error
-            ? getApiErrorMessage(
-                  mutation.error
-              )
+            ? getApiErrorMessage(mutation.error)
             : null,
-
-        clearError: () =>
-            mutation.reset(),
+        clearError: mutation.reset,
     };
 }
