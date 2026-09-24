@@ -1981,7 +1981,7 @@ export class Client {
     }
 
     /**
-     * @return Created
+     * @return OK
      */
     userDELETE(id: string): Promise<string> {
         let url_ = this.baseUrl + "/api/User/{id}";
@@ -2005,11 +2005,11 @@ export class Client {
     protected processUserDELETE(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 201) {
+        if (status === 200) {
             return response.text().then((_responseText) => {
-            let result201: any = null;
-            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result201;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {

@@ -5,16 +5,25 @@ import { useAuth } from "../../features/auth/context/AuthContext";
 import { ROUTES } from "../../constants/routes";
 
 import "./AppHeader.css";
+import { UserRole } from "../../api/generated/api";
 
 export function AppHeader() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { isAuthenticated, signOut } = useAuth();
+    const {
+        isAuthenticated,
+        role,
+        signOut,
+    } = useAuth();
 
     const isAuthRoute =
         location.pathname === ROUTES.LOGIN ||
         location.pathname === ROUTES.REGISTER;
+
+    const canRegister =
+        !isAuthenticated ||
+        role === UserRole.Admin;
 
     if (isAuthRoute) {
         return null;
@@ -33,12 +42,15 @@ export function AppHeader() {
     return (
         <header className="app-header">
             <div className="app-header__inner">
-
                 {/* BRAND */}
                 <button
                     type="button"
                     className="app-header__brand"
-                    onClick={() => navigate(ROUTES.EVENTS)}
+                    onClick={() =>
+                        navigate(
+                            ROUTES.EVENTS
+                        )
+                    }
                 >
                     <span className="app-header__brand-icon">
                         <Music2 size={19} />
@@ -54,7 +66,11 @@ export function AppHeader() {
                     <button
                         type="button"
                         className="app-header__nav-link"
-                        onClick={() => navigate(ROUTES.EVENTS)}
+                        onClick={() =>
+                            navigate(
+                                ROUTES.EVENTS
+                            )
+                        }
                     >
                         Explore
                     </button>
@@ -62,6 +78,22 @@ export function AppHeader() {
 
                 {/* AUTH */}
                 <div className="app-header__actions">
+                    {canRegister && (
+                        <button
+                            type="button"
+                            className="app-header__register-button"
+                            onClick={() =>
+                                navigate(
+                                    ROUTES.REGISTER
+                                )
+                            }
+                        >
+                            {isAuthenticated
+                                ? "Create profile"
+                                : "Create account"}
+                        </button>
+                    )}
+
                     <button
                         type="button"
                         className={`app-header__auth-button ${
@@ -69,9 +101,13 @@ export function AppHeader() {
                                 ? "app-header__auth-button--logout"
                                 : ""
                         }`}
-                        onClick={handleAuthClick}
+                        onClick={
+                            handleAuthClick
+                        }
                     >
-                        {isAuthenticated ? "Log out" : "Log in"}
+                        {isAuthenticated
+                            ? "Log out"
+                            : "Log in"}
                     </button>
                 </div>
             </div>

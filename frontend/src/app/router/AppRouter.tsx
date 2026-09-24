@@ -7,6 +7,8 @@ import { GuestRoute } from "./GuestRoute";
 import { OrganizerRoute } from "./OrganizerRoute";
 import { CreateEventPage } from "../../features/events/pages/CreateEventPage/CreateEventPage";
 import { ROUTES } from "../../constants/routes";
+import { RegisterRoute } from "./RegisterRoute";
+import RegisterPage from "../../features/auth/pages/RegisterPage/RegisterPage";
 
 
 export function AppRouter() {
@@ -16,6 +18,13 @@ export function AppRouter() {
                 <Route
                     path={ROUTES.LOGIN}
                     element={<LoginPage />}
+                />
+            </Route>
+
+            <Route element={<RegisterRoute />}>
+                <Route
+                    path={ROUTES.REGISTER}
+                    element={<RegisterPage />}
                 />
             </Route>
 

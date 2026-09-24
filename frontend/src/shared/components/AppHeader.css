@@ -168,6 +168,61 @@
 }
 
 /* --------------------------------
+   REGISTER BUTTON
+-------------------------------- */
+
+.app-header__register-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 5%;
+
+    min-width: 116px;
+    height: 40px;
+
+    padding: 0 16px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    color:
+        rgba(255, 255, 255, 0.65);
+
+    font: inherit;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        transform 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease;
+}
+
+.app-header__register-button:hover {
+    transform:
+        translateY(-1px);
+
+    border-color:
+        rgba(191, 142, 226, 0.25);
+
+    background:
+        rgba(184, 128, 218, 0.08);
+
+    color: #ffffff;
+}
+
+/* --------------------------------
    AUTH BUTTON
 -------------------------------- */
 
