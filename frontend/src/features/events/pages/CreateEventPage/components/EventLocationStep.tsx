@@ -1,5 +1,6 @@
-import type { CreateEventErrors } from "../createEventValidation";
+import { FormField } from "./FormField";
 import { useCreateEventStore } from "../../../store/createEventStore";
+import type { CreateEventErrors } from "../createEventValidation";
 
 interface EventLocationStepProps {
     errors: CreateEventErrors;
@@ -30,9 +31,9 @@ export function EventLocationStep({
 
     return (
         <div className="create-event-step">
-            <div className="create-event-step__header">
+            <div className="create-event-step__intro">
                 <span className="create-event-step__eyebrow">
-                    STEP 2
+                    Step 2
                 </span>
 
                 <h2>Where is your event?</h2>
@@ -43,109 +44,53 @@ export function EventLocationStep({
                 </p>
             </div>
 
-            <div className="create-event-form">
-                <div className="create-event-form__row">
-                    <div className="create-event-field">
-                        <label htmlFor="country">
-                            Country
-                        </label>
+            <div className="create-event-grid">
+                <FormField
+                    name="country"
+                    label="Country"
+                    placeholder="e.g. Serbia"
+                    value={country}
+                    onChange={(event) =>
+                        setField("country", event.target.value)
+                    }
+                    error={errors.country}
+                    required
+                />
 
-                        <input
-                            id="country"
-                            type="text"
-                            value={country}
-                            onChange={(event) =>
-                                setField(
-                                    "country",
-                                    event.target.value
-                                )
-                            }
-                            placeholder="e.g. Serbia"
-                            aria-invalid={Boolean(errors.country)}
-                        />
-
-                        {errors.country && (
-                            <span className="create-event-field__error">
-                                {errors.country}
-                            </span>
-                        )}
-                    </div>
-
-                    <div className="create-event-field">
-                        <label htmlFor="city">
-                            City
-                        </label>
-
-                        <input
-                            id="city"
-                            type="text"
-                            value={city}
-                            onChange={(event) =>
-                                setField(
-                                    "city",
-                                    event.target.value
-                                )
-                            }
-                            placeholder="e.g. Niš"
-                            aria-invalid={Boolean(errors.city)}
-                        />
-
-                        {errors.city && (
-                            <span className="create-event-field__error">
-                                {errors.city}
-                            </span>
-                        )}
-                    </div>
-                </div>
-
-                <div className="create-event-field">
-                    <label htmlFor="address">
-                        Address
-                    </label>
-
-                    <input
-                        id="address"
-                        type="text"
-                        value={address}
-                        onChange={(event) =>
-                            setField(
-                                "address",
-                                event.target.value
-                            )
-                        }
-                        placeholder="e.g. Voždova 12"
-                        aria-invalid={Boolean(errors.address)}
-                    />
-
-                    {errors.address && (
-                        <span className="create-event-field__error">
-                            {errors.address}
-                        </span>
-                    )}
-                </div>
-
-                <div className="create-event-field">
-                    <label htmlFor="venueName">
-                        Venue name
-                        <span className="create-event-field__optional">
-                            Optional
-                        </span>
-                    </label>
-
-                    <input
-                        id="venueName"
-                        type="text"
-                        value={venueName}
-                        onChange={(event) =>
-                            setField(
-                                "venueName",
-                                event.target.value
-                            )
-                        }
-                        placeholder="e.g. Niš Fortress"
-                    />
-                </div>
+                <FormField
+                    name="city"
+                    label="City"
+                    placeholder="e.g. Niš"
+                    value={city}
+                    onChange={(event) =>
+                        setField("city", event.target.value)
+                    }
+                    error={errors.city}
+                    required
+                />
             </div>
+
+            <FormField
+                name="address"
+                label="Address"
+                placeholder="e.g. Voždova 12"
+                value={address}
+                onChange={(event) =>
+                    setField("address", event.target.value)
+                }
+                error={errors.address}
+                required
+            />
+
+            <FormField
+                name="venueName"
+                label="Venue name"
+                placeholder="e.g. Niš Fortress"
+                value={venueName}
+                onChange={(event) =>
+                    setField("venueName", event.target.value)
+                }
+            />
         </div>
     );
 }

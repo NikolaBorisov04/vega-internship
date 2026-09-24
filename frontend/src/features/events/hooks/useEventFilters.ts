@@ -5,7 +5,7 @@ import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 export type SortOption = "dateAsc" | "dateDesc" | "title";
 
 // 200-350
-const SEARCH_DEBOUNCE_MS = 500;
+const SEARCH_DEBOUNCE_MS = 250;
 
 export function useEventFilters(events: EventResponseDTO[]) {
   const [search, setSearch] = useState("");
