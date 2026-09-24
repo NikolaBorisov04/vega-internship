@@ -81,9 +81,9 @@ public class CommandMapper
         return new UpdateEventSponsorshipCommand(id, dto);
     }
 
-    public CreateTicketTypeCommand MapToCommand(TicketTypeCreateDTO dto)
+    public CreateTicketTypeCommand MapToCommand(TicketTypeCreateDTO dto, FileUpload file)
     {
-        return new CreateTicketTypeCommand(dto);
+        return new CreateTicketTypeCommand(dto, file);
     }
 
     public UpdateTicketTypeCommand MapToCommand(Guid id, TicketTypeUpdateDTO dto)

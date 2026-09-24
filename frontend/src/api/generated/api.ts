@@ -1859,30 +1859,58 @@ export class Client {
     }
 
     /**
-     * @param body (optional) 
+     * @param name (optional) 
+     * @param price (optional) 
+     * @param eventId (optional) 
+     * @param description (optional) 
+     * @param quantityAvailable (optional) 
+     * @param backgroundImage (optional) 
      * @return Created
      */
-    create4(body: TicketTypeCreateDTO | undefined): Promise<TicketTypeResponseDTO> {
+    createTicketType(name: string | undefined, price: number | undefined, eventId: string | undefined, description: string | undefined, quantityAvailable: number | undefined, backgroundImage: FileParameter | undefined): Promise<TicketTypeResponseDTO> {
         let url_ = this.baseUrl + "/api/TicketType/create";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+        const content_ = new FormData();
+        if (name === null || name === undefined)
+            throw new globalThis.Error("The parameter 'name' cannot be null.");
+        else
+            content_.append("Name", name.toString());
+        if (price === null || price === undefined)
+            throw new globalThis.Error("The parameter 'price' cannot be null.");
+        else
+            content_.append("Price", price.toString());
+        if (eventId === null || eventId === undefined)
+            throw new globalThis.Error("The parameter 'eventId' cannot be null.");
+        else
+            content_.append("EventId", eventId.toString());
+        if (description === null || description === undefined)
+            throw new globalThis.Error("The parameter 'description' cannot be null.");
+        else
+            content_.append("Description", description.toString());
+        if (quantityAvailable === null || quantityAvailable === undefined)
+            throw new globalThis.Error("The parameter 'quantityAvailable' cannot be null.");
+        else
+            content_.append("QuantityAvailable", quantityAvailable.toString());
+        if (backgroundImage === null || backgroundImage === undefined)
+            throw new globalThis.Error("The parameter 'backgroundImage' cannot be null.");
+        else
+            content_.append("BackgroundImage", backgroundImage.data, backgroundImage.fileName ? backgroundImage.fileName : "BackgroundImage");
 
         let options_: RequestInit = {
             body: content_,
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate4(_response);
+            return this.processCreateTicketType(_response);
         });
     }
 
-    protected processCreate4(response: Response): Promise<TicketTypeResponseDTO> {
+    protected processCreateTicketType(response: Response): Promise<TicketTypeResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -2456,15 +2484,6 @@ export interface TicketResponseDTO {
     customerId?: string;
 }
 
-export interface TicketTypeCreateDTO {
-    name?: string | undefined;
-    price?: number;
-    eventId?: string;
-    description?: string | undefined;
-    quantityAvailable?: number;
-    ticketBackgroundImageUrl?: string | undefined;
-}
-
 export interface TicketTypeResponseDTO {
     id?: string;
     name: string;
@@ -2474,7 +2493,8 @@ export interface TicketTypeResponseDTO {
     modifiedAt?: Date;
     description: string;
     quantityAvailable?: number;
-    ticketBackgroundImageUrl: string;
+    imageUrl: string;
+    imagePublicId: string;
 }
 
 export interface TicketTypeUpdateDTO {
@@ -2482,7 +2502,6 @@ export interface TicketTypeUpdateDTO {
     price?: number | undefined;
     description?: string | undefined;
     quantityAvailable?: number | undefined;
-    ticketBackgroundImageUrl?: string | undefined;
 }
 
 export interface TicketUpdateDTO {

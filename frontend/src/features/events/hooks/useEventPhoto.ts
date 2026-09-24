@@ -1,13 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  Client,
-  type EventPhotoResponseDTO,
-  type ProblemDetails,
-} from "../../../api/generated/api";
-
-const apiClient = new Client(
-  import.meta.env.VITE_API_URL
-);
+import { apiClient } from "../../../api/client";
+import type { EventPhotoResponseDTO, ProblemDetails } from "../../../api/generated/api";
 
 export function useEventPhoto(eventId: string | undefined) {
   return useQuery<EventPhotoResponseDTO[], ProblemDetails>({

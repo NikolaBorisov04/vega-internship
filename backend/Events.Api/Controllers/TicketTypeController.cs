@@ -5,6 +5,9 @@ using Events.Application.Queries;
 using Events.Application.Commands;
 using Events.Application.Mappers;
 using MediatR;
+using Swashbuckle.AspNetCore.Annotations;
+using Events.API.Requests;
+using Events.Application.Storage;
 
 namespace Events.Api.Controllers;
 
@@ -24,7 +27,7 @@ public class TicketTypeController : ControllerBase
     [HttpGet("{id:Guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(TicketTypeResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
         var query = new GetTicketTypeByIdQuery(id);
@@ -36,7 +39,7 @@ public class TicketTypeController : ControllerBase
     [HttpGet("all")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(IEnumerable<TicketTypeResponseDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllAsync(CancellationToken ct = default)
     {
         var query = new GetTicketTypesQuery();
@@ -48,7 +51,7 @@ public class TicketTypeController : ControllerBase
     [HttpGet("event/{eventId:Guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<TicketTypeResponseDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByEventIdAsync(Guid eventId, CancellationToken ct = default)
     {
         var query = new GetTicketTypesByEventIdQuery(eventId);
@@ -59,29 +62,43 @@ public class TicketTypeController : ControllerBase
 
     [HttpPost("create")]
     [Authorize(Roles = "Organizer, Admin")]
+    [Consumes("multipart/form-data")]
+    [SwaggerOperation(OperationId = "CreateTicketType")]
     [ProducesResponseType(typeof(TicketTypeResponseDTO), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TicketTypeResponseDTO>> Create([FromBody] TicketTypeCreateDTO dto, CancellationToken ct = default)
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TicketTypeResponseDTO>> Create([FromForm] CreateTicketTypeRequest request, CancellationToken ct = default)
     {
-        var command = _commandMapper.MapToCommand(dto);
+        var dto = new TicketTypeCreateDTO(
+            request.Name,
+            request.Price,
+            request.EventId,
+            request.Description,
+            request.QuantityAvailable
+        );
+
+        var file = new FileUpload(
+            request.BackgroundImage.OpenReadStream(),
+            request.BackgroundImage.FileName,
+            request.BackgroundImage.ContentType,
+            request.BackgroundImage.Length
+        );
+
+        var command = _commandMapper.MapToCommand(dto, file);
         var result = await _sender.Send(command, ct);
 
-        return CreatedAtAction(
-            nameof(GetByIdAsync),
-            new { id = result.Id },
-            result);
+        return StatusCode(StatusCodes.Status201Created, result);
     }
 
     [HttpPatch("{id:Guid}")]
     [Authorize(Roles = "Organizer, Admin")]
     [ProducesResponseType(typeof(TicketTypeResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TicketTypeResponseDTO>> Update(Guid id, [FromBody] TicketTypeUpdateDTO dto, CancellationToken ct = default)
     {
         var command = _commandMapper.MapToCommand(id, dto);
@@ -93,10 +110,10 @@ public class TicketTypeController : ControllerBase
     [HttpDelete("{id:Guid}")]
     [Authorize(Roles = "Organizer, Admin")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<string>> Delete(Guid id, CancellationToken ct = default)
     {
         var command = new DeleteTicketTypeCommand(id);

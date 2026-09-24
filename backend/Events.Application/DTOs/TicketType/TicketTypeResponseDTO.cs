@@ -23,5 +23,8 @@ public sealed record TicketTypeResponseDTO
     int QuantityAvailable,
 
     [property: Required]
-    string TicketBackgroundImageUrl
+    string ImageUrl,
+
+    [property: Required]
+    string ImagePublicId
 );
