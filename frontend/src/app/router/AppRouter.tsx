@@ -1,15 +1,15 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+
 import { EventsPage } from "../../features/events/pages/EventsPage/EventsPage";
 import { EventDetailsPage } from "../../features/events/pages/EventDetailsPage/EventDetailsPage";
 import LoginPage from "../../features/auth/pages/LoginPage/LoginPage";
 import { AppLayout } from "../../layouts/AppLayout";
 import { GuestRoute } from "./GuestRoute";
-import { OrganizerRoute } from "./OrganizerRoute";
 import { CreateEventPage } from "../../features/events/pages/CreateEventPage/CreateEventPage";
 import { ROUTES } from "../../constants/routes";
 import { RegisterRoute } from "./RegisterRoute";
 import RegisterPage from "../../features/auth/pages/RegisterPage/RegisterPage";
-
+import { OrganizerRoute } from "./OrganizerRoute";
 
 export function AppRouter() {
     return (
@@ -49,7 +49,12 @@ export function AppRouter() {
 
             <Route
                 path="*"
-                element={<Navigate to={ROUTES.EVENTS} replace />}
+                element={
+                    <Navigate
+                        to={ROUTES.EVENTS}
+                        replace
+                    />
+                }
             />
         </Routes>
     );

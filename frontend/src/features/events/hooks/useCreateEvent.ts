@@ -1,13 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { useAuth } from "../../auth/context/AuthContext";
 import type { CreateEventRequest } from "../../../api/generated/createEventRequest";
 
 const API_URL = import.meta.env.VITE_API_URL.replace(/\/$/, "");
 
 async function createEventRequest(
-    draft: CreateEventRequest,
-    token: string
+    draft: CreateEventRequest
 ): Promise<void> {
     if (!draft.mainImage) {
         throw new Error("Main image is required.");
@@ -22,17 +20,24 @@ async function createEventRequest(
     formData.append("Address", draft.address);
 
     if (draft.venueName.trim()) {
-        formData.append("VenueName", draft.venueName);
+        formData.append(
+            "VenueName",
+            draft.venueName
+        );
     }
 
     formData.append(
         "StartOfEvent",
-        new Date(draft.startOfEvent).toISOString()
+        new Date(
+            draft.startOfEvent
+        ).toISOString()
     );
 
     formData.append(
         "EndOfEvent",
-        new Date(draft.endOfEvent).toISOString()
+        new Date(
+            draft.endOfEvent
+        ).toISOString()
     );
 
     formData.append(
@@ -45,9 +50,7 @@ async function createEventRequest(
         `${API_URL}/api/Event/create`,
         {
             method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            credentials: "include",
             body: formData,
         }
     );
@@ -56,10 +59,12 @@ async function createEventRequest(
         return;
     }
 
-    let message = "Failed to create the event.";
+    let message =
+        "Failed to create the event.";
 
     try {
-        const problem = await response.json();
+        const problem =
+            await response.json();
 
         message =
             problem.detail ??
@@ -73,22 +78,9 @@ async function createEventRequest(
 }
 
 export function useCreateEvent() {
-    const { token } = useAuth();
-
     return useMutation({
-        mutationFn: async (
+        mutationFn: (
             draft: CreateEventRequest
-        ) => {
-            if (!token) {
-                throw new Error(
-                    "You must be authenticated to create an event."
-                );
-            }
-
-            await createEventRequest(
-                draft,
-                token
-            );
-        },
+        ) => createEventRequest(draft),
     });
 }

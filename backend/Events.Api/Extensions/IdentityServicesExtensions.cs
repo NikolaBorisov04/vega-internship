@@ -1,4 +1,5 @@
 using System.Text;
+using Events.Application.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -35,6 +36,11 @@ public static class IdentityServicesExtensions
             };
             options.Events = new JwtBearerEvents
             {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies[AuthenticationConstants.AccessTokenCookieName];
+                    return Task.CompletedTask;
+                },
                 OnAuthenticationFailed = context =>
                 {
                     Console.WriteLine($"--> JWT Authentication Failed: {context.Exception.Message}");

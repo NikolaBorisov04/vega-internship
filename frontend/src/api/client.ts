@@ -8,15 +8,11 @@ if (!API_URL) {
 
 const API_BASE_URL = API_URL.replace(/\/api\/?$/, "");
 
-
 const http = {
-    fetch: (input: RequestInfo | URL, init?: RequestInit) => {
-        const token = localStorage.getItem(
-            "events_access_token"
-        );
-
-        const headers = new Headers(init?.headers);
-
+    fetch: (
+        input: RequestInfo | URL,
+        init?: RequestInit
+    ) => {
         const requestUrl =
             input instanceof Request
                 ? input.url
@@ -27,20 +23,13 @@ const http = {
             API_BASE_URL
         );
 
-        const isLoginRequest =
-            url.pathname === "/api/Auth/login";
-
-        if (token && !isLoginRequest) {
-            headers.set(
-                "Authorization",
-                `Bearer ${token}`
-            );
-        }
-
-        return window.fetch(url.toString(), {
-            ...init,
-            headers,
-        });
+        return window.fetch(
+            url.toString(),
+            {
+                ...init,
+                credentials: "include",
+            }
+        );
     },
 };
 

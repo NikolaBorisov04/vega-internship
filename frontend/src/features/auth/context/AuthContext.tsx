@@ -1,27 +1,22 @@
-import {
-    createContext,
-    useCallback,
-    useContext,
-    useMemo,
-    useState,
-} from "react";
-import type { ReactNode } from "react";
-import type { UserRole } from "../../../api/generated/api";
-import { getUserRoleFromToken } from "../utils/getUserRoleFromToken";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-const ACCESS_TOKEN_KEY = "events_access_token";
+import type { ReactNode } from "react";
+
+import type { UserResponseDTO, UserRole } from "../../../api/generated/api";
+
+import { apiClient } from "../../../api/client";
 
 interface AuthContextValue {
-    token: string | null;
+    user: UserResponseDTO | null;
     role: UserRole | null;
     isAuthenticated: boolean;
-    signIn: (token: string) => void;
-    signOut: () => void;
+    isLoading: boolean;
+
+    signIn: (user: UserResponseDTO) => void;
+    signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextValue | undefined>(
-    undefined
-);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -30,38 +25,78 @@ interface AuthProviderProps {
 export function AuthProvider({
     children,
 }: AuthProviderProps) {
-    const [token, setToken] = useState<string | null>(() => {
-        return localStorage.getItem(ACCESS_TOKEN_KEY);
-    });
+    const [
+        user,
+        setUser,
+    ] = useState<UserResponseDTO | null>(null);
 
-    const role = useMemo(
-        () => getUserRoleFromToken(token),
-        [token]
+    const [
+        isLoading,
+        setIsLoading,
+    ] = useState(true);
+
+    const loadCurrentUser = useCallback(
+        async () => {
+            try {
+                const currentUser =
+                    await apiClient.me();
+
+                setUser(currentUser ?? null);
+            } catch {
+                setUser(null);
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        []
     );
 
-    const signIn = useCallback((newToken: string) => {
-        localStorage.setItem(
-            ACCESS_TOKEN_KEY,
-            newToken
-        );
+    useEffect(() => {
+        void loadCurrentUser();
+    }, [loadCurrentUser]);
 
-        setToken(newToken);
-    }, []);
+    const role = useMemo(
+        () => user?.role ?? null,
+        [user]
+    );
 
-    const signOut = useCallback(() => {
-        localStorage.removeItem(ACCESS_TOKEN_KEY);
-        setToken(null);
+    const signIn = useCallback(
+        (newUser: UserResponseDTO) => {
+            setUser(newUser);
+        },
+        []
+    );
+
+    const signOut = useCallback(async () =>
+    {
+        try
+        {
+            await apiClient.logout();
+        }
+        catch
+        {}
+        finally
+        {
+            setUser(null);
+        }
     }, []);
 
     const value = useMemo(
         () => ({
-            token,
+            user,
             role,
-            isAuthenticated: token !== null,
+            isAuthenticated: user !== null,
+            isLoading,
             signIn,
             signOut,
         }),
-        [token, role, signIn, signOut]
+        [
+            user,
+            role,
+            isLoading,
+            signIn,
+            signOut,
+        ]
     );
 
     return (
@@ -70,7 +105,7 @@ export function AuthProvider({
         </AuthContext.Provider>
     );
 }
-// custom hook folder
+
 export function useAuth(): AuthContextValue {
     const context = useContext(AuthContext);
 
@@ -79,29 +114,5 @@ export function useAuth(): AuthContextValue {
             "useAuth must be used inside AuthProvider"
         );
     }
-
     return context;
 }
-
-
-//me -> propovi za sve
-
-// UserResponsexyz{
-//     sve propove iz user
-//     Dictionary<string, object> additionalData;
-// }
-
-// //admin specific name ?? throw exception()
-
-// CustomerResponse
-// {
-//     customer identifiter ...
-//     Role: Customer
-// }
-
-
-// const userR = //userresponsexzy
-// if role is customer:
-//     userR.additonalData.key-value
-//     key:label
-//     value:xxxxx

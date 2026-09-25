@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import type {
     LoginDTO,
+    UserResponseDTO,
 } from "../../../api/generated/api";
 
 import { apiClient } from "../../../api/client";
@@ -13,7 +14,7 @@ import {
 interface UseLoginResult {
     login: (
         credentials: LoginDTO
-    ) => Promise<string | null>;
+    ) => Promise<UserResponseDTO | null>;
 
     isLoading: boolean;
     error: string | null;
@@ -38,31 +39,15 @@ export function useLogin(): UseLoginResult {
 
     const login = async (
         credentials: LoginDTO
-    ): Promise<string | null> => {
+    ): Promise<UserResponseDTO | null> => {
         setIsLoading(true);
         setError(null);
 
         try {
             const response =
-                await apiClient.login(
-                    credentials
-                );
+                await apiClient.login(credentials);
 
-            if (!response) {
-                return null;
-            }
-
-            const token = (
-                response as unknown as {
-                    token: string;
-                }
-            ).token;
-
-            if (!token) {
-                return null;
-            }
-
-            return token;
+            return response ?? null;
         } catch (error: unknown) {
             setError(
                 getApiErrorMessage(error)

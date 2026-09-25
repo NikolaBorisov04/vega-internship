@@ -16,6 +16,7 @@ import { EventScheduleStep } from "./components/EventScheduleStep";
 
 import "./CreateEventPage.css";
 import { useCreateEvent } from "../../hooks/useCreateEvent";
+import { ROUTES } from "../../../../constants/routes";
 
 export function CreateEventPage() {
     const navigate = useNavigate();
@@ -137,7 +138,7 @@ export function CreateEventPage() {
             await createEvent(draft);
 
             reset();
-            navigate("/events");
+            navigate(ROUTES.EVENTS);
         } catch (error) {
             setSubmitError(
                 error instanceof Error
@@ -214,7 +215,7 @@ export function CreateEventPage() {
                                 type="button"
                                 className="create-event-button create-event-button--secondary"
                                 onClick={() =>
-                                    navigate("/events")
+                                    navigate(ROUTES.EVENTS)
                                 }
                             >
                                 Cancel

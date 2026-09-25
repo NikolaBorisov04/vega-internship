@@ -29,9 +29,9 @@ export function AppHeader() {
         return null;
     }
 
-    const handleAuthClick = () => {
+    const handleAuthClick = async () => {
         if (isAuthenticated) {
-            signOut();
+            await signOut();
             navigate(ROUTES.EVENTS);
             return;
         }

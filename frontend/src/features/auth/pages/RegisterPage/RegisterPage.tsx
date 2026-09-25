@@ -226,16 +226,12 @@ export default function RegisterPage() {
 
     const handleSuccessAction = () => {
         if (isAdmin) {
-            navigate(
-                ROUTES.EVENTS
-            );
+            navigate(ROUTES.EVENTS);
 
             return;
         }
 
-        navigate(
-            ROUTES.LOGIN
-        );
+        navigate(ROUTES.LOGIN);
     };
 
     const renderSuccess = () => {

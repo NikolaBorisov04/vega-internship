@@ -50,6 +50,19 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
+    [HttpGet("me")]
+    [Authorize]
+    [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<UserResponseDTO>> GetCurrentUserAsync(CancellationToken ct)
+    {
+        var query = new GetCurrentUserQuery();
+
+        var user = await _sender.Send(query, ct);
+
+        return Ok(user);
+    }
+
     [HttpGet("organizer/event/{eventId:Guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
