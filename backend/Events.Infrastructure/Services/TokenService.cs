@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Events.Application.DTOs;
 using Events.Application.Services;
+using Events.Application.Constants;
 
 namespace Events.Infrastructure.Services;
 
@@ -36,7 +37,7 @@ public class TokenService : ITokenService
             issuer: jwtIssuer,
             audience: jwtAudience,
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(2),
+            expires: DateTime.UtcNow.AddHours(AuthenticationConstants.AccessTokenLifetimeHours),
             signingCredentials: creds
         );
 

@@ -12,19 +12,22 @@ public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCom
         _phoneNumberUtil = PhoneNumberUtil.GetInstance();
 
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Ime korisnika je obavezno.")
-            .MaximumLength(20).WithMessage("Ime korisnika mora imati manje od 20 karaktera.")
-            .MinimumLength(3).WithMessage("Ime korisnika mora imati barem 3 karaktera.");
+            .NotEmpty().WithMessage("User name is required.")
+            .MaximumLength(20).WithMessage("User name must be less than 20 characters.")
+            .MinimumLength(3).WithMessage("User name must be at least 3 characters.");
+
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Email je obavezan.")
-            .EmailAddress().WithMessage("Uneta email adresa nije validna.");
+            .NotEmpty().WithMessage("Email is required.")
+            .EmailAddress().WithMessage("The entered email address is not valid.");
+
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("Sifra je obavezna.")
-            .MinimumLength(6).WithMessage("Sifra korisnika mora imati barem 6 karaktera.");
+            .NotEmpty().WithMessage("Password is required.")
+            .MinimumLength(6).WithMessage("Password must be at least 6 characters long.");
+
         RuleFor(x => x.PhoneNumber)
             .Must(BeValidPhoneNumber)
             .When(x => !string.IsNullOrWhiteSpace(x.PhoneNumber))
-            .WithMessage("Uneti broj telefona nije validan.");
+            .WithMessage("The entered phone number is not valid.");
     }
     private bool BeValidPhoneNumber(string? phoneNumber)
     {

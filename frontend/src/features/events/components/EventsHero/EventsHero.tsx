@@ -15,14 +15,8 @@ export function EventsHero() {
 
         <p>
           Discover concerts, festivals, shows and experiences
-          worth getting out of the house for.
+          worth going out for.
         </p>
-
-        <div className="events-hero__chips">
-          <span>♫ Live music</span>
-          <span>✦ Big moments</span>
-          <span>♪ Good company</span>
-        </div>
       </div>
 
       <div className="events-hero__art" aria-hidden="true">

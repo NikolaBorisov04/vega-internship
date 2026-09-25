@@ -1,9 +1,15 @@
 import { Link, useParams } from "react-router-dom";
+
 import { useEvent } from "../../hooks/useEvent";
+import { useEventPhoto } from "../../hooks/useEventPhoto";
+import { useEventTicketTypes } from "../../hooks/useEventTicketTypes";
+import { EventGallery } from "../../components/EventGallery";
+
+import "./EventDetailsPage.css";
 import { ApiError } from "../../../../shared/api/httpClient";
 import { EventPriority } from "../../../../api/generated/api";
 import { formatDateTime, formatEventRange } from "../../../../shared/utils/formatDateTime";
-import "./EventDetailsPage.css"
+import { EventTicketTypes } from "./components/EventTicketTypes";
 
 export function EventDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -16,17 +22,35 @@ export function EventDetailsPage() {
     refetch,
   } = useEvent(id);
 
+  const {
+    data: eventPhotos = [],
+    isLoading: isPhotosLoading,
+    error: photosError,
+    refetch: refetchPhotos,
+  } = useEventPhoto(id);
+
+  const {
+    data: ticketTypes = [],
+    isLoading: isTicketTypesLoading,
+    error: ticketTypesError,
+    refetch: refetchTicketTypes,
+  } = useEventTicketTypes(event?.id);
+
   if (isLoading) {
     return (
       <main className="event-details-page">
         <div className="event-details-container">
-          <Link to="/events" className="event-details-back">
+          <Link
+            to="/events"
+            className="event-details-back"
+          >
             <span>←</span>
             Back to events
           </Link>
 
           <div className="event-details-loading">
             <div className="event-details-loading__hero" />
+
             <div className="event-details-loading__content">
               <div className="skeleton skeleton--small" />
               <div className="skeleton skeleton--title" />
@@ -46,7 +70,10 @@ export function EventDetailsPage() {
     return (
       <main className="event-details-page">
         <div className="event-details-container">
-          <Link to="/events" className="event-details-back">
+          <Link
+            to="/events"
+            className="event-details-back"
+          >
             <span>←</span>
             Back to events
           </Link>
@@ -90,12 +117,16 @@ export function EventDetailsPage() {
     );
   }
 
-  const isHighPriority = event.priority === EventPriority.High;
+  const isHighPriority =
+    event.priority === EventPriority.High;
 
   return (
     <main className="event-details-page">
       <div className="event-details-container">
-        <Link to="/events" className="event-details-back">
+        <Link
+          to="/events"
+          className="event-details-back"
+        >
           <span>←</span>
           Back to events
         </Link>
@@ -117,6 +148,7 @@ export function EventDetailsPage() {
                 className="event-details-hero__image"
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
+
                   e.currentTarget.parentElement?.classList.add(
                     "event-details-hero__image-frame--fallback",
                   );
@@ -165,17 +197,17 @@ export function EventDetailsPage() {
             <div className="event-details-hero__divider" />
 
             <div className="event-details-hero__actions">
-              <button
-                type="button"
+              <a
+                href="#event-ticket-types"
                 className="event-details-buy-button"
-                disabled
               >
-                Get tickets
-                <span>→</span>
-              </button>
+                View ticket types
+                <span>↓</span>
+              </a>
 
               <span className="event-details-buy-note">
-                Ticket selection will be available soon.
+                Choose a ticket type below. Purchase will be
+                available soon.
               </span>
             </div>
           </div>
@@ -208,6 +240,7 @@ export function EventDetailsPage() {
 
               <div>
                 <span>Starts</span>
+
                 <strong>
                   {formatDateTime(event.startOfEvent)}
                 </strong>
@@ -221,6 +254,7 @@ export function EventDetailsPage() {
 
               <div>
                 <span>Ends</span>
+
                 <strong>
                   {formatDateTime(event.endOfEvent)}
                 </strong>
@@ -234,6 +268,7 @@ export function EventDetailsPage() {
 
               <div>
                 <span>Venue</span>
+
                 <strong>
                   {event.venueName || "Event venue"}
                 </strong>
@@ -247,12 +282,31 @@ export function EventDetailsPage() {
 
               <div>
                 <span>Location</span>
+
                 <strong>
                   {event.city}, {event.country}
                 </strong>
               </div>
             </div>
           </div>
+        </section>
+
+        {/* TICKET TYPES */}
+        <section
+          id="event-ticket-types"
+          className="event-details-section"
+        >
+          <div className="event-details-section__heading">
+            <span>TICKETS</span>
+            <h2>Choose your ticket.</h2>
+          </div>
+
+          <EventTicketTypes
+            ticketTypes={ticketTypes}
+            isLoading={isTicketTypesLoading}
+            error={ticketTypesError}
+            onRetry={() => refetchTicketTypes()}
+          />
         </section>
 
         {/* GALLERY */}
@@ -262,41 +316,14 @@ export function EventDetailsPage() {
             <h2>See the atmosphere.</h2>
           </div>
 
-          <div className="event-gallery">
-            <div className="event-gallery__featured">
-              <img
-                src={event.mainImageURL}
-                alt={`${event.title} main`}
-              />
-            </div>
-
-            <div className="event-gallery__placeholder">
-              <span>+</span>
-              <strong>Event photos</strong>
-              <p>
-                Additional photos from this event will appear
-                here.
-              </p>
-            </div>
-
-            <div className="event-gallery__placeholder">
-              <span>+</span>
-              <strong>Event photos</strong>
-              <p>
-                Additional photos from this event will appear
-                here.
-              </p>
-            </div>
-
-            <div className="event-gallery__placeholder">
-              <span>+</span>
-              <strong>Event photos</strong>
-              <p>
-                Additional photos from this event will appear
-                here.
-              </p>
-            </div>
-          </div>
+          <EventGallery
+            eventTitle={event.title}
+            mainImageURL={event.mainImageURL}
+            photos={eventPhotos}
+            isLoading={isPhotosLoading}
+            error={photosError}
+            onRetry={() => refetchPhotos()}
+          />
         </section>
 
         {/* ORGANIZER */}

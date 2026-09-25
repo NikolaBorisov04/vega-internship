@@ -1,12 +1,21 @@
 import { useMemo, useState } from "react";
 import type { EventResponseDTO } from "../../../api/generated/api";
+import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 
 export type SortOption = "dateAsc" | "dateDesc" | "title";
+
+// 200-350
+const SEARCH_DEBOUNCE_MS = 250;
 
 export function useEventFilters(events: EventResponseDTO[]) {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("all");
   const [sort, setSort] = useState<SortOption>("dateAsc");
+
+  const debouncedSearch = useDebouncedValue(
+    search,
+    SEARCH_DEBOUNCE_MS,
+  );
 
   const cities = useMemo(() => {
     return [...new Set(events.map((event) => event.city))]
@@ -15,7 +24,7 @@ export function useEventFilters(events: EventResponseDTO[]) {
   }, [events]);
 
   const filteredEvents = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase();
+    const normalizedSearch = debouncedSearch.trim().toLowerCase();
 
     const filtered = events.filter((event) => {
       const matchesSearch =
@@ -51,7 +60,7 @@ export function useEventFilters(events: EventResponseDTO[]) {
           );
       }
     });
-  }, [events, search, city, sort]);
+  }, [events, debouncedSearch, city, sort]);
 
   function clearFilters() {
     setSearch("");

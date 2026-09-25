@@ -14,6 +14,7 @@ import "./LoginPage.css";
 import { useAuth } from "../../context/AuthContext";
 import { useState, type SubmitEvent } from "react";
 import type { LoginDTO } from "../../../../api/generated/api";
+import { ROUTES } from "../../../../constants/routes";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -97,10 +98,6 @@ export default function LoginPage() {
 
                             <span>Events</span>
                         </Link>
-
-                        <span className="login-showcase__label">
-                            LIVE EXPERIENCES
-                        </span>
                     </div>
 
                     <div className="login-showcase__content">
@@ -317,7 +314,7 @@ export default function LoginPage() {
                                 Don't have an account?
                             </span>
 
-                            <Link to="/register">
+                            <Link to={ROUTES.REGISTER}>
                                 Create one
                             </Link>
                         </div>

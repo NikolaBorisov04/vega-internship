@@ -5,6 +5,9 @@ using Events.Application.Queries;
 using Events.Application.Commands;
 using MediatR;
 using Events.Application.Mappers;
+using Swashbuckle.AspNetCore.Annotations;
+using Events.API.Requests;
+using Events.Application.Storage;
 
 namespace Events.Api.Controllers;
 
@@ -24,7 +27,7 @@ public class EventPhotoController : ControllerBase
     [HttpGet("{id:Guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(EventPhotoResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
         var query = new GetEventPhotoByIdQuery(id);
@@ -36,7 +39,7 @@ public class EventPhotoController : ControllerBase
     [HttpGet("all")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(IEnumerable<EventPhotoResponseDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllAsync(CancellationToken ct = default)
     {
         var query = new GetEventPhotosQuery();
@@ -48,7 +51,7 @@ public class EventPhotoController : ControllerBase
     [HttpGet("event/{eventId:Guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<EventPhotoResponseDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByEventIdAsync(Guid eventId, CancellationToken ct = default)
     {
         var query = new GetEventPhotosByEventIdQuery(eventId);
@@ -59,25 +62,39 @@ public class EventPhotoController : ControllerBase
 
     [HttpPost("create")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<EventPhotoResponseDTO>> Create([FromBody] EventPhotoCreateDTO dto, CancellationToken ct)
+    [Consumes("multipart/form-data")]
+    [SwaggerOperation(OperationId = "CreateEventPhoto")]
+    [ProducesResponseType(typeof(EventPhotoResponseDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<EventPhotoResponseDTO>> Create([FromForm] CreateEventPhotoRequest request, CancellationToken ct)
     {
-        var command = _commandMapper.MapToCommand(dto);
+        var dto = new EventPhotoCreateDTO(
+            request.Caption,
+            request.EventId
+        );
+
+        var file = new FileUpload(
+            request.Image.OpenReadStream(),
+            request.Image.FileName,
+            request.Image.ContentType,
+            request.Image.Length
+        );
+
+        var command = _commandMapper.MapToCommand(dto, file);
         var result = await _sender.Send(command, ct);
 
-        return Ok(result);
+        return StatusCode(StatusCodes.Status201Created, result);
     }
 
     [HttpPatch("{id:Guid}")]
     [Authorize(Roles = "Organizer, Admin")]
     [ProducesResponseType(typeof(EventPhotoResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<EventPhotoResponseDTO>> Update(Guid id, [FromBody] EventPhotoUpdateDTO dto, CancellationToken ct = default)
     {
         var command = _commandMapper.MapToCommand(id, dto);
@@ -89,9 +106,9 @@ public class EventPhotoController : ControllerBase
     [HttpDelete("{id:Guid}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<string>> DeleteEventPhoto(Guid id, CancellationToken ct = default)
     {
         var command = new DeleteEventPhotoCommand(id);

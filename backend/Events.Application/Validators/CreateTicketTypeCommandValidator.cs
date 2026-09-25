@@ -7,25 +7,21 @@ public sealed class CreateTicketTypeCommandValidator : AbstractValidator<CreateT
 {
     public CreateTicketTypeCommandValidator()
     {
-        RuleFor(x => x.dto.Name)
-            .NotEmpty().WithMessage("Ime je obavezno.")
-            .MaximumLength(100).WithMessage("Ime ne moze imati vise od 100 karaktera.");
+        RuleFor(x => x.Dto.Name)
+            .NotEmpty().WithMessage("Name is required.")
+            .MaximumLength(100).WithMessage("Name cannot exceed 100 characters.");
 
-        RuleFor(x => x.dto.Price)
-            .GreaterThanOrEqualTo(0).WithMessage("Cena mora biti veca ili jednaka 0.");
+        RuleFor(x => x.Dto.Price)
+            .GreaterThanOrEqualTo(0).WithMessage("Price must be greater than or equal to 0.");
 
-        RuleFor(x => x.dto.EventId)
-            .NotEmpty().WithMessage("EventId je obavezan.");
+        RuleFor(x => x.Dto.EventId)
+            .NotEmpty().WithMessage("EventId is required.");
 
-        RuleFor(x => x.dto.Description)
-            .NotEmpty().WithMessage("Opis tipa tiketa je obavezan.")
-            .MaximumLength(500).WithMessage("Opis ne moze imati vise od 500 karaktera.");
+        RuleFor(x => x.Dto.Description)
+            .NotEmpty().WithMessage("Ticket type description is required.")
+            .MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
 
-        RuleFor(x => x.dto.QuantityAvailable)
-            .GreaterThanOrEqualTo(0).WithMessage("Dostupna kolicina mora biti veca ili jednaka 0.");
-
-        RuleFor(x => x.dto.TicketBackgroundImageUrl)
-            .NotEmpty().WithMessage("Slika pozadine tiketa je obavezna.")
-            .MaximumLength(1000).WithMessage("URL pozadinske slike ne moze imati vise od 1000 karaktera.");
+        RuleFor(x => x.Dto.QuantityAvailable)
+            .GreaterThanOrEqualTo(0).WithMessage("Available quantity must be greater than or equal to 0.");
     }
 }

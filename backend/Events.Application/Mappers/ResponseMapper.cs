@@ -72,7 +72,8 @@ public class ResponseMapper
             ticketType.ModifiedAt,
             ticketType.Description,
             ticketType.QuantityAvailable,
-            ticketType.TicketBackgroundImageUrl
+            ticketType.ImageUrl,
+            ticketType.ImagePublicId
         );
     }
 

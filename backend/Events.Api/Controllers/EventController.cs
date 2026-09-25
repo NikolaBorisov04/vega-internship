@@ -7,6 +7,7 @@ using MediatR;
 using Events.Application.Commands;
 using Events.API.Requests;
 using Events.Application.Storage;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Events.Api.Controllers;
 
@@ -28,7 +29,7 @@ public class EventController : ControllerBase
     [HttpGet("{id}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(EventResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByIdAsync(string id, CancellationToken ct)
     {
         var query = new GetEventByIdQuery(id);
@@ -40,7 +41,7 @@ public class EventController : ControllerBase
     [HttpGet("all")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<EventResponseDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllAsync(CancellationToken ct = default)
     {
         var query = new GetEventsQuery();
@@ -52,11 +53,13 @@ public class EventController : ControllerBase
     
     [HttpPost("create")]
     [Authorize(Roles = "Organizer, Admin")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes("multipart/form-data")]
+    [SwaggerOperation(OperationId = "CreateEvent")]
+    [ProducesResponseType(typeof(EventResponseDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<EventResponseDTO>> Create([FromForm] CreateEventRequest request, CancellationToken ct)
     {
         //extract these later
@@ -78,20 +81,20 @@ public class EventController : ControllerBase
             request.MainImage.Length
         );
 
-        var command = new CreateEventCommand(dto, file);
+        var command = _commandMapper.MapToCommand(dto, file);
 
         var result = await _sender.Send(command, ct);
 
-        return Ok(result);
+        return StatusCode(StatusCodes.Status201Created, result);
     }
 
     [HttpPatch("{id:Guid}")]
     [Authorize(Roles = "Organizer, Admin")]
     [ProducesResponseType(typeof(TicketTypeResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<EventResponseDTO>> Update(Guid id, [FromBody] EventUpdateDTO dto, CancellationToken ct = default)
     {
         var command = _commandMapper.MapToCommand(id, dto);
@@ -103,10 +106,10 @@ public class EventController : ControllerBase
     [HttpDelete("{id:Guid}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<string>> Delete(Guid id, CancellationToken ct = default)
     {
         var command = new DeleteEventCommand(id);

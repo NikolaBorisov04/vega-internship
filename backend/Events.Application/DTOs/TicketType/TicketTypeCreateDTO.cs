@@ -14,8 +14,5 @@ public sealed record TicketTypeCreateDTO
     [param: Required]
     string Description,
 
-    int QuantityAvailable,
-
-    [param: Required]
-    string TicketBackgroundImageUrl
+    int QuantityAvailable
 );
