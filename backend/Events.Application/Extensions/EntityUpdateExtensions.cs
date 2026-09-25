@@ -35,12 +35,6 @@ public static class EntityUpdateExtensions
             modified = true;
         }
 
-        if (dto.TicketBackgroundImageUrl is not null)
-        {
-            ticketType.TicketBackgroundImageUrl = dto.TicketBackgroundImageUrl;
-            modified = true;
-        }
-
         if (modified)
             ticketType.ModifiedAt = DateTimeOffset.UtcNow;
     }

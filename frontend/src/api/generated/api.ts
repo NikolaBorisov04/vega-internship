@@ -21,7 +21,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    login(body: LoginDTO | undefined): Promise<string> {
+    login(body: LoginDTO | undefined): Promise<UserResponseDTO> {
         let url_ = this.baseUrl + "/api/Auth/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -41,13 +41,13 @@ export class Client {
         });
     }
 
-    protected processLogin(response: Response): Promise<string> {
+    protected processLogin(response: Response): Promise<UserResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UserResponseDTO;
             return result200;
             });
         } else if (status === 401) {
@@ -56,18 +56,45 @@ export class Client {
             result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
             return throwException("Unauthorized", status, _responseText, _headers, result401);
             });
-        } else if (status === 404) {
+        } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            let result404: any = null;
-            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("Not Found", status, _responseText, _headers, result404);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserResponseDTO>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    logout(): Promise<void> {
+        let url_ = this.baseUrl + "/api/Auth/logout";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processLogout(_response);
+        });
+    }
+
+    protected processLogout(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(null as any);
+        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -300,7 +327,7 @@ export class Client {
      * @param mainImage (optional) 
      * @return Created
      */
-    create(title: string | undefined, description: string | undefined, country: string | undefined, city: string | undefined, address: string | undefined, venueName: string | undefined, startOfEvent: Date | undefined, endOfEvent: Date | undefined, mainImage: FileParameter | undefined): Promise<EventResponseDTO> {
+    createEvent(title: string | undefined, description: string | undefined, country: string | undefined, city: string | undefined, address: string | undefined, venueName: string | undefined, startOfEvent: Date | undefined, endOfEvent: Date | undefined, mainImage: FileParameter | undefined): Promise<EventResponseDTO> {
         let url_ = this.baseUrl + "/api/Event/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -351,11 +378,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate(_response);
+            return this.processCreateEvent(_response);
         });
     }
 
-    protected processCreate(response: Response): Promise<EventResponseDTO> {
+    protected processCreateEvent(response: Response): Promise<EventResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -654,30 +681,43 @@ export class Client {
     }
 
     /**
-     * @param body (optional) 
+     * @param caption (optional) 
+     * @param eventId (optional) 
+     * @param image (optional) 
      * @return Created
      */
-    create2(body: EventPhotoCreateDTO | undefined): Promise<EventPhotoResponseDTO> {
+    createEventPhoto(caption: string | undefined, eventId: string | undefined, image: FileParameter | undefined): Promise<EventPhotoResponseDTO> {
         let url_ = this.baseUrl + "/api/EventPhoto/create";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+        const content_ = new FormData();
+        if (caption === null || caption === undefined)
+            throw new globalThis.Error("The parameter 'caption' cannot be null.");
+        else
+            content_.append("Caption", caption.toString());
+        if (eventId === null || eventId === undefined)
+            throw new globalThis.Error("The parameter 'eventId' cannot be null.");
+        else
+            content_.append("EventId", eventId.toString());
+        if (image === null || image === undefined)
+            throw new globalThis.Error("The parameter 'image' cannot be null.");
+        else
+            content_.append("Image", image.data, image.fileName ? image.fileName : "Image");
 
         let options_: RequestInit = {
             body: content_,
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate2(_response);
+            return this.processCreateEventPhoto(_response);
         });
     }
 
-    protected processCreate2(response: Response): Promise<EventPhotoResponseDTO> {
+    protected processCreateEventPhoto(response: Response): Promise<EventPhotoResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -922,7 +962,7 @@ export class Client {
      * @param body (optional) 
      * @return Created
      */
-    create3(body: EventSponsorshipCreateDTO | undefined): Promise<EventSponsorshipResponseDTO> {
+    create(body: EventSponsorshipCreateDTO | undefined): Promise<EventSponsorshipResponseDTO> {
         let url_ = this.baseUrl + "/api/EventSponsorship/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -938,11 +978,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate3(_response);
+            return this.processCreate(_response);
         });
     }
 
-    protected processCreate3(response: Response): Promise<EventSponsorshipResponseDTO> {
+    protected processCreate(response: Response): Promise<EventSponsorshipResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -1232,7 +1272,7 @@ export class Client {
      * @param body (optional) 
      * @return Created
      */
-    create4(body: SponsorCreateDTO | undefined): Promise<SponsorResponseDTO> {
+    create2(body: SponsorCreateDTO | undefined): Promise<SponsorResponseDTO> {
         let url_ = this.baseUrl + "/api/Sponsor/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1248,11 +1288,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate4(_response);
+            return this.processCreate2(_response);
         });
     }
 
-    protected processCreate4(response: Response): Promise<SponsorResponseDTO> {
+    protected processCreate2(response: Response): Promise<SponsorResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -1527,7 +1567,7 @@ export class Client {
      * @param body (optional) 
      * @return Created
      */
-    create5(body: TicketCreateDTO | undefined): Promise<TicketResponseDTO> {
+    create3(body: TicketCreateDTO | undefined): Promise<TicketResponseDTO> {
         let url_ = this.baseUrl + "/api/Ticket/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1543,11 +1583,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate5(_response);
+            return this.processCreate3(_response);
         });
     }
 
-    protected processCreate5(response: Response): Promise<TicketResponseDTO> {
+    protected processCreate3(response: Response): Promise<TicketResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -1846,30 +1886,58 @@ export class Client {
     }
 
     /**
-     * @param body (optional) 
+     * @param name (optional) 
+     * @param price (optional) 
+     * @param eventId (optional) 
+     * @param description (optional) 
+     * @param quantityAvailable (optional) 
+     * @param backgroundImage (optional) 
      * @return Created
      */
-    create6(body: TicketTypeCreateDTO | undefined): Promise<TicketTypeResponseDTO> {
+    createTicketType(name: string | undefined, price: number | undefined, eventId: string | undefined, description: string | undefined, quantityAvailable: number | undefined, backgroundImage: FileParameter | undefined): Promise<TicketTypeResponseDTO> {
         let url_ = this.baseUrl + "/api/TicketType/create";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+        const content_ = new FormData();
+        if (name === null || name === undefined)
+            throw new globalThis.Error("The parameter 'name' cannot be null.");
+        else
+            content_.append("Name", name.toString());
+        if (price === null || price === undefined)
+            throw new globalThis.Error("The parameter 'price' cannot be null.");
+        else
+            content_.append("Price", price.toString());
+        if (eventId === null || eventId === undefined)
+            throw new globalThis.Error("The parameter 'eventId' cannot be null.");
+        else
+            content_.append("EventId", eventId.toString());
+        if (description === null || description === undefined)
+            throw new globalThis.Error("The parameter 'description' cannot be null.");
+        else
+            content_.append("Description", description.toString());
+        if (quantityAvailable === null || quantityAvailable === undefined)
+            throw new globalThis.Error("The parameter 'quantityAvailable' cannot be null.");
+        else
+            content_.append("QuantityAvailable", quantityAvailable.toString());
+        if (backgroundImage === null || backgroundImage === undefined)
+            throw new globalThis.Error("The parameter 'backgroundImage' cannot be null.");
+        else
+            content_.append("BackgroundImage", backgroundImage.data, backgroundImage.fileName ? backgroundImage.fileName : "BackgroundImage");
 
         let options_: RequestInit = {
             body: content_,
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate6(_response);
+            return this.processCreateTicketType(_response);
         });
     }
 
-    protected processCreate6(response: Response): Promise<TicketTypeResponseDTO> {
+    protected processCreateTicketType(response: Response): Promise<TicketTypeResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -1968,7 +2036,7 @@ export class Client {
     }
 
     /**
-     * @return Created
+     * @return OK
      */
     userDELETE(id: string): Promise<string> {
         let url_ = this.baseUrl + "/api/User/{id}";
@@ -1992,11 +2060,11 @@ export class Client {
     protected processUserDELETE(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 201) {
+        if (status === 200) {
             return response.text().then((_responseText) => {
-            let result201: any = null;
-            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result201;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -2076,6 +2144,48 @@ export class Client {
             });
         }
         return Promise.resolve<UserResponseDTO[]>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    me(): Promise<UserResponseDTO> {
+        let url_ = this.baseUrl + "/api/User/me";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMe(_response);
+        });
+    }
+
+    protected processMe(response: Response): Promise<UserResponseDTO> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UserResponseDTO;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserResponseDTO>(null as any);
     }
 
     /**
@@ -2277,11 +2387,6 @@ export class Client {
     }
 }
 
-export interface EventPhotoCreateDTO {
-    caption?: string | undefined;
-    eventId?: string;
-}
-
 export interface EventPhotoResponseDTO {
     id?: string;
     url: string;
@@ -2448,15 +2553,6 @@ export interface TicketResponseDTO {
     customerId?: string;
 }
 
-export interface TicketTypeCreateDTO {
-    name?: string | undefined;
-    price?: number;
-    eventId?: string;
-    description?: string | undefined;
-    quantityAvailable?: number;
-    ticketBackgroundImageUrl?: string | undefined;
-}
-
 export interface TicketTypeResponseDTO {
     id?: string;
     name: string;
@@ -2466,7 +2562,8 @@ export interface TicketTypeResponseDTO {
     modifiedAt?: Date;
     description: string;
     quantityAvailable?: number;
-    ticketBackgroundImageUrl: string;
+    imageUrl: string;
+    imagePublicId: string;
 }
 
 export interface TicketTypeUpdateDTO {
@@ -2474,7 +2571,6 @@ export interface TicketTypeUpdateDTO {
     price?: number | undefined;
     description?: string | undefined;
     quantityAvailable?: number | undefined;
-    ticketBackgroundImageUrl?: string | undefined;
 }
 
 export interface TicketUpdateDTO {

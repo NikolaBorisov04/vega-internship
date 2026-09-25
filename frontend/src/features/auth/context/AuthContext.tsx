@@ -1,24 +1,22 @@
-import {
-    createContext,
-    useCallback,
-    useContext,
-    useMemo,
-    useState,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+
 import type { ReactNode } from "react";
 
-const ACCESS_TOKEN_KEY = "events_access_token";
+import type { UserResponseDTO, UserRole } from "../../../api/generated/api";
+
+import { apiClient } from "../../../api/client";
 
 interface AuthContextValue {
-    token: string | null;
+    user: UserResponseDTO | null;
+    role: UserRole | null;
     isAuthenticated: boolean;
-    signIn: (token: string) => void;
-    signOut: () => void;
+    isLoading: boolean;
+
+    signIn: (user: UserResponseDTO) => void;
+    signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextValue | undefined>(
-    undefined
-);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -27,32 +25,78 @@ interface AuthProviderProps {
 export function AuthProvider({
     children,
 }: AuthProviderProps) {
-    const [token, setToken] = useState<string | null>(() => {
-        return localStorage.getItem(ACCESS_TOKEN_KEY);
-    });
+    const [
+        user,
+        setUser,
+    ] = useState<UserResponseDTO | null>(null);
 
-    const signIn = useCallback((newToken: string) => {
-        localStorage.setItem(
-            ACCESS_TOKEN_KEY,
-            newToken
-        );
+    const [
+        isLoading,
+        setIsLoading,
+    ] = useState(true);
 
-        setToken(newToken);
-    }, []);
+    const loadCurrentUser = useCallback(
+        async () => {
+            try {
+                const currentUser =
+                    await apiClient.me();
 
-    const signOut = useCallback(() => {
-        localStorage.removeItem(ACCESS_TOKEN_KEY);
-        setToken(null);
+                setUser(currentUser ?? null);
+            } catch {
+                setUser(null);
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        []
+    );
+
+    useEffect(() => {
+        void loadCurrentUser();
+    }, [loadCurrentUser]);
+
+    const role = useMemo(
+        () => user?.role ?? null,
+        [user]
+    );
+
+    const signIn = useCallback(
+        (newUser: UserResponseDTO) => {
+            setUser(newUser);
+        },
+        []
+    );
+
+    const signOut = useCallback(async () =>
+    {
+        try
+        {
+            await apiClient.logout();
+        }
+        catch
+        {}
+        finally
+        {
+            setUser(null);
+        }
     }, []);
 
     const value = useMemo(
         () => ({
-            token,
-            isAuthenticated: token !== null,
+            user,
+            role,
+            isAuthenticated: user !== null,
+            isLoading,
             signIn,
             signOut,
         }),
-        [token, signIn, signOut]
+        [
+            user,
+            role,
+            isLoading,
+            signIn,
+            signOut,
+        ]
     );
 
     return (
@@ -70,6 +114,5 @@ export function useAuth(): AuthContextValue {
             "useAuth must be used inside AuthProvider"
         );
     }
-
     return context;
 }

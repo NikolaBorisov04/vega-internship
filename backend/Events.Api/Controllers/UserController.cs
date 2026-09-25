@@ -25,9 +25,9 @@ public class UserController : ControllerBase
     [HttpGet("{id:Guid}")]
     [Authorize]
     [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken ct)
     {
         var query = new GetUserByIdQuery(id);
@@ -39,9 +39,9 @@ public class UserController : ControllerBase
     [HttpGet("all")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(IEnumerable<UserResponseDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetAllAsync(CancellationToken ct)
     {
         var query = new GetUsersQuery();
@@ -50,10 +50,23 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
+    [HttpGet("me")]
+    [Authorize]
+    [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<UserResponseDTO>> GetCurrentUserAsync(CancellationToken ct)
+    {
+        var query = new GetCurrentUserQuery();
+
+        var user = await _sender.Send(query, ct);
+
+        return Ok(user);
+    }
+
     [HttpGet("organizer/event/{eventId:Guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserResponseDTO>> GetOrganizerByEventId(Guid eventId, CancellationToken ct)
     {
         var query = new GetOrganizerByEventIdQuery(eventId);
@@ -64,48 +77,48 @@ public class UserController : ControllerBase
 
     [HttpPost("register/customer")]
     [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<UserResponseDTO>> RegisterCustomer([FromBody] RegisterCustomerDTO dto, CancellationToken ct)
     {
         var command = _commandMapper.MapToCommand(dto);
         var user = await _sender.Send(command, ct);
 
-        return Ok(user);
+        return StatusCode(StatusCodes.Status201Created, user);
     }
 
     [HttpPost("register/organizer")]
     [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<UserResponseDTO>> RegisterOrganizer([FromBody] RegisterOrganizerDTO dto, CancellationToken ct)
     {
         var command = _commandMapper.MapToCommand(dto);
         var user = await _sender.Send(command, ct);
 
-        return Ok(user);
+        return StatusCode(StatusCodes.Status201Created, user);
     }
 
     [HttpPost("register/admin")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<UserResponseDTO>> RegisterAdmin([FromBody] RegisterAdminDTO dto, CancellationToken ct)
     {
         var command = _commandMapper.MapToCommand(dto);
         var user = await _sender.Send(command, ct);
 
-        return Ok(user);
+        return StatusCode(StatusCodes.Status201Created, user);
     }
 
     [HttpDelete("{id:Guid}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<string>> DeleteUser(Guid id, CancellationToken ct = default)
     {
         var command = new DeleteUserCommand(id);

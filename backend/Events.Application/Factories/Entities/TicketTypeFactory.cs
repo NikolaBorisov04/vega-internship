@@ -6,16 +6,17 @@ namespace Events.Application.Factories;
 
 public static class TicketTypeFactory
 {
-    public static TicketType Create(CreateTicketTypeCommand command)
+    public static TicketType Create(CreateTicketTypeCommand command, string imageUrl, string imagePublicId)
     {
         return new TicketType
         {
-            Name = command.dto.Name,
-            Price = command.dto.Price,
-            EventId = command.dto.EventId,
-            Description = command.dto.Description,
-            QuantityAvailable = command.dto.QuantityAvailable,
-            TicketBackgroundImageUrl = command.dto.TicketBackgroundImageUrl
+            Name = command.Dto.Name,
+            Price = command.Dto.Price,
+            EventId = command.Dto.EventId,
+            Description = command.Dto.Description,
+            QuantityAvailable = command.Dto.QuantityAvailable,
+            ImageUrl = imageUrl,
+            ImagePublicId = imagePublicId
         };
     }
 }

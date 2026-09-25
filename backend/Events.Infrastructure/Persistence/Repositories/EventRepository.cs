@@ -15,7 +15,7 @@ public class EventRepository : Repository<Event>, IEventRepository
             .AnyAsync(o => o.Id == organizerId, ct);
     }
 
-    public async Task<Guid?> GetEventOrganizerIdAsync(Guid eventId, CancellationToken ct = default)
+    public async Task<Guid> GetEventOrganizerIdAsync(Guid eventId, CancellationToken ct = default)
     {
         return await _context.Events
             .Where(e => e.Id == eventId)

@@ -7,7 +7,7 @@ public sealed class CreateEventPhotoCommandValidator : AbstractValidator<CreateE
 {
     public CreateEventPhotoCommandValidator()
     {
-        RuleFor(x => x.dto.EventId)
+        RuleFor(x => x.Dto.EventId)
             .NotEmpty().WithMessage("ID dogadjaja je obavezan.");
     }
 }

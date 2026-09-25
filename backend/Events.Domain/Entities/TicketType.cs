@@ -21,7 +21,12 @@ public class TicketType : AuditableEntity
     public int QuantityAvailable { get; set; }
 
     [MaxLength(1000)]
-    public string? TicketBackgroundImageUrl { get; set; }
+    [Required]
+    public string ImageUrl { get; set; }
+
+    [MaxLength(1000)]
+    [Required]
+    public string ImagePublicId { get; set; }
     
     [Required]
     public Guid EventId { get; set; }
