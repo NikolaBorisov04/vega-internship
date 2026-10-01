@@ -14,9 +14,6 @@ public sealed record SponsorCreateDTO
     string Description,
 
     [param: Required]
-    string LogoUrl,
-
-    [param: Required]
     string TaxId,
 
     string? WebsiteUrl

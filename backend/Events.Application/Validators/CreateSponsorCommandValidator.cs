@@ -7,13 +7,13 @@ public sealed class CreateSponsorCommandValidator : AbstractValidator<CreateSpon
 {
     public CreateSponsorCommandValidator()
     {
-        RuleFor(x => x.dto.Name)
+        RuleFor(x => x.Dto.Name)
             .NotEmpty().WithMessage("Ime je obavezno.")
             .MaximumLength(20).WithMessage("Ime ne moze imati vise od 20 karaktera.");
-        RuleFor(x => x.dto.ContactEmail)
+        RuleFor(x => x.Dto.ContactEmail)
             .NotEmpty().WithMessage("Email adresa je obavezna.")
             .EmailAddress().WithMessage("Email adresa nije validna.");
-        RuleFor(x => x.dto.Description)
+        RuleFor(x => x.Dto.Description)
             .NotEmpty().WithMessage("Opis sponzora je obavezan.");
     }
 }

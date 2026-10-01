@@ -8,7 +8,9 @@ public sealed record SponsorUpdateDTO
 
     string? Description,
 
-    string? LogoUrl,
+    string? ImageUrl,
+
+    string? ImagePublicId,
 
     string? TaxId,
 

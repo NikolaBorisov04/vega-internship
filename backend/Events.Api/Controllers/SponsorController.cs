@@ -5,6 +5,9 @@ using Events.Application.Queries;
 using Events.Application.Commands;
 using MediatR;
 using Events.Application.Mappers;
+using Swashbuckle.AspNetCore.Annotations;
+using Events.API.Requests;
+using Events.Application.Storage;
 
 namespace Events.Api.Controllers;
 
@@ -24,7 +27,7 @@ public class SponsorController : ControllerBase
     [HttpGet("{id:Guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(SponsorResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
         var query = new GetSponsorByIdQuery(id);
@@ -36,7 +39,7 @@ public class SponsorController : ControllerBase
     [HttpGet("all")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(IEnumerable<SponsorResponseDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllAsync(CancellationToken ct = default)
     {
         var query = new GetSponsorsQuery();
@@ -48,7 +51,7 @@ public class SponsorController : ControllerBase
     [HttpGet("event/{eventId:Guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<SponsorResponseDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByEventIdAsync(Guid eventId, CancellationToken ct = default)
     {
         var query = new GetSponsorsByEventIdQuery(eventId);
@@ -59,16 +62,33 @@ public class SponsorController : ControllerBase
 
     [HttpPost("create")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<SponsorResponseDTO>> Create([FromBody] SponsorCreateDTO dto, CancellationToken ct)
+    [Consumes("multipart/form-data")]
+    [SwaggerOperation(OperationId = "CreateSponsor")]
+    [ProducesResponseType(typeof(SponsorResponseDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<SponsorResponseDTO>> Create([FromForm] CreateSponsorRequest request, CancellationToken ct = default)
     {
-        var command = _commandMapper.MapToCommand(dto);
+        var dto = new SponsorCreateDTO(
+            request.Name,
+            request.ContactEmail,
+            request.Description,
+            request.WebsiteUrl,
+            request.TaxId
+        );
+
+        var file = new FileUpload(
+            request.BackgroundImage.OpenReadStream(),
+            request.BackgroundImage.FileName,
+            request.BackgroundImage.ContentType,
+            request.BackgroundImage.Length
+        );
+
+        var command = _commandMapper.MapToCommand(dto, file);
         var result = await _sender.Send(command, ct);
 
-        return Ok(result);
+        return StatusCode(StatusCodes.Status201Created, result);
     }
 
     [HttpPatch("{id:Guid}")]

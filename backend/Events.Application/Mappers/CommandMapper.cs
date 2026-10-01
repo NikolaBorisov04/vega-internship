@@ -51,9 +51,9 @@ public class CommandMapper
         );
     }
 
-    public CreateSponsorCommand MapToCommand(SponsorCreateDTO dto)
+    public CreateSponsorCommand MapToCommand(SponsorCreateDTO dto, FileUpload file)
     {
-        return new CreateSponsorCommand(dto);
+        return new CreateSponsorCommand(dto, file);
     }
 
     public UpdateSponsorCommand MapToCommand(Guid id, SponsorUpdateDTO dto)

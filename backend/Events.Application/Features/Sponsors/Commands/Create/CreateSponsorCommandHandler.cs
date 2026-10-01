@@ -3,6 +3,7 @@ using Events.Application.Factories;
 using Events.Application.Mappers;
 using Events.Application.Repositories;
 using Events.Application.Services;
+using Events.Application.Storage;
 using Events.Domain.Entities;
 using MediatR;
 
@@ -13,24 +14,38 @@ public sealed class CreateSponsorCommandHandler : IRequestHandler<CreateSponsorC
     private readonly ISponsorRepository _sponsorRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ResponseMapper _responseMapper;
+    private readonly IImageStorage _imageStorage;
 
     public CreateSponsorCommandHandler(
         ISponsorRepository sponsorRepository,
         IUnitOfWork unitOfWork,
-        ResponseMapper responseMapper)
+        ResponseMapper responseMapper,
+        IImageStorage imageStorage)
     {
         _sponsorRepository = sponsorRepository;
         _unitOfWork = unitOfWork;
         _responseMapper = responseMapper;
+        _imageStorage = imageStorage;
     }
     public async Task<SponsorResponseDTO> Handle(CreateSponsorCommand command, CancellationToken ct)
     {
-        var newSponsor = SponsorFactory.Create(command);
+        var image = await _imageStorage.UploadAsync(command.Image.Stream, command.Image.FileName, ct);
 
-        _sponsorRepository.Add(newSponsor);
+        try
+        {
+            var newsponsor = SponsorFactory.Create(command, image.Url, image.PublicId);
 
-        await _unitOfWork.SaveChangesAsync(ct);
+            _sponsorRepository.Add(newsponsor);
 
-        return _responseMapper.MapToResponse(newSponsor);
+            await _unitOfWork.SaveChangesAsync(ct);
+
+            return _responseMapper.MapToResponse(newsponsor);
+        }
+        catch
+        {
+            await _imageStorage.DeleteAsync(image.PublicId, ct);
+
+            throw new ArgumentException("Sponsor wasn't created succesfully.");
+        }
     }
 }

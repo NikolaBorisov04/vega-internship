@@ -5,16 +5,17 @@ namespace Events.Application.Factories;
 
 public static class SponsorFactory
 {
-    public static Sponsor Create(CreateSponsorCommand command)
+    public static Sponsor Create(CreateSponsorCommand command, string imageUrl, string imagePublicId)
     {
         return new Sponsor
         {
-            Name = command.dto.Name,
-            ContactEmail = command.dto.ContactEmail,
-            Description = command.dto.Description,
-            WebsiteUrl = command.dto.WebsiteUrl,
-            LogoUrl = command.dto.LogoUrl,
-            TaxId = command.dto.TaxId
+            Name = command.Dto.Name,
+            ContactEmail = command.Dto.ContactEmail,
+            Description = command.Dto.Description,
+            WebsiteUrl = command.Dto.WebsiteUrl,
+            ImageUrl = imageUrl,
+            ImagePublicId = imagePublicId,
+            TaxId = command.Dto.TaxId
         };
     }
 }

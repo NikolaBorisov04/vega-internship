@@ -182,11 +182,18 @@ public static class EntityUpdateExtensions
             modified = true;
         }
 
-        if (dto.LogoUrl is not null)
+        if (dto.ImageUrl is not null)
         {
-            sponsor.LogoUrl = dto.LogoUrl;
+            sponsor.ImageUrl = dto.ImageUrl;
             modified = true;
         }
+
+        if (dto.ImagePublicId is not null)
+        {
+            sponsor.ImagePublicId = dto.ImagePublicId;
+            modified = true;
+        }
+
 
         if (dto.TaxId is not null)
         {

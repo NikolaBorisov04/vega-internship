@@ -56,8 +56,10 @@ public class ResponseMapper
             sponsor.Name,
             sponsor.ContactEmail,
             sponsor.Description,
-            sponsor.LogoUrl,
-            sponsor.WebsiteUrl
+            sponsor.ImageUrl,
+            sponsor.ImagePublicId,
+            sponsor.WebsiteUrl,
+            sponsor.TaxId
         );
     }
 

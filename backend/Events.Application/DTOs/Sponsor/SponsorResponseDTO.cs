@@ -16,7 +16,13 @@ public sealed record SponsorResponseDTO
     string Description,
 
     [property: Required]
-    string LogoUrl,
+    string ImageUrl,
 
-    string? WebsiteUrl
+    [property: Required]
+    string ImagePublicId,
+
+    string? WebsiteUrl,
+
+    [property: Required]
+    string TaxId
 );

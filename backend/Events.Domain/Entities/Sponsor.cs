@@ -24,9 +24,13 @@ public class Sponsor : AuditableEntity
     [MaxLength(200)]
     public string WebsiteUrl { get; set; }
 
+    [MaxLength(1000)]
     [Required]
-    [MaxLength(200)]
-    public string LogoUrl { get; set; }
+    public string ImageUrl { get; set; }
+
+    [MaxLength(1000)]
+    [Required]
+    public string ImagePublicId { get; set; }
 
     [Required]
     [MaxLength(100)]
