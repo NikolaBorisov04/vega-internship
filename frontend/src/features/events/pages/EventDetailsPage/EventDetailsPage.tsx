@@ -10,6 +10,7 @@ import { ApiError } from "../../../../shared/api/httpClient";
 import { EventPriority } from "../../../../api/generated/api";
 import { formatDateTime, formatEventRange } from "../../../../shared/utils/formatDateTime";
 import { EventTicketTypes } from "./components/EventTicketTypes";
+import { EventSponsors } from "./components/EventSponsors";
 
 export function EventDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -352,34 +353,7 @@ export function EventDetailsPage() {
         </section>
 
         {/* SPONSORS */}
-        <section className="event-details-section event-details-section--last">
-          <div className="event-details-section__heading">
-            <span>SPONSORS</span>
-            <h2>Made possible by.</h2>
-          </div>
-
-          <div className="event-sponsors">
-            <div className="event-sponsor-placeholder">
-              <span>✦</span>
-              <p>Event sponsor</p>
-            </div>
-
-            <div className="event-sponsor-placeholder">
-              <span>✦</span>
-              <p>Event sponsor</p>
-            </div>
-
-            <div className="event-sponsor-placeholder">
-              <span>✦</span>
-              <p>Event sponsor</p>
-            </div>
-
-            <div className="event-sponsor-placeholder">
-              <span>✦</span>
-              <p>Event sponsor</p>
-            </div>
-          </div>
-        </section>
+        <EventSponsors eventId={event.id} />
       </div>
     </main>
   );

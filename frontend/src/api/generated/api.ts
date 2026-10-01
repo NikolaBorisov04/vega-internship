@@ -1269,30 +1269,58 @@ export class Client {
     }
 
     /**
-     * @param body (optional) 
+     * @param name (optional) 
+     * @param contactEmail (optional) 
+     * @param description (optional) 
+     * @param websiteUrl (optional) 
+     * @param taxId (optional) 
+     * @param backgroundImage (optional) 
      * @return Created
      */
-    create2(body: SponsorCreateDTO | undefined): Promise<SponsorResponseDTO> {
+    createSponsor(name: string | undefined, contactEmail: string | undefined, description: string | undefined, websiteUrl: string | undefined, taxId: string | undefined, backgroundImage: FileParameter | undefined): Promise<SponsorResponseDTO> {
         let url_ = this.baseUrl + "/api/Sponsor/create";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+        const content_ = new FormData();
+        if (name === null || name === undefined)
+            throw new globalThis.Error("The parameter 'name' cannot be null.");
+        else
+            content_.append("Name", name.toString());
+        if (contactEmail === null || contactEmail === undefined)
+            throw new globalThis.Error("The parameter 'contactEmail' cannot be null.");
+        else
+            content_.append("ContactEmail", contactEmail.toString());
+        if (description === null || description === undefined)
+            throw new globalThis.Error("The parameter 'description' cannot be null.");
+        else
+            content_.append("Description", description.toString());
+        if (websiteUrl === null || websiteUrl === undefined)
+            throw new globalThis.Error("The parameter 'websiteUrl' cannot be null.");
+        else
+            content_.append("WebsiteUrl", websiteUrl.toString());
+        if (taxId === null || taxId === undefined)
+            throw new globalThis.Error("The parameter 'taxId' cannot be null.");
+        else
+            content_.append("TaxId", taxId.toString());
+        if (backgroundImage === null || backgroundImage === undefined)
+            throw new globalThis.Error("The parameter 'backgroundImage' cannot be null.");
+        else
+            content_.append("BackgroundImage", backgroundImage.data, backgroundImage.fileName ? backgroundImage.fileName : "BackgroundImage");
 
         let options_: RequestInit = {
             body: content_,
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate2(_response);
+            return this.processCreateSponsor(_response);
         });
     }
 
-    protected processCreate2(response: Response): Promise<SponsorResponseDTO> {
+    protected processCreateSponsor(response: Response): Promise<SponsorResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -1567,7 +1595,7 @@ export class Client {
      * @param body (optional) 
      * @return Created
      */
-    create3(body: TicketCreateDTO | undefined): Promise<TicketResponseDTO> {
+    create2(body: TicketCreateDTO | undefined): Promise<TicketResponseDTO> {
         let url_ = this.baseUrl + "/api/Ticket/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1583,11 +1611,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate3(_response);
+            return this.processCreate2(_response);
         });
     }
 
-    protected processCreate3(response: Response): Promise<TicketResponseDTO> {
+    protected processCreate2(response: Response): Promise<TicketResponseDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -2507,29 +2535,23 @@ export interface RegisterOrganizerDTO {
     companyName?: string | undefined;
 }
 
-export interface SponsorCreateDTO {
-    name?: string | undefined;
-    contactEmail?: string | undefined;
-    description?: string | undefined;
-    logoUrl?: string | undefined;
-    taxId?: string | undefined;
-    websiteUrl?: string | undefined;
-}
-
 export interface SponsorResponseDTO {
     id?: string;
     name: string;
     contactEmail: string;
     description: string;
-    logoUrl: string;
+    imageUrl: string;
+    imagePublicId: string;
     websiteUrl?: string | undefined;
+    taxId: string;
 }
 
 export interface SponsorUpdateDTO {
     name?: string | undefined;
     contactEmail?: string | undefined;
     description?: string | undefined;
-    logoUrl?: string | undefined;
+    imageUrl?: string | undefined;
+    imagePublicId?: string | undefined;
     taxId?: string | undefined;
     websiteUrl?: string | undefined;
 }

@@ -93,11 +93,11 @@ public class SponsorController : ControllerBase
 
     [HttpPatch("{id:Guid}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<string>> UpdateSponsor(Guid id, [FromBody] SponsorUpdateDTO dto, CancellationToken ct = default)
+    [ProducesResponseType(typeof(SponsorResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<SponsorResponseDTO>> UpdateSponsor(Guid id, [FromBody] SponsorUpdateDTO dto, CancellationToken ct = default)
     {
         var command = _commandMapper.MapToCommand(id, dto);
         var result = await _sender.Send(command, ct);
@@ -107,10 +107,10 @@ public class SponsorController : ControllerBase
 
     [HttpDelete("{id:Guid}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<string>> DeleteSponsor(Guid id, CancellationToken ct = default)
     {
         var command = new DeleteSponsorCommand(id);
