@@ -1,16 +1,18 @@
 import { Link, useParams } from "react-router-dom";
 
 import { useEvent } from "../../hooks/useEvent";
-import { useEventPhoto } from "../../hooks/useEventPhoto";
-import { useEventTicketTypes } from "../../hooks/useEventTicketTypes";
-import { EventGallery } from "../../components/EventGallery";
+
+import { ApiError } from "../../../../shared/api/httpClient";
+
+import { EventAboutSection } from "./components/EventAboutSection";
+import { EventDetailsHero } from "./components/EventDetailsHero";
+import { EventGallerySection } from "./components/EventGallerySection";
+import { EventInformationSection } from "./components/EventInformationSection";
+import { EventOrganizerSection } from "./components/EventOrganizerSection";
+import { EventSponsors } from "./components/EventSponsors";
 
 import "./EventDetailsPage.css";
-import { ApiError } from "../../../../shared/api/httpClient";
-import { EventPriority } from "../../../../api/generated/api";
-import { formatDateTime, formatEventRange } from "../../../../shared/utils/formatDateTime";
-import { EventTicketTypes } from "./components/EventTicketTypes";
-import { EventSponsors } from "./components/EventSponsors";
+import { EventTicketTypesSection } from "./components/EventTicketTypesSection";
 
 export function EventDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -22,20 +24,6 @@ export function EventDetailsPage() {
     error,
     refetch,
   } = useEvent(id);
-
-  const {
-    data: eventPhotos = [],
-    isLoading: isPhotosLoading,
-    error: photosError,
-    refetch: refetchPhotos,
-  } = useEventPhoto(id);
-
-  const {
-    data: ticketTypes = [],
-    isLoading: isTicketTypesLoading,
-    error: ticketTypesError,
-    refetch: refetchTicketTypes,
-  } = useEventTicketTypes(event?.id);
 
   if (isLoading) {
     return (
@@ -118,9 +106,6 @@ export function EventDetailsPage() {
     );
   }
 
-  const isHighPriority =
-    event.priority === EventPriority.High;
-
   return (
     <main className="event-details-page">
       <div className="event-details-container">
@@ -132,227 +117,18 @@ export function EventDetailsPage() {
           Back to events
         </Link>
 
-        {/* HERO */}
-        <section className="event-details-hero">
-          <div className="event-details-hero__visual">
-            <div
-              className="event-details-hero__blur"
-              style={{
-                backgroundImage: `url("${event.mainImageURL}")`,
-              }}
-            />
+        <EventDetailsHero event={event} />
 
-            <div className="event-details-hero__image-frame">
-              <img
-                src={event.mainImageURL}
-                alt={event.title}
-                className="event-details-hero__image"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
+        <EventAboutSection event={event} />
 
-                  e.currentTarget.parentElement?.classList.add(
-                    "event-details-hero__image-frame--fallback",
-                  );
-                }}
-              />
-            </div>
+        <EventInformationSection event={event} />
 
-            {isHighPriority && (
-              <span className="event-details-hero__priority">
-                High priority
-              </span>
-            )}
+        <EventTicketTypesSection eventId={event.id} />
 
-            <div className="event-details-hero__music-note">
-              ♪
-            </div>
-          </div>
+        <EventGallerySection event={event} />
 
-          <div className="event-details-hero__info">
-            <div className="event-details-hero__date">
-              {formatEventRange(
-                event.startOfEvent,
-                event.endOfEvent,
-              )}
-            </div>
+        <EventOrganizerSection eventId={event.id} />
 
-            <h1>{event.title}</h1>
-
-            <div className="event-details-hero__venue">
-              <div className="event-details-hero__venue-icon">
-                ♫
-              </div>
-
-              <div>
-                <strong>
-                  {event.venueName || "Event venue"}
-                </strong>
-
-                <span>
-                  {event.address}, {event.city},{" "}
-                  {event.country}
-                </span>
-              </div>
-            </div>
-
-            <div className="event-details-hero__divider" />
-
-            <div className="event-details-hero__actions">
-              <a
-                href="#event-ticket-types"
-                className="event-details-buy-button"
-              >
-                View ticket types
-                <span>↓</span>
-              </a>
-
-              <span className="event-details-buy-note">
-                Choose a ticket type below. Purchase will be
-                available soon.
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* ABOUT */}
-        <section className="event-details-section">
-          <div className="event-details-section__heading">
-            <span>ABOUT THE EVENT</span>
-            <h2>Make a night of it.</h2>
-          </div>
-
-          <p className="event-details-description">
-            {event.description}
-          </p>
-        </section>
-
-        {/* EVENT INFORMATION */}
-        <section className="event-details-section">
-          <div className="event-details-section__heading">
-            <span>EVENT INFORMATION</span>
-            <h2>Everything you need to know.</h2>
-          </div>
-
-          <div className="event-details-info-grid">
-            <div className="event-details-info-card">
-              <div className="event-details-info-card__icon">
-                ◷
-              </div>
-
-              <div>
-                <span>Starts</span>
-
-                <strong>
-                  {formatDateTime(event.startOfEvent)}
-                </strong>
-              </div>
-            </div>
-
-            <div className="event-details-info-card">
-              <div className="event-details-info-card__icon">
-                ◴
-              </div>
-
-              <div>
-                <span>Ends</span>
-
-                <strong>
-                  {formatDateTime(event.endOfEvent)}
-                </strong>
-              </div>
-            </div>
-
-            <div className="event-details-info-card">
-              <div className="event-details-info-card__icon">
-                ♫
-              </div>
-
-              <div>
-                <span>Venue</span>
-
-                <strong>
-                  {event.venueName || "Event venue"}
-                </strong>
-              </div>
-            </div>
-
-            <div className="event-details-info-card">
-              <div className="event-details-info-card__icon">
-                ⌖
-              </div>
-
-              <div>
-                <span>Location</span>
-
-                <strong>
-                  {event.city}, {event.country}
-                </strong>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* TICKET TYPES */}
-        <section
-          id="event-ticket-types"
-          className="event-details-section"
-        >
-          <div className="event-details-section__heading">
-            <span>TICKETS</span>
-            <h2>Choose your ticket.</h2>
-          </div>
-
-          <EventTicketTypes
-            ticketTypes={ticketTypes}
-            isLoading={isTicketTypesLoading}
-            error={ticketTypesError}
-            onRetry={() => refetchTicketTypes()}
-          />
-        </section>
-
-        {/* GALLERY */}
-        <section className="event-details-section">
-          <div className="event-details-section__heading">
-            <span>EVENT PHOTOS</span>
-            <h2>See the atmosphere.</h2>
-          </div>
-
-          <EventGallery
-            eventTitle={event.title}
-            mainImageURL={event.mainImageURL}
-            photos={eventPhotos}
-            isLoading={isPhotosLoading}
-            error={photosError}
-            onRetry={() => refetchPhotos()}
-          />
-        </section>
-
-        {/* ORGANIZER */}
-        <section className="event-details-section">
-          <div className="event-details-section__heading">
-            <span>ORGANIZER</span>
-            <h2>Who's behind the event?</h2>
-          </div>
-
-          <div className="event-organizer-card">
-            <div className="event-organizer-card__avatar">
-              ♪
-            </div>
-
-            <div className="event-organizer-card__content">
-              <span>EVENT ORGANIZER</span>
-
-              <h3>Organizer information</h3>
-
-              <p>
-                Organizer details will be displayed here once
-                they are included in the event response.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* SPONSORS */}
         <EventSponsors eventId={event.id} />
       </div>
     </main>
